@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -49,18 +48,13 @@ img {
   <button onclick="indit()">Verbinden / Conectare</button>
 </div>
 
-<img id="kep" src="majom.png" alt="Überraschung!">
-<audio id="hang" src="hang.mp3.mpeg" preload="auto"></audio>
+<img id="kep" src="nosignal.png" alt="No Signal">
 
 <script>
 function indit() {
   document.getElementById('connect-box').style.display = 'none';
   document.body.style.background = 'white';
   document.getElementById('kep').style.display = 'block';
-  
-  var audio = document.getElementById('hang');
-  audio.volume = 1.0;
-  audio.play();
 }
 </script>
 
