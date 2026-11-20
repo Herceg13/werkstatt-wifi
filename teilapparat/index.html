@@ -90,4 +90,77 @@
             <div class="result-box" id="aus_res"></div>
         </div>
     </main>
+        <script>
+        const LOCHKREISE = "15,16,17,18,19,20,21,23,24,25,27,28,29,30,31,33,37,39,41,42,43,47,49,51,53,54,57,59,61,63".split(",").map(Number);
+        const WECHSELRAEDER = "24,24,28,32,36,40,44,48,56,64,72,80,84,86,96,100".split(",").map(Number);
+        let prio = { direkt:'winkel', indirekt:'winkel', ausgleich:'teilzahl' };
+
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active'); document.getElementById(id).classList.add('active');
+        }
+
+        function setPrio(m, t, btn) {
+            prio[m] = t;
+            btn.parentElement.querySelectorAll('.prio-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(m==='direkt'){ document.getElementById('dir_w').disabled=(t!=='winkel'); document.getElementById('dir_z').disabled=(t!=='teilzahl'); calcD(); }
+            if(m==='indirekt'){ document.getElementById('ind_w').disabled=(t!=='winkel'); document.getElementById('ind_z').disabled=(t!=='teilzahl'); calcI(); }
+            if(m==='ausgleich'){ document.getElementById('aus_w').disabled=(t!=='winkel'); document.getElementById('aus_z').disabled=(t!=='teilzahl'); calcA(); }
+        }
+
+        function toFrac(val) {
+            let h1=1, h2=0, k1=0, k2=1, b=val;
+            do { let a=Math.floor(b), aux=h1; h1=a*h1+h2; h2=aux; aux=k1; k1=a*k1+k2; k2=aux; b=1/(b-a); }
+            while (Math.abs(val - h1/k1) > val * 1e-5 && k1 < 10000);
+            return { num: h1, den: k1 };
+        }
+
+        function calcD() {
+            let wEl = document.getElementById('dir_w'), zEl = document.getElementById('dir_z'), l = +document.getElementById('dir_l').value || 24, z = 0;
+            if(prio.direkt==='winkel'){ z = +wEl.value > 0 ? 360/+wEl.value : 0; zEl.value = z.toFixed(2); }
+            else { z = +zEl.value || 0; wEl.value = z > 0 ? (360/z).toFixed(4) : 0; }
+            let st = l / z, box = document.getElementById('dir_res');
+            if(z <= 0) return;
+            box.innerHTML = Math.abs(st - Math.round(st)) < 1e-4
+                ? `<div class="big-result"><span>${Math.round(st)}</span> Lochabstände</div><div>auf der <b>${l}er</b> Scheibe</div>`
+                : `<div class="warn">⚠️ Nicht direkt teilbar (${st.toFixed(3)} Löcher)</div>`;
+        }
+
+        function calcDMS() {
+            let dec = (+document.getElementById('dms_g').value||0) + (+document.getElementById('dms_m').value||0)/60 + (+document.getElementById('dms_s').value||0)/3600;
+            document.getElementById('ind_w').value = dec.toFixed(5);
+            if(prio.indirekt!=='winkel') setPrio('indirekt','winkel',document.querySelector('#indirekt .prio-btn')); else calcI();
+        }
+
+        function calcI() {
+            let wEl = document.getElementById('ind_w'), zEl = document.getElementById('ind_z'), i = +document.getElementById('ind_i').value || 40, z = 0;
+            if(prio.indirekt==='winkel'){ z = +wEl.value > 0 ? 360/+wEl.value : 0; zEl.value = z.toFixed(3); }
+            else { z = +zEl.value || 0; wEl.value = z > 0 ? (360/z).toFixed(5) : 0; }
+            if(z <= 0) return;
+            let nk = i/z, g = Math.floor(nk + 1e-9), r = nk - g, box = document.getElementById('ind_res');
+            if(r < 1e-6) { box.innerHTML = `<div class="big-result"><span>${g}</span> volle Umdrehungen</div>`; return; }
+            let f = toFrac(r), html = '';
+            LOCHKREISE.forEach(lk => { if(lk % f.den === 0) html += `<span class="disc-badge">${f.num*(lk/f.den)} Löcher / ${lk}er Kreis</span>`; });
+            box.innerHTML = `<div class="big-result"><span>${g}</span> Umdr. + <span>${f.num}/${f.den}</span></div>` + (html || `<div class="warn">⚠️ Kein passender Lochkreis (Nenner ${f.den})</div>`);
+        }
+
+        function calcA() {
+            let wEl = document.getElementById('aus_w'), zEl = document.getElementById('aus_z'), zh = +document.getElementById('aus_zh').value||0, i = +document.getElementById('aus_i').value||40, z = 0;
+            if(prio.ausgleich==='winkel'){ z = +wEl.value > 0 ? 360/+wEl.value : 0; zEl.value = z.toFixed(2); }
+            else { z = +zEl.value || 0; wEl.value = z > 0 ? (360/z).toFixed(4) : 0; }
+            if(z <= 0 || zh <= 0) return;
+            let nk = i/zh, g = Math.floor(nk + 1e-9), r = nk - g, f = r < 1e-6 ? {num:0,den:1} : toFrac(r), html = '';
+            if(f.num > 0) LOCHKREISE.forEach(lk => { if(lk % f.den === 0) html += `<span class="disc-badge">${f.num*(lk/f.den)} Löcher / ${lk}er Kreis</span>`; });
+            let diff = zh - z, dir = diff >= 0 ? "Gleichlauf (+)" : "Gegenlauf (-)", iw = Math.abs((diff*i)/zh), gf = toFrac(iw), pair = null;
+            WECHSELRAEDER.forEach(zt => WECHSELRAEDER.forEach(zg => { if(Math.abs(zt/zg - iw) < 1e-4) pair = {zt, zg}; }));
+            let gHtml = pair ? `<div style="color:var(--green);margin-top:8px;">✅ Räderpaar: Z<sub>t</sub>=<b>${pair.zt}</b> / Z<sub>g</sub>=<b>${pair.zg}</b></div>` : `<div style="margin-top:8px;">⚙️ Verhältnis: <b>${gf.num}:${gf.den}</b> (2 Räderpaare nötig)</div>`;
+            document.getElementById('aus_res').innerHTML = `<div class="big-result"><span>${g}</span> Umdr. + <span>${f.num}/${f.den}</span></div>` + (f.num===0 ? `<span class="disc-badge">0 Löcher</span>` : (html || `<div class="warn">⚠️ Hilfsteilzahl passt nicht</div>`)) + `<hr style="margin:10px 0;border-color:#2d3748"><div><b>Wechselräder (${dir}):</b>${gHtml}</div>`;
+        }
+        calcD(); calcI(); calcA();
+    </script>
+</body>
+</html>
+
 
