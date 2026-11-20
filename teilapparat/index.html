@@ -3,333 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teilapparat Kalkulátor // MŰHELY OS</title>
+    <title>Teilapparat Pro // MŰHELY OS</title>
     <style>
-        :root {
-            --bg-dark: #0a0e14;
-            --bg-panel: #131922;
-            --bg-card: #1a222d;
-            --accent-cyan: #00f0ff;
-            --accent-orange: #ff6b00;
-            --accent-green: #00e676;
-            --text-main: #e6edf3;
-            --text-muted: #8b949e;
-            --border-color: #2d3748;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding-bottom: 3rem;
-        }
-
-        header {
-            background-color: var(--bg-panel);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .back-btn {
-            color: var(--accent-cyan);
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 6px;
-            background: rgba(0, 240, 255, 0.05);
-        }
-
-        .title-area {
-            text-align: right;
-        }
-
-        .title-area h1 {
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .title-area span {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1.25rem;
-        }
-
-        /* Módválasztó fülek */
-        .tabs {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .tab-btn {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 14px 8px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background-color: rgba(0, 240, 255, 0.12);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-        }
-
-        .panel {
-            display: none;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .panel.active {
-            display: block;
-        }
-
-        /* Prioritás kapcsoló */
-        .prio-switch {
-            display: flex;
-            background-color: var(--bg-dark);
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 1.25rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .prio-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .prio-btn.active {
-            background-color: var(--accent-cyan);
-            color: #000;
-        }
-
-        /* Mezők */
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .input-group.full {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        input {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            width: 100%;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--accent-cyan);
-        }
-
-        input:disabled {
-            opacity: 0.5;
-            border-style: dashed;
-        }
-
-        /* Eredmény doboz */
-        .result-box {
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-cyan);
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin-top: 1.5rem;
-        }
-
-        .result-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-cyan);
-            margin-bottom: 0.75rem;
-        }
-
-        .big-result {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 1rem;
-        }
-
-        .big-result span {
-            color: var(--accent-green);
-        }
-
-        .disc-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .disc-badge {
-            background-color: rgba(0, 230, 118, 0.15);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        .warning-text {
-            color: var(--accent-orange);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* DMS Átváltó */
-        .dms-box {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .dms-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .gear-box {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .gear-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 6px;
-            font-family: monospace;
-            font-size: 1rem;
-        }
+        :root { --bg:#0a0e14; --panel:#131922; --card:#1a222d; --cyan:#00f0ff; --orange:#ff6b00; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:#2d3748; }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:sans-serif; }
+        body { background:var(--bg); color:var(--text); padding-bottom:3rem; }
+        header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem; display:flex; justify-content:space-between; align-items:center; }
+        .back-btn { color:var(--cyan); text-decoration:none; font-weight:bold; padding:6px 12px; border:1px solid var(--cyan); border-radius:6px; }
+        main { max-width:800px; margin:0 auto; padding:1rem; }
+        .tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:1rem; }
+        .tab-btn { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:12px 6px; border-radius:8px; font-weight:bold; cursor:pointer; }
+        .tab-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,240,255,0.1); }
+        .panel { display:none; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+        .panel.active { display:block; }
+        .prio-switch { display:flex; background:var(--bg); border-radius:8px; padding:4px; margin-bottom:1rem; border:1px solid var(--border); }
+        .prio-btn { flex:1; padding:10px; border:none; background:transparent; color:var(--muted); font-weight:bold; border-radius:6px; cursor:pointer; }
+        .prio-btn.active { background:var(--cyan); color:#000; }
+        .input-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+        .full { grid-column:1 / -1; }
+        label { display:block; font-size:0.85rem; color:var(--muted); margin-bottom:4px; }
+        input { background:var(--bg); border:1px solid var(--border); color:#fff; padding:12px; border-radius:8px; font-size:1.2rem; font-weight:bold; width:100%; }
+        input:disabled { opacity:0.4; }
+        .result-box { background:var(--bg); border:1px solid var(--cyan); border-radius:10px; padding:1.25rem; margin-top:1rem; }
+        .big-result { font-size:1.5rem; font-weight:bold; margin:8px 0; }
+        .big-result span { color:var(--green); }
+        .disc-badge { display:inline-block; background:rgba(0,230,118,0.15); border:1px solid var(--green); color:var(--green); padding:6px 10px; border-radius:6px; font-weight:bold; margin:4px 4px 0 0; }
+        .warn { color:var(--orange); font-weight:bold; }
+        .dms-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:1rem; }
     </style>
 </head>
 <body>
-
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
-        <div class="title-area">
-            <h1>TEILAPPARAT <span>PRO</span></h1>
-            <span>Osztófej Kalkulátor</span>
-        </div>
+        <div><strong>TEILAPPARAT PRO</strong></div>
     </header>
-
     <main>
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('direkt', this)">DIREKT<br><small>Közvetlen</small></button>
-            <button class="tab-btn" onclick="switchTab('indirekt', this)">INDIREKT<br><small>Közvetett</small></button>
-            <button class="tab-btn" onclick="switchTab('ausgleich', this)">AUSGLEICH<br><small>Differenciál</small></button>
+            <button class="tab-btn active" onclick="switchTab('direkt', this)">DIREKT</button>
+            <button class="tab-btn" onclick="switchTab('indirekt', this)">INDIREKT</button>
+            <button class="tab-btn" onclick="switchTab('ausgleich', this)">AUSGLEICH</button>
         </div>
 
-        <!-- 1. DIREKTES TEILEN -->
         <div id="direkt" class="panel active">
             <div class="prio-switch">
-                <button class="prio-btn active" onclick="setPrio('direkt', 'winkel', this)">Priorität: Winkel (°)</button>
-                <button class="prio-btn" onclick="setPrio('direkt', 'teilzahl', this)">Priorität: Teilzahl (Z)</button>
+                <button class="prio-btn active" onclick="setPrio('direkt', 'winkel', this)">Winkel (°)</button>
+                <button class="prio-btn" onclick="setPrio('direkt', 'teilzahl', this)">Teilzahl (Z)</button>
             </div>
-
             <div class="input-grid">
-                <div class="input-group">
-                    <label>Winkelteilung (Grad)</label>
-                    <input type="number" inputmode="decimal" id="dir_winkel" value="30" oninput="calcDirekt()">
-                </div>
-                <div class="input-group">
-                    <label>Teilzahl (Z)</label>
-                    <input type="number" inputmode="numeric" id="dir_teilzahl" value="12" disabled oninput="calcDirekt()">
-                </div>
-                <div class="input-group full">
-                    <label>Anzahl Löcher d. Teilscheibe (Pl. 24)</label>
-                    <input type="number" inputmode="numeric" id="dir_loecher" value="24" oninput="calcDirekt()">
-                </div>
+                <div><label>Winkel (°)</label><input type="number" id="dir_w" value="30" oninput="calcD()"></div>
+                <div><label>Teilzahl (Z)</label><input type="number" id="dir_z" value="12" disabled oninput="calcD()"></div>
+                <div class="full"><label>Löcher d. Teilscheibe</label><input type="number" id="dir_l" value="24" oninput="calcD()"></div>
             </div>
-
-            <div class="result-box" id="dir_result"></div>
+            <div class="result-box" id="dir_res"></div>
         </div>
 
-        <!-- 2. INDIREKTES TEILEN -->
         <div id="indirekt" class="panel">
-            <div class="dms-box">
-                <label>Winkel Umrechner (Grad / Min / Sek → Dezimalgrad)</label>
-                <div class="dms-grid">
-                    <input type="number" inputmode="numeric" id="dms_g" placeholder="Grad" value="19" oninput="calcDMS()">
-                    <input type="number" inputmode="numeric" id="dms_m" placeholder="Min" value="10" oninput="calcDMS()">
-                    <input type="number" inputmode="numeric" id="dms_s" placeholder="Sek" value="0" oninput="calcDMS()">
-                </div>
+            <label>Grad / Min / Sek Umrechner</label>
+            <div class="dms-grid">
+                <input type="number" id="dms_g" value="19" oninput="calcDMS()">
+                <input type="number" id="dms_m" value="10" oninput="calcDMS()">
+                <input type="number" id="dms_s" value="0" oninput="calcDMS()">
             </div>
-
             <div class="prio-switch">
-                <button class="prio-btn active" onclick="setPrio('indirekt', 'winkel', this)">Priorität: Winkel (°)</button>
-                <button class="prio-btn" onclick="setPrio('indirekt', 'teilzahl', this)">Priorität: Teilzahl (Z)</button>
+                <button class="prio-btn active" onclick="setPrio('indirekt', 'winkel', this)">Winkel (°)</button>
+                <button class="prio-btn" onclick="setPrio('indirekt', 'teilzahl', this)">Teilzahl (Z)</button>
             </div>
-
             <div class="input-grid">
-                <div class="input-group">
-                    <label>Winkelteilung (Dezimalgrad)</label>
+                <div><label>Winkel (Dezimal)</label><input type="number" id="ind_w" value="19.16667" oninput="calcI()"></div>
+                <div><label>Teilzahl (Z)</label><input type="number" id="ind_z" value="30" disabled oninput="calcI()"></div>
+                <div class="full"><label>Übersetzung (i)</label><input type="number" id="ind_i" value="40" oninput="calcI()"></div>
+            </div>
+            <div class="result-box" id="ind_res"></div>
+        </div>
+
+        <div id="ausgleich" class="panel">
+            <div class="prio-switch">
+                <button class="prio-btn" onclick="setPrio('ausgleich', 'winkel', this)">Winkel (°)</button>
+                <button class="prio-btn active" onclick="setPrio('ausgleich', 'teilzahl', this)">Teilzahl (Z)</button>
+            </div>
+            <div class="input-grid">
+                <div><label>Winkel (°)</label><input type="number" id="aus_w" value="31.25" disabled oninput="calcA()"></div>
+                <div><label>Teilzahl (Z)</label><input type="number" id="aus_z" value="127" oninput="calcA()"></div>
+                <div><label>Hilfsteilzahl (Z')</label><input type="number" id="aus_zh" value="132" oninput="calcA()"></div>
+                <div><label>Übersetzung (i)</label><input type="number" id="aus_i" value="40" oninput="calcA()"></div>
+            </div>
+            <div class="result-box" id="aus_res"></div>
+        </div>
+    </main>
 
