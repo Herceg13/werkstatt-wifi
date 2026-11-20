@@ -3,74 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BB Münchinger // WERKSTATT OS</title>
+    <title>BB MÜNCHINGER // WERKSTATT OS</title>
     <style>
-        :root { --bg:#080c12; --panel:#101620; --card:#151d29; --cyan:#00f0ff; --orange:#ff6b00; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:#243042; }
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.78); --cyan:#00f0ff; --orange:#ff7b00; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; position:relative; overflow-x:hidden; }
-        
-        /* Háttér vízjel a látványterv alapján */
-        .watermark { position:fixed; top:22%; left:50%; transform:translate(-50%,-50%); opacity:0.045; pointer-events:none; z-index:0; width:90%; max-width:750px; }
-        
-        header { background:rgba(16,22,32,0.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-        .brand { display:flex; align-items:center; gap:14px; }
-        .brand-title { font-size:1.3rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; }
-        .brand-title span { color:var(--cyan); text-shadow:0 0 12px rgba(0,240,255,0.4); }
-        
-        .menu-btn { background:rgba(0,240,255,0.06); border:1px solid var(--border); color:var(--text); padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:700; transition:0.2s; }
-        .menu-btn:hover { border-color:var(--cyan); color:var(--cyan); }
-        
-        nav { background:var(--panel); border-bottom:1px solid var(--border); display:none; flex-direction:column; padding:1rem 1.25rem; gap:8px; position:relative; z-index:99; }
+        body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; display:flex; flex-direction:column; position:relative; overflow-x:hidden; }
+
+        /* Felső fejléc pontosan a látványterv arányaival */
+        header { background:linear-gradient(180deg, rgba(14,26,40,0.95) 0%, rgba(8,14,22,0.9) 100%); padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; position:relative; border-bottom:1px solid rgba(0,240,255,0.4); box-shadow:0 4px 25px rgba(0,240,255,0.12); z-index:100; }
+        .brand-wrap { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+        .brand-title { font-size:1.75rem; font-weight:800; letter-spacing:2px; color:var(--cyan); text-shadow:0 0 18px rgba(0,240,255,0.55); }
+        .brand-title span { color:#fff; }
+
+        .menu-btn { background:rgba(0,240,255,0.08); border:1px solid var(--border); color:var(--cyan); padding:10px 16px; border-radius:6px; cursor:pointer; font-weight:700; letter-spacing:1px; box-shadow:0 0 10px rgba(0,240,255,0.15); transition:0.2s; }
+        .menu-btn:hover { background:rgba(0,240,255,0.2); box-shadow:0 0 18px rgba(0,240,255,0.4); }
+
+        nav { background:var(--panel); border-bottom:1px solid var(--border); display:none; flex-direction:column; padding:1rem 1.5rem; gap:8px; position:relative; z-index:99; }
         nav.active { display:flex; }
-        nav a { color:var(--text); text-decoration:none; padding:10px 14px; border-radius:6px; background:var(--card); border-left:3px solid transparent; font-weight:600; }
-        nav a:hover { border-left-color:var(--cyan); background:#1c2738; }
+        nav a { color:var(--text); text-decoration:none; padding:12px 16px; border-radius:6px; background:var(--card); border:1px solid rgba(0,240,255,0.15); font-weight:600; }
+        nav a:hover { border-color:var(--cyan); color:var(--cyan); }
 
-        main { flex:1; max-width:1150px; width:100%; margin:0 auto; padding:1.5rem 1.25rem; position:relative; z-index:1; }
-        
+        /* Középső nagy BB MÜNCHINGER vízjel szekció a látványterv szerint */
+        .hero-watermark { text-align:center; padding:1.5rem 1rem 0.5rem; position:relative; opacity:0.22; pointer-events:none; user-select:none; }
+        .hero-watermark svg { width:100%; max-width:520px; height:auto; filter:drop-shadow(0 0 12px rgba(0,240,255,0.3)); }
+        .glow-line { height:1px; max-width:900px; margin:0 auto 1.5rem; background:linear-gradient(90deg, transparent, rgba(0,240,255,0.5), transparent); }
+
+        main { flex:1; max-width:1150px; width:100%; margin:0 auto; padding:0.5rem 1.25rem 2rem; position:relative; z-index:1; }
+
+        /* Kereső és szűrők */
         .controls { display:flex; flex-direction:column; gap:1rem; margin-bottom:1.75rem; }
-        .search-box { width:100%; padding:15px 18px; background:rgba(16,22,32,0.9); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; outline:none; transition:0.2s; box-shadow:0 4px 15px rgba(0,0,0,0.3); }
-        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.15); }
-        
-        .filters { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
-        .filter-btn { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:8px 16px; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600; white-space:nowrap; transition:0.2s; }
-        .filter-btn.active, .filter-btn:hover { background:rgba(0,240,255,0.12); border-color:var(--cyan); color:var(--cyan); }
+        .search-box { width:100%; padding:15px 18px; background:rgba(10,18,28,0.85); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; outline:none; box-shadow:inset 0 0 12px rgba(0,240,255,0.08); transition:0.2s; }
+        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 18px rgba(0,240,255,0.25); }
 
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.15rem; }
-        .card { background:rgba(21,29,41,0.92); border:1px solid var(--border); border-radius:10px; padding:1.35rem; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; transition:0.25s; position:relative; overflow:hidden; }
-        .card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--cyan); }
-        .card.soon::before { background:var(--orange); }
-        .card:hover { transform:translateY(-3px); border-color:var(--cyan); box-shadow:0 0 20px rgba(0,240,255,0.15); background:#1a2433; }
-        
-        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
-        .tag { font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; padding:3px 8px; border-radius:4px; background:rgba(0,240,255,0.12); color:var(--cyan); font-weight:700; }
-        .card.soon .tag { background:rgba(255,107,0,0.15); color:var(--orange); }
-        .card h2 { font-size:1.15rem; margin-bottom:0.45rem; color:#fff; }
-        .card p { color:var(--muted); font-size:0.88rem; line-height:1.4; margin-bottom:1.1rem; }
-        .card-foot { display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; color:var(--cyan); border-top:1px solid rgba(255,255,255,0.06); padding-top:0.7rem; }
-        .card.soon .card-foot { color:var(--muted); }
-        footer { text-align:center; padding:1.25rem; color:var(--muted); font-size:0.75rem; border-top:1px solid var(--border); position:relative; z-index:1; }
+        .filters { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+        .filter-btn { background:rgba(12,22,34,0.8); border:1px solid rgba(0,240,255,0.25); color:var(--muted); padding:9px 16px; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:700; white-space:nowrap; transition:0.2s; }
+        .filter-btn.active, .filter-btn:hover { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 12px rgba(0,240,255,0.2); }
+
+        /* Holografikus kártyák a látványterv stílusában */
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1.35rem; }
+        .card { background:var(--card); backdrop-filter:blur(6px); border:1px solid var(--border); border-radius:12px; padding:1.5rem; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; box-shadow:inset 0 0 20px rgba(0,240,255,0.06), 0 6px 20px rgba(0,0,0,0.45); transition:0.25s; position:relative; }
+        .card:hover { transform:translateY(-4px); border-color:var(--cyan); box-shadow:inset 0 0 25px rgba(0,240,255,0.15), 0 0 25px rgba(0,240,255,0.28); }
+        .card.soon { border-color:rgba(255,123,0,0.35); box-shadow:inset 0 0 15px rgba(255,123,0,0.04); }
+        .card.soon:hover { border-color:var(--orange); box-shadow:0 0 20px rgba(255,123,0,0.25); }
+
+        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem; }
+        .tag { font-size:0.72rem; text-transform:uppercase; letter-spacing:1.2px; padding:4px 10px; border-radius:4px; background:rgba(0,240,255,0.14); border:1px solid rgba(0,240,255,0.3); color:var(--cyan); font-weight:700; }
+        .card.soon .tag { background:rgba(255,123,0,0.12); border-color:rgba(255,123,0,0.3); color:var(--orange); }
+        .card h2 { font-size:1.25rem; margin-bottom:0.5rem; color:#fff; letter-spacing:0.5px; }
+        .card p { color:var(--muted); font-size:0.9rem; line-height:1.45; margin-bottom:1.25rem; }
+        .card-foot { display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700; color:var(--cyan); border-top:1px solid rgba(0,240,255,0.15); padding-top:0.85rem; }
+        .card.soon .card-foot { color:var(--orange); border-top-color:rgba(255,123,0,0.15); }
+        footer { text-align:center; padding:1.5rem; color:var(--muted); font-size:0.8rem; border-top:1px solid rgba(0,240,255,0.2); letter-spacing:1px; }
     </style>
 </head>
 <body>
 
-    <!-- HÁTTÉR VÍZJEL -->
-    <svg class="watermark" viewBox="0 0 240 120" fill="none" xmlns="http://w3.org">
-        <path d="M10 10 H112 L102 22 H22 V98 H112 L102 110 H10 V10 Z" fill="#ffffff"/>
-        <path d="M128 10 H230 V110 H128 L138 98 H218 V22 H138 L128 10 Z" fill="#ffffff"/>
-        <text x="34" y="76" fill="#ffffff" font-family="Arial Black,sans-serif" font-weight="900" font-size="64" letter-spacing="4">BB</text>
-        <text x="36" y="92" fill="#ffffff" font-family="Arial,sans-serif" font-weight="800" font-size="13" letter-spacing="2.2">MÜNCHINGER</text>
-    </svg>
-
     <header>
-        <div class="brand">
-            <svg width="105" height="52" viewBox="0 0 240 120" fill="none" xmlns="http://w3.org" style="filter:drop-shadow(0 0 6px rgba(0,240,255,0.35));">
-                <path d="M10 10 H112 L102 22 H22 V98 H112 L102 110 H10 V10 Z" fill="#e6edf3"/>
-                <path d="M128 10 H230 V110 H128 L138 98 H218 V22 H138 L128 10 Z" fill="#e6edf3"/>
-                <text x="34" y="76" fill="#00f0ff" font-family="Arial Black,sans-serif" font-weight="900" font-size="64" letter-spacing="4">BB</text>
-                <text x="36" y="92" fill="#e6edf3" font-family="Arial,sans-serif" font-weight="800" font-size="13" letter-spacing="2.2">MÜNCHINGER</text>
-                <line x1="36" y1="96" x2="165" y2="96" stroke="#00f0ff" stroke-width="2"/>
-                <circle cx="186" cy="86" r="11" stroke="#e6edf3" stroke-width="2"/>
-                <path d="M180 92 L186 78 L192 92 M183 92 L186 84 L189 92" stroke="#00f0ff" stroke-width="1.8" fill="none"/>
+        <div class="brand-wrap">
+            <!-- NAGY, 1:1 ARÁNYÚ BB MÜNCHINGER LOGÓ -->
+            <svg width="230" height="68" viewBox="0 0 380 110" fill="none" xmlns="http://w3.org" style="filter:drop-shadow(0 0 8px rgba(0,240,255,0.3));">
+                <path d="M6 6 H178 L166 18 H18 V92 H178 L166 104 H6 V6 Z" fill="#cfd8e3"/>
+                <path d="M196 6 H374 V104 H196 L208 92 H362 V18 H208 L196 6 Z" fill="#cfd8e3"/>
+                <text x="28" y="75" fill="#e6edf3" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="64" letter-spacing="2">BB</text>
+                <text x="142" y="64" fill="#cfd8e3" font-family="Arial,sans-serif" font-weight="800" font-size="25" letter-spacing="1.5">MÜNCHINGER</text>
+                <line x1="142" y1="74" x2="318" y2="74" stroke="#00f0ff" stroke-width="2.5"/>
+                <circle cx="338" cy="68" r="12" stroke="#cfd8e3" stroke-width="2"/>
+                <path d="M332 74 L338 60 L344 74 M335 74 L338 66 L341 74" stroke="#00f0ff" stroke-width="2" fill="none"/>
             </svg>
             <div class="brand-title">WERKSTATT<span>//OS</span></div>
         </div>
@@ -79,9 +77,22 @@
     <nav id="navMenu">
         <a href="index.html">🏠 Főoldal (Összes modul)</a>
         <a href="teilapparat/index.html">⚙️ Teilapparat Pro (Aktív)</a>
-        <a href="#">🛢️ Kenőanyagok & Zsírok (Tervezett)</a>
-        <a href="#">⚡ Hegesztés & Gépek (Tervezett)</a>
+        <a href="#">🛢️ Kenőanyagok & Zsírok (Következő)</a>
+        <a href="#">🔩 Marás, Eszterga & Fúrás</a>
+        <a href="#">⚡ Hegesztési Paraméterek</a>
+        <a href="#">🏭 Gépek & Szállítószalagok</a>
     </nav>
+
+    <!-- KÖZÉPSŐ NAGY VÍZJEL A LÁTVÁNYTERV SZERINT -->
+    <div class="hero-watermark">
+        <svg viewBox="0 0 380 110" fill="none" xmlns="http://w3.org">
+            <path d="M6 6 H178 L166 18 H18 V92 H178 L166 104 H6 V6 Z" fill="#00f0ff"/>
+            <path d="M196 6 H374 V104 H196 L208 92 H362 V18 H208 L196 6 Z" fill="#00f0ff"/>
+            <text x="28" y="75" fill="#00f0ff" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="64" letter-spacing="2">BB</text>
+            <text x="142" y="64" fill="#00f0ff" font-family="Arial,sans-serif" font-weight="800" font-size="25" letter-spacing="1.5">MÜNCHINGER</text>
+        </svg>
+    </div>
+    <div class="glow-line"></div>
 
     <main>
         <div class="controls">
@@ -96,7 +107,6 @@
         </div>
 
         <div class="grid" id="appGrid">
-            <!-- 1. AKTÍV MODUL -->
             <a href="teilapparat/index.html" class="card" data-cat="forgacsolas" data-keys="osztófej lyuktárcsa cserekerék marás">
                 <div>
                     <div class="card-top"><span class="tag">FORGÁCSOLÁS // AKTÍV</span><span>⚙️</span></div>
@@ -106,7 +116,6 @@
                 <div class="card-foot"><span>INDÍTÁS</span><span>→</span></div>
             </a>
 
-            <!-- 2. KENŐANYAGOK (KÖVETKEZŐ LÉPÉS) -->
             <a href="#" class="card soon" data-cat="kenes" data-keys="zsír olaj gegenlager csapágy karbantartás kenés">
                 <div>
                     <div class="card-top"><span class="tag">KARBANTARTÁS</span><span>🛢️</span></div>
@@ -116,7 +125,6 @@
                 <div class="card-foot"><span>KÖVETKEZŐ MODUL</span><span>⏳</span></div>
             </a>
 
-            <!-- 3. MARÁS / ESZTERGÁLÁS / FÚRÁS -->
             <a href="#" class="card soon" data-cat="forgacsolas" data-keys="fordulatszám előtolás vágósebesség menet magfurat fúrás eszterga">
                 <div>
                     <div class="card-top"><span class="tag">FORGÁCSOLÁS</span><span>🔩</span></div>
@@ -126,7 +134,6 @@
                 <div class="card-foot"><span>TERVEZETT</span><span>⏳</span></div>
             </a>
 
-            <!-- 4. HEGESZTÉS -->
             <a href="#" class="card soon" data-cat="hegesztes" data-keys="mig mag tig awi huzal gáz amper hegesztőgép">
                 <div>
                     <div class="card-top"><span class="tag">HEGESZTÉS</span><span>⚡</span></div>
@@ -136,7 +143,6 @@
                 <div class="card-foot"><span>TERVEZETT</span><span>⏳</span></div>
             </a>
 
-            <!-- 5. GÉPEK ÉS SZÁLLÍTÓSZALAGOK -->
             <a href="#" class="card soon" data-cat="gepek" data-keys="szállítószalag motor hajtómű alkatrész">
                 <div>
                     <div class="card-top"><span class="tag">GÉPPARK</span><span>🏭</span></div>
@@ -152,7 +158,6 @@
 
     <script>
         function toggleMenu() { document.getElementById('navMenu').classList.toggle('active'); }
-        
         function filterCards() {
             const q = document.getElementById('searchInput').value.toLowerCase();
             document.querySelectorAll('.card').forEach(c => {
@@ -160,7 +165,6 @@
                 c.style.display = text.includes(q) ? 'flex' : 'none';
             });
         }
-
         function filterCat(cat, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -171,3 +175,4 @@
     </script>
 </body>
 </html>
+
