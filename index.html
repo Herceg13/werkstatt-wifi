@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNC & Műhely Terminál</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e14;
+            --bg-panel: #131922;
+            --bg-card: #1a222d;
+            --bg-card-hover: #222c3a;
+            --accent-cyan: #00f0ff;
+            --accent-orange: #ff6b00;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --border-color: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.04), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 107, 0, 0.04), transparent 25%);
+        }
+
+        /* Felső navigációs sáv */
+        header {
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .brand h1 {
+            font-size: 1.25rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .brand span {
+            color: var(--accent-cyan);
+        }
+
+        /* Hamburger menü gomb */
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .menu-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Oldalsó lenyíló menü */
+        nav {
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            display: none;
+            flex-direction: column;
+            padding: 1rem 1.5rem;
+            gap: 10px;
+        }
+
+        nav.active {
+            display: flex;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: var(--bg-card);
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            border-left-color: var(--accent-cyan);
+            background-color: var(--bg-card-hover);
+        }
+
+        /* Fő tartalom */
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Kereső és szűrő sáv */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 18px;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: rgba(0, 240, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* App Kártyák Rácsa */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-cyan);
+            opacity: 0.7;
+        }
+
+        .card.coming-soon::before {
+            background-color: var(--accent-orange);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            background-color: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(0, 240, 255, 0.1);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .card.coming-soon .card-tag {
+            background-color: rgba(255, 107, 0, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 0.75rem;
+        }
+
+        .card.coming-soon .card-footer {
+            color: var(--text-muted);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="status-dot"></div>
+            <h1>MŰHELY<span>//OS</span></h1>
+        </div>
+        <button class="menu-btn" onclick="toggleMenu()">☰ MENÜ</button>
+    </header>
+
+    <nav id="navMenu">
+        <a href="index.html">🏠 Főoldal (Összes modul)</a>
+        <a href="teilapparat/index.html">⚙️ Teilapparat (Osztófej)</a>
+        <a href="#">📐 Fordulatszám & Előtolás (Hamarosan)</a>
+        <a href="#">🔩 Menet & Furat táblázat (Hamarosan)</a>
+    </nav>
+
+    <main>
+        <div class="controls">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Kalkulátor keresése (pl. Teilapparat, menet, fordulat)..." onkeyup="filterCards()">
+            
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterCategory('all', this)">Összes</button>
+                <button class="filter-btn" onclick="filterCategory('maras', this)">Marás</button>
+                <button class="filter-btn" onclick="filterCategory('eszterga', this)">Esztergálás</button>
+                <button class="filter-btn" onclick="filterCategory('tablazat', this)">Táblázatok</button>
+            </div>
+        </div>
+
+        <div class="grid" id="appGrid">
+            <!-- 1. KÁRTYA: TEILAPPARAT (AKTÍV LINK) -->
+            <a href="teilapparat/index.html" class="card" data-category="maras">
+                <div>
+                    <div class="card-header">
+                        <span class="card-tag">MARÁS // AKTÍV</span>
+                        <span>⚙️</span>
+                    </div>
+                    <h2>Teilapparat Kalkulátor</h2>
+                    <p>Osztófej fordulatszám, osztótárcsa és lyukosztás gyors számítása közvetlen és differenciál osztáshoz.</p>
+                </div>
+                <div class="card-footer">
+                    <span>INDÍTÁS</span>
+                    <span>→</span>
+                </div>
+            </a>
+
+            <!-- 2. KÁRTYA: FORGÁCSOLÁSI ADATOK (HELYŐRZŐ) -->
+            <a href="#" class="card coming-soon" data-category="maras eszterga">
+                <div>
+                    <div class="card-header">
+                        <span class="card-tag">FEJLESZTÉS ALATT</span>
