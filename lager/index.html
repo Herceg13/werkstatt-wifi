@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H5ET Lager & Scanner // WERKSTATT OS</title>
-           
     <style>
         :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.9); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
@@ -210,15 +209,13 @@
         ];
 
         const FULL_LAGER = L1.concat(L2, L3);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v3')) || JSON.parse(JSON.stringify(FULL_LAGER));
+        let items = JSON.parse(localStorage.getItem('bb_lager_v4')) || JSON.parse(JSON.stringify(FULL_LAGER));
         let curF = 'all', stream = null, scanTimer = null;
 
-        function save() { localStorage.setItem('bb_lager_v3', JSON.stringify(items)); }
+        function save() { localStorage.setItem('bb_lager_v4', JSON.stringify(items)); }
         function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
         function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
-
-                        let stream = null, scanTimer = null;
 
         async function toggleScanner() {
             const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
@@ -234,7 +231,6 @@
                 vid.srcObject = stream;
                 box.style.display = 'block';
                 b.innerText = '⏹ KAMERA BEZÁRÁSA';
-
                 if ('BarcodeDetector' in window) {
                     const detector = new BarcodeDetector();
                     scanTimer = setInterval(async () => {
@@ -250,7 +246,7 @@
                     }, 300);
                 }
             } catch (err) {
-                alert("Kamera nem elérhető ezen az eszközön: " + err.message);
+                alert("Kamera nem elérhető: " + err.message);
             }
         }
 
