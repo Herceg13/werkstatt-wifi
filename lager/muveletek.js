@@ -241,7 +241,12 @@ function render() {
     }
 
     listEl.innerHTML = addHereBanner + filtered.map(x => {
-        const isLow = isMissing(x);
+                const isLow = isMissing(x);
+        const needQty = Math.max(1, x.min - x.ist);
+        const statusBadge = isLow
+            ? `<span class="miss-badge">HIÁNYZIK: ${needQty} db</span>`
+            : `<span class="ok-badge">RENDBEN</span>`;
+        const stockColor = x.ist === 0 ? 'var(--red)' : (isLow ? 'var(--orange)' : 'var(--green)');
         const locRows = x.locs.map((l, idx) => {
             const delBtn = (x.locs.length > 1 && l.qty === 0) ? `<button onclick="removeEmptyLoc('${x.id}',${idx})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;margin-left:4px;">🗑️</button>` : '';
             return `<div class="stock-row" style="background:rgba(0,0,0,0.28);padding:5px 8px;border-radius:6px;">
@@ -251,7 +256,7 @@ function render() {
         }).join('');
 
         const moveBtn = (scanMode === 'relocate' && targetShelf) ? `<button class="act-btn orange" style="width:100%;margin-top:6px;" onclick="assignHere('${x.id}')">📥 Betárolás / Áthelyezés ide: ${targetShelf}</button>` : '';
-        return `<div class="card ${isLow ? 'missing' : ''}"><div><div class="card-top"><div style="display:flex;gap:6px;align-items:center;"><span class="id-badge">${x.id}</span>${isLow ? '<span class="miss-badge">HIÁNYZIK</span>' : '<span class="ok-badge">RENDBEN</span>'}</div><span style="font-size:0.85rem;font-weight:800;">Össz: <span class="stock-val ${isLow?'low':''}">${x.ist}</span> db</span></div><div class="art-title">${x.name}</div><div class="art-meta">Kiszerelés: <b>${x.geb}</b></div></div><div class="stock-box">${locRows}<div class="stock-row"><div>Minimum: <span class="min-val">${x.min}</span> db</div><div class="qty-btns"><button class="q-btn min-b" onclick="chgMin('${x.id}', -1)">-</button><button class="q-btn min-b" onclick="chgMin('${x.id}', 1)">+</button></div></div>${moveBtn}</div></div>`;
+        return `<div class="card ${isLow ? 'missing' : ''}"><div><div class="card-top"><div style="display:flex;gap:6px;align-items:center;"><span class="id-badge">${x.id}</span>${statusBadge}</div><span style="font-size:0.85rem;font-weight:800;color:var(--muted);">Készleten: <b style="color:${stockColor};font-size:1.1rem;">${x.ist} db</b></span></div><div class="art-title">${x.name}</div><div class="art-meta">Kiszerelés: <b>${x.geb}</b></div></div><div class="stock-box">${locRows}<div class="stock-row"><div>Minimum: <span class="min-val">${x.min}</span> db</div><div class="qty-btns"><button class="q-btn min-b" onclick="chgMin('${x.id}', -1)">-</button><button class="q-btn min-b" onclick="chgMin('${x.id}', 1)">+</button></div></div>${moveBtn}</div></div>`;
     }).join('');
 }
 render();
