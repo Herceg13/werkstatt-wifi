@@ -57,11 +57,11 @@
             <div class="result-box" id="dir_res"></div>
         </div>
 
-        <div id="indirekt" class="panel">
+                <div id="indirekt" class="panel">
             <label>Grad / Min / Sek Umrechner</label>
             <div class="dms-grid">
                 <input type="number" id="dms_g" value="19" oninput="calcDMS()">
-                <input type="number" id="dms_m" value="10" oninput="calcDMS()">
+                <input type="number" id="dms_m" value="0" oninput="calcDMS()">
                 <input type="number" id="dms_s" value="0" oninput="calcDMS()">
             </div>
             <div class="prio-switch">
@@ -69,12 +69,13 @@
                 <button class="prio-btn" onclick="setPrio('indirekt', 'teilzahl', this)">Teilzahl (Z)</button>
             </div>
             <div class="input-grid">
-                <div><label>Winkel (Dezimal)</label><input type="number" id="ind_w" value="19.16667" oninput="calcI()"></div>
+                <div><label>Winkel (Dezimal)</label><input type="number" id="ind_w" value="19" oninput="calcI()"></div>
                 <div><label>Teilzahl (Z)</label><input type="number" id="ind_z" value="30" disabled oninput="calcI()"></div>
                 <div class="full"><label>Übersetzung (i)</label><input type="number" id="ind_i" value="40" oninput="calcI()"></div>
             </div>
             <div class="result-box" id="ind_res"></div>
         </div>
+
 
         <div id="ausgleich" class="panel">
             <div class="prio-switch">
