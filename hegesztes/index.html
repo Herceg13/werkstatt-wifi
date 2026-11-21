@@ -5,175 +5,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hegesztés & Gépek // WERKSTATT OS</title>
     <style>
-        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.88); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.9); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; padding-bottom:3rem; }
         header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
         .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:8px 14px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); }
         main { max-width:950px; margin:0 auto; padding:1.15rem; }
 
-        .tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:1.25rem; }
-        .tab-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:12px; border-radius:8px; font-weight:800; font-size:0.9rem; cursor:pointer; }
-        .tab-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
+        .machine-select { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:1.25rem; }
+        .ms-btn { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.1rem; text-align:left; color:#fff; cursor:pointer; transition:0.2s; }
+        .ms-btn.active { border-color:var(--cyan); background:rgba(0,240,255,0.16); box-shadow:0 0 20px rgba(0,240,255,0.25); }
+        .ms-tag { display:inline-block; font-size:0.7rem; font-weight:800; padding:3px 7px; border-radius:4px; background:rgba(0,240,255,0.15); color:var(--cyan); margin-bottom:6px; }
+        .ms-btn h2 { font-size:1.12rem; margin-bottom:3px; }
+        .ms-btn p { font-size:0.8rem; color:var(--muted); }
 
-        .panel { display:none; }
-        .panel.active { display:block; }
+        .m-panel { display:none; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+        .m-panel.active { display:block; }
 
-        .machine-card { background:var(--card); border:1px solid var(--cyan); border-radius:12px; padding:1.25rem; margin-bottom:1.1rem; }
-        .m-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1px solid rgba(0,240,255,0.2); padding-bottom:0.75rem; margin-bottom:0.9rem; }
-        .badge { background:rgba(0,240,255,0.15); border:1px solid var(--cyan); color:var(--cyan); font-size:0.75rem; font-weight:800; padding:4px 9px; border-radius:4px; }
-        .spec-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; margin-bottom:1rem; }
+        .sub-tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:1.1rem; }
+        .st-btn { background:#070d14; border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:10px 6px; border-radius:6px; font-weight:800; font-size:0.84rem; cursor:pointer; }
+        .st-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,240,255,0.12); }
+
+        .preset-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1rem; }
+        .p-btn { background:#070d14; border:1px solid var(--border); color:var(--cyan); padding:8px 12px; border-radius:6px; font-size:0.82rem; font-weight:700; cursor:pointer; }
+        .p-btn.active { background:var(--cyan); color:#000; }
+
+        .param-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.8rem; margin-bottom:1rem; }
+        .p-box { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.85rem; text-align:center; }
+        .p-box span { display:block; font-size:0.74rem; color:var(--muted); margin-bottom:4px; }
+        .p-box b { font-size:1.2rem; color:var(--green); }
+
+        .spec-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:0.75rem; margin-bottom:1rem; }
         .spec-item { background:#070d14; border:1px solid rgba(255,255,255,0.08); padding:0.75rem; border-radius:8px; }
-        .spec-item span { display:block; font-size:0.75rem; color:var(--muted); }
-        .spec-item b { font-size:1rem; color:#fff; }
+        .spec-item span { display:block; font-size:0.74rem; color:var(--muted); }
+        .spec-item b { font-size:0.96rem; color:#fff; }
 
-        .wear-box { background:rgba(255,123,0,0.08); border-left:3px solid var(--orange); padding:0.85rem; border-radius:6px; font-size:0.86rem; line-height:1.5; }
+        .wear-box { background:rgba(255,123,0,0.08); border-left:3px solid var(--orange); padding:0.9rem; border-radius:6px; font-size:0.86rem; line-height:1.55; }
         .wear-box strong { color:var(--orange); }
-
-        .calc-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
-        .mat-row { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:1rem; }
-        .mat-btn { background:#070d14; border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:10px 6px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer; }
-        .mat-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,240,255,0.14); }
-
-        .thick-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1.15rem; }
-        .th-btn { background:#070d14; border:1px solid var(--border); color:#fff; padding:9px 13px; border-radius:6px; font-weight:800; cursor:pointer; }
-        .th-btn.active { background:var(--cyan); color:#000; }
-
-        .param-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.8rem; }
-        .p-box { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.9rem; text-align:center; }
-        .p-box span { display:block; font-size:0.75rem; color:var(--muted); margin-bottom:4px; }
-        .p-box b { font-size:1.35rem; color:var(--green); }
+        button { touch-action:manipulation; }
+        @media (max-width: 600px) { .machine-select { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
         <div style="text-align:right;">
-            <div style="font-weight:800; letter-spacing:1px;">HEGESZTÉS <span style="color:var(--cyan);">& GÉPEK</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">REHM Synergic.Arc 311 // MIG-MAG</div>
+            <div style="font-weight:800; letter-spacing:1px;">HEGESZTÉS <span style="color:var(--cyan);">// PRO</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">REHM 311 &bull; BEAST 200 WIG PULSE</div>
         </div>
     </header>
     <main>
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('params', this)">⚡ MIG/MAG Beállítások</button>
-            <button class="tab-btn" onclick="switchTab('machines', this)">🏭 Hegesztőgépek & Kopóanyag</button>
-        </div>
-        <!-- 1. MIG/MAG BEÁLLÍTÁS KALKULÁTOR -->
-        <div id="params" class="panel active">
-            <div class="calc-card">
-                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">1. Válassz alapanyagot (Synergic program):</div>
-                <div class="mat-row">
-                    <button class="mat-btn active" onclick="setMat('steel', this)">Acél (SG2 / Fe)</button>
-                    <button class="mat-btn" onclick="setMat('va', this)">Saválló (VA / CrNi)</button>
-                    <button class="mat-btn" onclick="setMat('alu', this)">Alumínium (AlMg5)</button>
-                </div>
-
-                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">2. Lemez- / anyagvastagság (mm):</div>
-                <div class="thick-row" id="thickBtns"></div>
-
-                <div class="param-grid" id="paramOut"></div>
+        <div class="machine-select">
+            <div class="ms-btn active" onclick="selectMachine('rehm', this)">
+                <span class="ms-tag">400V // MIG-MAG</span>
+                <h2>⚡ REHM Synergic.Arc 311</h2>
+                <p>Védőgázas huzalelektródás (20–300 A)</p>
+            </div>
+            <div class="ms-btn" onclick="selectMachine('beast', this)">
+                <span class="ms-tag" style="color:var(--orange);border-color:var(--orange);background:rgba(255,123,0,0.14);">230V // HF-WIG & MMA</span>
+                <h2>🔥 BEAST 200 WIG PULSE</h2>
+                <p>Impulzusos AWI / TIG & Elektróda (200 A)</p>
             </div>
         </div>
 
-        <!-- 2. GÉPEK & KOPÓALKATRÉSZEK -->
-        <div id="machines" class="panel">
-            <div class="machine-card">
-                <div class="m-head">
-                    <div>
-                        <div style="font-size:0.75rem; color:var(--cyan); font-weight:800;">1. FŐ HEGESZTŐGÉP (AKTÍV)</div>
-                        <h2 style="font-size:1.3rem;">REHM Synergic.Arc 311</h2>
-                    </div>
-                    <span class="badge">400V // 20–300 A</span>
+        <!-- 1. GÉP: REHM SYNERGIC.ARC 311 -->
+        <div id="rehm" class="m-panel active">
+            <div class="sub-tabs">
+                <button class="st-btn active" onclick="setSub('r-sub', 'r_calc', this)">⚡ MIG/MAG Beállítások</button>
+                <button class="st-btn" onclick="setSub('r-sub', 'r_spec', this)">🏭 Gép & MB 25 Kopóanyag</button>
+            </div>
+            <div id="r_calc" class="r-sub">
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">1. Alapanyag (Synergic program):</div>
+                <div class="preset-row" id="rehmMatBtns">
+                    <button class="p-btn active" onclick="setRehmMat('steel', this)">Acél (SG2 / Fe)</button>
+                    <button class="p-btn" onclick="setRehmMat('va', this)">Saválló (VA / CrNi)</button>
+                    <button class="p-btn" onclick="setRehmMat('alu', this)">Alumínium (AlMg5)</button>
                 </div>
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">2. Anyagvastagság (mm):</div>
+                <div class="preset-row" id="rehmThickBtns"></div>
+                <div class="param-grid" id="rehmOut"></div>
+            </div>
+            <div id="r_spec" class="r-sub" style="display:none;">
                 <div class="spec-grid">
-                    <div class="spec-item"><span>Áramtartomány</span><b>20 – 300 A (fokozatmentes)</b></div>
+                    <div class="spec-item"><span>Áramtartomány</span><b>20 – 300 A (400V)</b></div>
                     <div class="spec-item"><span>100% ED (40°C)</span><b>240 A folyamatos</b></div>
-                    <div class="spec-item"><span>40% ED (Imax)</span><b>300 A</b></div>
                     <div class="spec-item"><span>Előtolás</span><b>4-görgős digitális</b></div>
-                    <div class="spec-item"><span>Pisztoly</span><b>EVO MB 25 / 4 m (gázhűtés)</b></div>
-                    <div class="spec-item"><span>Kijelző</span><b>7" Sirius (Synergic + SDI)</b></div>
+                    <div class="spec-item"><span>Pisztoly</span><b>EVO MB 25 / 4 m</b></div>
                 </div>
                 <div class="wear-box">
-                    <strong>🔧 MB 25 Pisztoly kopóalkatrészek & Beállítások:</strong><br>
-                    • <b>Áramátadó (Stromdüse):</b> M6 x 28 mm (Ø 0,8 mm / Ø 1,0 mm / Ø 1,2 mm)<br>
-                    • <b>Gázterelő (Gasdüse):</b> MB 25 kúpos (Ø 15 mm)<br>
-                    • <b>Huzalvezető spirál:</b> Kék (0,8–1,0 mm acél) / Piros (1,0–1,2 mm acél) / Teflon (Alu & VA)<br>
-                    • <b>Előtoló görgők (4 db):</b> V-horony acélhoz, U-horony alumíniumhoz
+                    <strong>🔧 MB 25 Pisztoly kopóalkatrészek:</strong><br>
+                    • <b>Áramátadó:</b> M6 x 28 mm (Ø 0,8 / 1,0 / 1,2 mm) | <b>Gázterelő:</b> MB 25 kúpos (Ø 15 mm)<br>
+                    • <b>Spirál:</b> Kék (0,8–1,0 acél) / Piros (1,0–1,2 acél) / Teflon (Alu & VA)
                 </div>
             </div>
+        </div>
+        <!-- 2. GÉP: BEAST 200 WIG PULSE -->
+        <div id="beast" class="m-panel">
+            <div class="sub-tabs">
+                <button class="st-btn active" onclick="setSub('b-sub', 'b_calc', this)">🔥 WIG / MMA Beállítások</button>
+                <button class="st-btn" onclick="setSub('b-sub', 'b_spec', this)">🏭 Panel & WIG Kopóanyag</button>
+            </div>
 
-            <div class="machine-card" style="border-color:rgba(255,123,0,0.4);">
-                <div class="m-head">
-                    <div>
-                        <div style="font-size:0.75rem; color:var(--orange); font-weight:800;">2. TARTALÉK / MÁSODIK GÉP</div>
-                        <h2 style="font-size:1.15rem; color:var(--muted);">Hamarosan feltöltve...</h2>
-                    </div>
+            <div id="b_calc" class="b-sub">
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">1. Hegesztési eljárás kiválasztása:</div>
+                <div class="preset-row" id="beastModeBtns">
+                    <button class="p-btn active" onclick="setBeastMode('wig_va', this)">HF-WIG Saválló (VA)</button>
+                    <button class="p-btn" onclick="setBeastMode('wig_fe', this)">HF-WIG Acél (Fe)</button>
+                    <button class="p-btn" onclick="setBeastMode('mma', this)">MMA Elektróda</button>
                 </div>
-                <p style="font-size:0.88rem; color:var(--muted);">Ide kerül majd a második hegesztőgép adatlapja és kopóalkatrész-listája.</p>
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">2. Lemezvastagság / Elektróda Ø:</div>
+                <div class="preset-row" id="beastThickBtns"></div>
+                <div class="param-grid" id="beastOut"></div>
+                <div class="wear-box" id="beastPulseTip" style="border-color:var(--cyan); background:rgba(0,240,255,0.06);"></div>
+            </div>
+
+            <div id="b_spec" class="b-sub" style="display:none;">
+                <div class="spec-grid">
+                    <div class="spec-item"><span>Hálózat / Max. áram</span><b>230V / 200 A (DC)</b></div>
+                    <div class="spec-item"><span>Gyújtás</span><b>HF (nagyfrekvenciás) + Lift</b></div>
+                    <div class="spec-item"><span>Üzemmódok</span><b>2T / 4T + Digitális Pulse</b></div>
+                    <div class="spec-item"><span>Védőgáz (WIG)</span><b>100% Argon (4.6)</b></div>
+                </div>
+                <div class="wear-box">
+                    <strong>🔧 WIG Pisztoly (SR-17 / SR-26) kopóalkatrészek & Volfrám:</strong><br>
+                    • <b>Volfrámelektróda:</b> Ø 1,6 mm és Ø 2,4 mm — <b>Arany (WL15)</b> vagy <b>Lila (E3)</b> univerzális DC-hez (acél & saválló)<br>
+                    • <b>Szorítópatron (Spannhülse) + Patronház:</b> Ø 1,6 mm és Ø 2,4 mm mérethez<br>
+                    • <b>Kerámia gázterelő:</b> No. 5 (Ø 8 mm), No. 6 (Ø 9,5 mm), No. 7 (Ø 11 mm)
+                </div>
             </div>
         </div>
     </main>
-
     <script>
-        let curMat = 'steel', curIdx = 2;
-        const WELD_DB = {
+        let curRehmMat = 'steel', curRehmIdx = 2;
+        let curBeastMode = 'wig_va', curBeastIdx = 1;
+
+        const REHM_DB = {
             steel: [
-                { t: "1.0 mm", amp: "45 – 60 A", volt: "16.0 – 17.0 V", wire: "Ø 0.8 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "10 l/perc" },
-                { t: "1.5 mm", amp: "65 – 85 A", volt: "17.2 – 18.2 V", wire: "Ø 0.8 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "10 – 12 l/perc" },
-                { t: "2.0 mm", amp: "90 – 115 A", volt: "18.5 – 19.5 V", wire: "Ø 0.8 / 1.0 mm", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "12 l/perc" },
-                { t: "3.0 mm", amp: "125 – 150 A", volt: "20.0 – 21.5 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "12 – 14 l/perc" },
-                { t: "4.0 mm", amp: "155 – 185 A", volt: "21.8 – 23.2 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "14 l/perc" },
-                { t: "5.0 mm", amp: "185 – 215 A", volt: "23.5 – 25.0 V", wire: "Ø 1.0 / 1.2 mm", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "14 – 16 l/perc" },
-                { t: "6.0 mm", amp: "215 – 245 A", volt: "25.0 – 26.8 V", wire: "Ø 1.0 / 1.2 mm", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "15 – 16 l/perc" },
-                { t: "8–10 mm", amp: "250 – 290 A", volt: "27.0 – 29.5 V", wire: "Ø 1.2 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "16 – 18 l/perc" }
+                { t: "1.0 mm", amp: "45 – 60 A", volt: "16.0 – 17.0 V", wire: "Ø 0.8 mm (SG2)", gas: "Corgon 18 (10 l/p)" },
+                { t: "2.0 mm", amp: "90 – 115 A", volt: "18.5 – 19.5 V", wire: "Ø 0.8 / 1.0 mm", gas: "Corgon 18 (12 l/p)" },
+                { t: "3.0 mm", amp: "125 – 150 A", volt: "20.0 – 21.5 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (13 l/p)" },
+                { t: "4.0 mm", amp: "155 – 185 A", volt: "21.8 – 23.2 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (14 l/p)" },
+                { t: "6.0 mm", amp: "215 – 245 A", volt: "25.0 – 26.8 V", wire: "Ø 1.0 / 1.2 mm", gas: "Corgon 18 (16 l/p)" },
+                { t: "8–10 mm", amp: "250 – 290 A", volt: "27.0 – 29.5 V", wire: "Ø 1.2 mm (SG2)", gas: "Corgon 18 (18 l/p)" }
             ],
             va: [
-                { t: "1.0 mm", amp: "40 – 55 A", volt: "15.5 – 16.5 V", wire: "Ø 0.8 mm (1.4316)", gas: "Argon + 2.5% CO₂ (M12)", flow: "10 – 12 l/perc" },
-                { t: "2.0 mm", amp: "80 – 105 A", volt: "17.5 – 19.0 V", wire: "Ø 0.8 / 1.0 mm", gas: "Argon + 2.5% CO₂ (M12)", flow: "12 – 14 l/perc" },
-                { t: "3.0 mm", amp: "115 – 140 A", volt: "19.5 – 21.0 V", wire: "Ø 1.0 mm (1.4316)", gas: "Argon + 2.5% CO₂ (M12)", flow: "14 l/perc" },
-                { t: "4.0 mm", amp: "145 – 175 A", volt: "21.0 – 22.8 V", wire: "Ø 1.0 mm (1.4316)", gas: "Argon + 2.5% CO₂ (M12)", flow: "14 – 16 l/perc" },
-                { t: "6.0 mm", amp: "190 – 230 A", volt: "23.5 – 25.5 V", wire: "Ø 1.0 / 1.2 mm", gas: "Argon + 2.5% CO₂ (M12)", flow: "16 l/perc" }
+                { t: "1.0 mm", amp: "40 – 55 A", volt: "15.5 – 16.5 V", wire: "Ø 0.8 mm (1.4316)", gas: "Argon + 2.5% CO₂ (11 l/p)" },
+                { t: "2.0 mm", amp: "80 – 105 A", volt: "17.5 – 19.0 V", wire: "Ø 0.8 / 1.0 mm", gas: "Argon + 2.5% CO₂ (13 l/p)" },
+                { t: "3.0 mm", amp: "115 – 140 A", volt: "19.5 – 21.0 V", wire: "Ø 1.0 mm (1.4316)", gas: "Argon + 2.5% CO₂ (14 l/p)" },
+                { t: "5.0 mm", amp: "175 – 215 A", volt: "22.5 – 24.5 V", wire: "Ø 1.0 / 1.2 mm", gas: "Argon + 2.5% CO₂ (16 l/p)" }
             ],
             alu: [
-                { t: "2.0 mm", amp: "95 – 115 A", volt: "18.5 – 20.0 V", wire: "Ø 1.0 / 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "14 – 16 l/perc" },
-                { t: "3.0 mm", amp: "130 – 155 A", volt: "20.5 – 22.0 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "16 l/perc" },
-                { t: "4.0 mm", amp: "160 – 190 A", volt: "22.0 – 23.8 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "16 – 18 l/perc" },
-                { t: "6.0 mm", amp: "210 – 245 A", volt: "24.5 – 26.5 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "18 – 20 l/perc" }
+                { t: "2.0 mm", amp: "95 – 115 A", volt: "18.5 – 20.0 V", wire: "Ø 1.0 / 1.2 (AlMg5)", gas: "100% Argon (15 l/p)" },
+                { t: "3.0 mm", amp: "130 – 155 A", volt: "20.5 – 22.0 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (16 l/p)" },
+                { t: "5.0 mm", amp: "190 – 230 A", volt: "23.5 – 25.5 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (18 l/p)" }
             ]
         };
 
-        function switchTab(id, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(id).classList.add('active');
+        const BEAST_DB = {
+            wig_va: [
+                { t: "0.8 – 1.0 mm", amp: "30 – 45 A", el: "Ø 1.6 mm (WL15)", cup: "No. 5 / 6", gas: "100% Argon (6–7 l/p)", tip: "💡 <b>Pulse tipp (vékony VA):</b> Kapcsold be a Pulse-t! Csúcsáram: 45 A, Alapáram: 20 A, Frekvencia: 1.5–2 Hz (ritmusra) vagy 80–120 Hz. Post-gas: 4–5 mp!" },
+                { t: "1.5 – 2.0 mm", amp: "55 – 75 A", el: "Ø 1.6 / 2.4 mm", cup: "No. 6", gas: "100% Argon (7–8 l/p)", tip: "💡 <b>Pulse tipp:</b> Down-slope (lefutás): 1.5 mp a kráter ellen. Post-gas: 5–6 mp, hogy a varrat fényes maradjon és ne égjen el!" },
+                { t: "3.0 mm", amp: "85 – 115 A", el: "Ø 2.4 mm (WL15)", cup: "No. 6 / 7", gas: "100% Argon (8–9 l/p)", tip: "💡 <b>Beállítás:</b> 4T módban kényelmes hosszú varratokhoz. Post-gas: 6–7 mp!" },
+                { t: "4.0 – 5.0 mm", amp: "120 – 160 A", el: "Ø 2.4 mm (WL15)", cup: "No. 7", gas: "100% Argon (9–10 l/p)", tip: "💡 <b>Beállítás:</b> Gyökölés / V-varrat ajánlott. Post-gas: 7–8 mp!" }
+            ],
+            wig_fe: [
+                { t: "1.0 mm", amp: "35 – 50 A", el: "Ø 1.6 mm (WL15)", cup: "No. 5", gas: "100% Argon (6–7 l/p)", tip: "💡 <b>Acél WIG tipp:</b> Fémtiszta felület (csiszolt) kötelező! Hozaganyag: WSG2 / ER70S-6 Ø 1.6 mm." },
+                { t: "2.0 mm", amp: "65 – 85 A", el: "Ø 1.6 / 2.4 mm", cup: "No. 6", gas: "100% Argon (7–8 l/p)", tip: "💡 <b>Beállítás:</b> HF gyújtás, 2T mód, Post-gas: 4–5 mp." },
+                { t: "3.0 – 4.0 mm", amp: "95 – 135 A", el: "Ø 2.4 mm (WL15)", cup: "No. 6 / 7", gas: "100% Argon (8–9 l/p)", tip: "💡 <b>Beállítás:</b> Hozaganyag: WSG2 Ø 2.0–2.4 mm, Post-gas: 5–6 mp." }
+            ],
+            mma: [
+                { t: "Ø 2.0 mm pálca", amp: "50 – 75 A", el: "Rutilos / Bázikus", cup: "—", gas: "Bevontelektróda", tip: "💡 <b>MMA Beállítás:</b> Hot Start: 3–4 | Arc Force: 3 | Polaritás: elektróda (+) vagy (-) típus szerint." },
+                { t: "Ø 2.5 mm pálca", amp: "75 – 105 A", el: "Rutilos / Bázikus", cup: "—", gas: "Bevontelektróda", tip: "💡 <b>MMA Beállítás:</b> Legáltalánosabb műhelyi javítópálca. Hot Start: 4 | Arc Force: 4." },
+                { t: "Ø 3.2 mm pálca", amp: "110 – 145 A", el: "Rutilos / Bázikus", cup: "—", gas: "Bevontelektróda", tip: "💡 <b>MMA Beállítás:</b> Vastagabb vasakhoz (4–8 mm). Hot Start: 5 | Arc Force: 5." },
+                { t: "Ø 4.0 mm pálca", amp: "150 – 185 A", el: "Rutilos / Bázikus", cup: "—", gas: "Bevontelektróda", tip: "💡 <b>MMA Beállítás:</b> Max. 185 A-ig stabilan viszi a BEAST 200. Hot Start: 5 | Arc Force: 5." }
+            ]
+        };
+
+        function selectMachine(id, btn) {
+            document.querySelectorAll('.ms-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.m-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active'); document.getElementById(id).classList.add('active');
         }
-
-        function setMat(m, btn) {
-            curMat = m; curIdx = 0;
-            document.querySelectorAll('.mat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderWeld();
+        function setSub(cls, id, btn) {
+            btn.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.' + cls).forEach(s => s.style.display = 'none');
+            btn.classList.add('active'); document.getElementById(id).style.display = 'block';
         }
-
-        function setThick(i) { curIdx = i; renderWeld(); }
-
-        function renderWeld() {
-            const list = WELD_DB[curMat];
-            if (curIdx >= list.length) curIdx = 0;
-            document.getElementById('thickBtns').innerHTML = list.map((x, i) =>
-                `<button class="th-btn ${i===curIdx?'active':''}" onclick="setThick(${i})">${x.t}</button>`
-            ).join('');
-
-            const sel = list[curIdx];
-            document.getElementById('paramOut').innerHTML = `
-                <div class="p-box"><span>Áramerősség</span><b>${sel.amp}</b></div>
-                <div class="p-box"><span>Ívfeszültség</span><b>${sel.volt}</b></div>
-                <div class="p-box"><span>Huzal típus</span><b style="color:var(--cyan);font-size:1.05rem;">${sel.wire}</b></div>
-                <div class="p-box"><span>Védőgáz & Mennyiség</span><b style="color:var(--orange);font-size:0.95rem;">${sel.gas}<br>${sel.flow}</b></div>
-            `;
+        function setRehmMat(m, btn) {
+            curRehmMat = m; curRehmIdx = 0;
+            document.querySelectorAll('#rehmMatBtns .p-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); renderRehm();
         }
-        renderWeld();
+        function setRehmThick(i) { curRehmIdx = i; renderRehm(); }
+        function renderRehm() {
+            const list = REHM_DB[curRehmMat]; if (curRehmIdx >= list.length) curRehmIdx = 0;
+            document.getElementById('rehmThickBtns').innerHTML = list.map((x, i) => `<button class="p-btn ${i===curRehmIdx?'active':''}" onclick="setRehmThick(${i})">${x.t}</button>`).join('');
+            const s = list[curRehmIdx];
+            document.getElementById('rehmOut').innerHTML = `
+                <div class="p-box"><span>Áramerősség</span><b>${s.amp}</b></div>
+                <div class="p-box"><span>Ívfeszültség</span><b>${s.volt}</b></div>
+                <div class="p-box"><span>Huzal</span><b style="color:var(--cyan);font-size:0.95rem;">${s.wire}</b></div>
+                <div class="p-box"><span>Védőgáz</span><b style="color:var(--orange);font-size:0.9rem;">${s.gas}</b></div>`;
+        }
+        function setBeastMode(m, btn) {
+            curBeastMode = m; curBeastIdx = 0;
+            document.querySelectorAll('#beastModeBtns .p-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); renderBeast();
+        }
+        function setBeastThick(i) { curBeastIdx = i; renderBeast(); }
+        function renderBeast() {
+            const list = BEAST_DB[curBeastMode]; if (curBeastIdx >= list.length) curBeastIdx = 0;
+            document.getElementById('beastThickBtns').innerHTML = list.map((x, i) => `<button class="p-btn ${i===curBeastIdx?'active':''}" onclick="setBeastThick(${i})">${x.t}</button>`).join('');
+            const s = list[curBeastIdx];
+            document.getElementById('beastOut').innerHTML = `
+                <div class="p-box"><span>Áramerősség</span><b>${s.amp}</b></div>
+                <div class="p-box"><span>Elektróda</span><b style="color:var(--cyan);font-size:0.95rem;">${s.el}</b></div>
+                <div class="p-box"><span>Gázterelő</span><b>${s.cup}</b></div>
+                <div class="p-box"><span>Védőgáz</span><b style="color:var(--orange);font-size:0.9rem;">${s.gas}</b></div>`;
+            document.getElementById('beastPulseTip').innerHTML = s.tip;
+        }
+        renderRehm(); renderBeast();
     </script>
 </body>
 </html>
+
