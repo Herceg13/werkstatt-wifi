@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H5ET Lager & Scanner // WERKSTATT OS</title>
-            <script src="https://jsdelivr.net"></script>
+           
     <style>
         :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.9); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
@@ -218,40 +218,41 @@
         function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
 
-                let codeReader = null;
+                        let stream = null, scanTimer = null;
 
         async function toggleScanner() {
-            const box = document.getElementById('camBox'), b = document.getElementById('scanToggleBtn');
-            if (codeReader) {
-                codeReader.reset();
-                codeReader = null;
+            const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null; clearInterval(scanTimer);
                 box.style.display = 'none';
                 b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
                 return;
             }
-            box.style.display = 'block';
-            b.innerText = '⏹ KAMERA BEZÁRÁSA';
             try {
-                codeReader = new ZXing.BrowserMultiFormatReader();
-                await codeReader.decodeFromConstraints(
-                    { video: { facingMode: "environment" } },
-                    'vid',
-                    (result, err) => {
-                        if (result) {
-                            const clean = result.text.trim().replace(/^H5ETL\//i, '');
-                            document.getElementById('q').value = clean;
-                            render();
-                            toggleScanner();
-                        }
-                    }
-                );
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                vid.srcObject = stream;
+                box.style.display = 'block';
+                b.innerText = '⏹ KAMERA BEZÁRÁSA';
+
+                if ('BarcodeDetector' in window) {
+                    const detector = new BarcodeDetector();
+                    scanTimer = setInterval(async () => {
+                        try {
+                            const codes = await detector.detect(vid);
+                            if (codes.length > 0) {
+                                const clean = codes[0].rawValue.trim().replace(/^H5ETL\//i, '');
+                                document.getElementById('q').value = clean;
+                                render();
+                                toggleScanner();
+                            }
+                        } catch (e) {}
+                    }, 300);
+                }
             } catch (err) {
-                box.style.display = 'none';
-                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                alert("Kamera hiba: " + err);
+                alert("Kamera nem elérhető ezen az eszközön: " + err.message);
             }
         }
-
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
