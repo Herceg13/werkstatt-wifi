@@ -159,7 +159,7 @@
             {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
             {id:"A0070", name:"V4 Etagen 1,2,3 12365x1100 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"}
         ];
-        const L2 = [
+                const L2 = [
             {id:"A0071", name:"V4 Presse / Kurz 1760x920 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
             {id:"A0072", name:"V4 Presse / Lange 16540x920 Vor Ort", geb:"Spule", ist:0, min:1, loc:"H5ET-Lager", cat:"szalag"},
             {id:"A0073", name:"V4 Presse / Auslauf 13126x900 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
@@ -234,11 +234,8 @@
             {id:"A0143", name:"(Hand) Metall-Kehrblech mit Holzgriff", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
             {id:"A0144", name:"AVIA PROGREASE-L 2 EP (Hobel Gegenlager & Hobelkopf)", geb:"400 g Kartusche", ist:0, min:2, loc:"BÜRO", cat:"buro"}
         ];
-
-
-        ];
         const FULL_LAGER = L1.concat(L2);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v9')) || JSON.parse(JSON.stringify(FULL_LAGER));
+        let items = JSON.parse(localStorage.getItem('bb_lager_v10')) || JSON.parse(JSON.stringify(FULL_LAGER));
         let curCat = null;
         let curStatus = 'all';
         let stream = null, scanTimer = null;
@@ -251,7 +248,7 @@
         ];
 
         function isMissing(x) { return x.ist === 0 || x.ist < x.min; }
-        function save() { localStorage.setItem('bb_lager_v9', JSON.stringify(items)); }
+        function save() { localStorage.setItem('bb_lager_v10', JSON.stringify(items)); }
         function openCat(catId) { curCat = catId; curStatus = 'all'; document.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active')); document.getElementById('stAll').classList.add('active'); render(); }
         function backToCats() { curCat = null; document.getElementById('q').value = ''; render(); }
         function resetView() { document.getElementById('q').value = ''; curCat = null; render(); }
@@ -344,3 +341,4 @@
     </script>
 </body>
 </html>
+
