@@ -1,5 +1,5 @@
 const FB_BASE = ['https://bb-werkstatt', '-default-rtdb.europe-west1.', 'firebasedatabase.app/werkstatt_lager'].join('');
-const ADMIN_PIN = "1234";
+const ADMIN_PIN = "0815";
 
 function normalizeItems(rawList) {
     return (rawList || []).map(x => {
