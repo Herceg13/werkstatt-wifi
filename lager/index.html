@@ -9,16 +9,16 @@
 <body>
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
-        <div style="text-align:right;">
-            <div style="font-weight:800; letter-spacing:1px;">ERSATZTEILLAGER <span style="color:var(--cyan);">// PRO</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">Moduláris Raktár & Szkenner</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span id="syncDot" style="font-size:0.75rem; font-weight:800; color:var(--green);">● FELHŐ</span>
+            <button id="adminToggleBtn" class="back-btn" style="border-color:var(--orange); color:var(--orange);" onclick="toggleAdmin()">🔒 Dolgozó</button>
         </div>
     </header>
     <main>
         <div class="top-actions">
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
-            <button class="act-btn orange" onclick="startRelocateMode()">📦 Betárolás / Áthelyezés</button>
-            <button class="act-btn green" onclick="openNewModal('')">➕ Új anyag felvétele</button>
+            <button class="act-btn orange admin-only" style="display:none;" onclick="startRelocateMode()">📦 Betárolás / Áthelyezés</button>
+            <button class="act-btn green admin-only" style="display:none;" onclick="openNewModal('')">➕ Új anyag felvétele</button>
         </div>
         <div id="modeBanner" class="mode-banner"></div>
         <div id="camBox"></div>
@@ -42,31 +42,26 @@
             </div>
             <div class="grid" id="list"></div>
         </div>
+        <div id="logSection" style="margin-top:1.5rem; background:var(--panel); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1rem;">
+            <div style="font-size:0.82rem; font-weight:800; color:var(--cyan); margin-bottom:6px;">🕒 UTOLSÓ KÉSZLETMOZGÁSOK (ÉLŐ NAPLÓ):</div>
+            <div id="logList" style="font-size:0.8rem; color:var(--muted); line-height:1.5;">Betöltés...</div>
+        </div>
     </main>
-
-    <!-- Új anyag felvétele ablak -->
     <div id="newModal" class="modal">
         <div class="modal-box">
             <h3>➕ Új alkatrész felvétele</h3>
-            <div class="f-grp"><label>Egyedi azonosító (automatikus)</label><input type="text" id="n_id" readonly style="color:var(--cyan);font-weight:900;"></div>
+            <div class="f-grp"><label>Egyedi azonosító</label><input type="text" id="n_id" readonly style="color:var(--cyan);font-weight:900;"></div>
             <div class="f-grp"><label>Megnevezés / Méret *</label><input type="text" id="n_name" placeholder="pl. SKF Csapágy 6205 2RS"></div>
-            <div class="f-grp"><label>Kiszerelés (Gebinde)</label><input type="text" id="n_geb" value="BOX"></div>
+            <div class="f-grp"><label>Kiszerelés</label><input type="text" id="n_geb" value="BOX"></div>
             <div class="f-grp"><label>Kategória</label>
-                <select id="n_cat">
-                    <option value="alkatresz">Alkatrészek & Motorok</option>
-                    <option value="szalag">Szalagok & Szíjak</option>
-                    <option value="buro">Zsírok, Spray & Büro</option>
-                </select>
+                <select id="n_cat"><option value="alkatresz">Alkatrészek & Motorok</option><option value="szalag">Szalagok & Szíjak</option><option value="buro">Zsírok, Spray & Büro</option></select>
             </div>
             <div class="f-grp"><label>Polchely (H5ETL/...)</label>
-                <div style="display:flex;gap:6px;">
-                    <input type="text" id="n_loc" placeholder="pl. 03-D2">
-                    <button class="act-btn" onclick="scanForNewLoc()">📷 Polc</button>
-                </div>
+                <div style="display:flex;gap:6px;"><input type="text" id="n_loc" placeholder="pl. 03-D2"><button class="act-btn" onclick="scanForNewLoc()">📷 Polc</button></div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                <div class="f-grp"><label>Kezdő készlet (db)</label><input type="number" id="n_ist" value="1"></div>
-                <div class="f-grp"><label>Minimum készlet (db)</label><input type="number" id="n_min" value="1"></div>
+                <div class="f-grp"><label>Kezdő készlet</label><input type="number" id="n_ist" value="1"></div>
+                <div class="f-grp"><label>Minimum készlet</label><input type="number" id="n_min" value="1"></div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.5rem;">
                 <button class="clear-btn" style="padding:12px;" onclick="closeNewModal()">Mégse</button>
@@ -74,10 +69,7 @@
             </div>
         </div>
     </div>
-
-    <script src="adatok.js"></script>
-    <script src="szkenner.js"></script>
-    <script src="muveletek.js"></script>
+    <script src="adatok.js"></script><script src="szkenner.js"></script><script src="muveletek.js"></script>
 </body>
 </html>
 
