@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgácsolás & Gépek // WERKSTATT OS</title>
+    <title>Forgácsolás & Hegesztés // WERKSTATT OS</title>
     <style>
-        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.88); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.9); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; padding-bottom:3rem; }
         header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
         .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:8px 14px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); cursor:pointer; }
         main { max-width:950px; margin:0 auto; padding:1.15rem; }
 
-        .big-menu { display:grid; grid-template-columns:repeat(3, 1fr); gap:0.8rem; margin-bottom:1.25rem; }
-        .m-btn { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem; text-align:center; color:#fff; cursor:pointer; transition:0.2s; }
-        .m-btn.active, .m-btn:hover { border-color:var(--cyan); background:rgba(0,240,255,0.14); box-shadow:0 0 18px rgba(0,240,255,0.25); }
-        .m-btn h2 { font-size:1.05rem; margin-top:4px; }
+        .big-menu { display:grid; grid-template-columns:repeat(2, 1fr); gap:0.75rem; margin-bottom:1.25rem; }
+        .m-btn { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:0.95rem; text-align:center; color:#fff; cursor:pointer; transition:0.2s; }
+        .m-btn.active, .m-btn:hover { border-color:var(--cyan); background:rgba(0,240,255,0.15); box-shadow:0 0 18px rgba(0,240,255,0.25); }
+        .m-btn h2 { font-size:1rem; margin-top:4px; }
 
-        .tool-box { display:none; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+        .tool-box { display:none; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem; }
         .tool-box.active { display:block; }
-        .tool-box h3 { color:var(--cyan); margin-bottom:0.9rem; font-size:1.1rem; border-bottom:1px solid rgba(0,240,255,0.2); padding-bottom:0.5rem; }
+        .tool-box h3 { color:var(--cyan); margin-bottom:0.85rem; font-size:1.05rem; border-bottom:1px solid rgba(0,240,255,0.2); padding-bottom:0.45rem; }
 
-        .launch-card { display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, rgba(0,240,255,0.18), rgba(0,240,255,0.05)); border:1px solid var(--cyan); padding:1.1rem; border-radius:10px; text-decoration:none; color:#fff; margin-bottom:1.35rem; }
+        .launch-card { display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, rgba(0,240,255,0.18), rgba(0,240,255,0.05)); border:1px solid var(--cyan); padding:0.95rem 1.1rem; border-radius:10px; text-decoration:none; color:#fff; margin-bottom:1.1rem; }
         .sub-tabs { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-bottom:1rem; }
-        .st-btn { background:#070d14; border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:10px 6px; border-radius:6px; font-weight:800; font-size:0.82rem; cursor:pointer; }
+        .sub-tabs.two { grid-template-columns:repeat(2, 1fr); }
+        .st-btn { background:#070d14; border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:10px 6px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; }
         .st-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,240,255,0.12); }
 
         .preset-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:0.9rem; }
@@ -32,78 +33,113 @@
 
         .in-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; margin-bottom:0.9rem; }
         label { display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px; }
-        input { width:100%; padding:11px; background:#070d14; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.1rem; font-weight:700; }
-        .res-card { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.95rem; font-size:1.05rem; font-weight:800; color:#fff; line-height:1.5; }
-        .res-card span { color:var(--green); font-size:1.3rem; }
+        input { width:100%; padding:11px; background:#070d14; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.05rem; font-weight:700; }
+        .res-card { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.95rem; font-size:1.02rem; font-weight:800; color:#fff; line-height:1.5; }
+        .res-card span { color:var(--green); font-size:1.25rem; }
 
-        .spec-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(175px, 1fr)); gap:0.75rem; margin-bottom:1rem; }
-        .spec-item { background:#070d14; border:1px solid rgba(255,255,255,0.08); padding:0.75rem; border-radius:8px; }
-        .spec-item span { display:block; font-size:0.75rem; color:var(--muted); }
-        .spec-item b { font-size:0.98rem; color:#fff; }
-        .wear-box { background:rgba(255,123,0,0.08); border-left:3px solid var(--orange); padding:0.85rem; border-radius:6px; font-size:0.86rem; line-height:1.5; }
+        .spec-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:0.7rem; margin-bottom:0.95rem; }
+        .spec-item { background:#070d14; border:1px solid rgba(255,255,255,0.08); padding:0.7rem; border-radius:8px; }
+        .spec-item span { display:block; font-size:0.74rem; color:var(--muted); }
+        .spec-item b { font-size:0.95rem; color:#fff; }
+        .wear-box { background:rgba(255,123,0,0.08); border-left:3px solid var(--orange); padding:0.85rem; border-radius:6px; font-size:0.85rem; line-height:1.5; }
         .wear-box strong { color:var(--orange); }
 
-        .param-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:0.8rem; margin-top:0.8rem; }
-        .p-box { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.85rem; text-align:center; }
-        .p-box span { display:block; font-size:0.74rem; color:var(--muted); margin-bottom:4px; }
-        .p-box b { font-size:1.25rem; color:var(--green); }
+        .param-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(145px, 1fr)); gap:0.75rem; margin-top:0.8rem; }
+        .p-box { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:0.8rem; text-align:center; }
+        .p-box span { display:block; font-size:0.73rem; color:var(--muted); margin-bottom:4px; }
+        .p-box b { font-size:1.15rem; color:var(--green); }
 
         table { width:100%; border-collapse:collapse; margin-top:0.5rem; font-size:0.92rem; }
         th, td { padding:9px 10px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.08); }
         th { color:var(--cyan); font-size:0.78rem; text-transform:uppercase; }
         td b { color:var(--green); font-size:1.05rem; }
-        @media (max-width: 600px) { .big-menu { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
         <div style="text-align:right;">
-            <div style="font-weight:800; letter-spacing:1px;">FORGÁCSOLÁS <span style="color:var(--cyan);">& GÉPEK</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">Marás &bull; HOLZMANN ED1500 &bull; Fúrás</div>
+            <div style="font-weight:800; letter-spacing:1px;">GÉPMŰHELY <span style="color:var(--cyan);">// PRO</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">BF600D &bull; ED1500 &bull; Fúrás &bull; REHM 311</div>
         </div>
     </header>
     <main>
         <div class="big-menu">
-            <div class="m-btn active" onclick="showTool('frasen', this)"><span style="font-size:1.5rem;">⚙️</span><h2>1. Marás</h2></div>
-            <div class="m-btn" onclick="showTool('drehen', this)"><span style="font-size:1.5rem;">🔄</span><h2>2. Esztergálás</h2></div>
-            <div class="m-btn" onclick="showTool('bohren', this)"><span style="font-size:1.5rem;">🔩</span><h2>3. Fúrás</h2></div>
+            <div class="m-btn active" onclick="showTool('frasen', this)"><span style="font-size:1.4rem;">⚙️</span><h2>1. Marás (BF600D)</h2></div>
+            <div class="m-btn" onclick="showTool('drehen', this)"><span style="font-size:1.4rem;">🔄</span><h2>2. Eszterga (ED1500)</h2></div>
+            <div class="m-btn" onclick="showTool('bohren', this)"><span style="font-size:1.4rem;">🔩</span><h2>3. Fúrás & Menet</h2></div>
+            <div class="m-btn" onclick="showTool('weld', this)"><span style="font-size:1.4rem;">⚡</span><h2>4. Hegesztés (REHM)</h2></div>
         </div>
-
-        <!-- 1. MARÁS PANEL -->
+        <!-- 1. MARÁS (HOLZMANN BF600D_400V) -->
         <div id="frasen" class="tool-box active">
             <a href="../teilapparat/index.html" class="launch-card">
                 <div>
-                    <div style="font-size:0.75rem; color:var(--cyan); font-weight:800;">OSZTÓFEJ KALKULÁTOR</div>
-                    <strong style="font-size:1.2rem;">⚙️ Teilapparat Pro megnyitása</strong>
+                    <div style="font-size:0.72rem; color:var(--cyan); font-weight:800;">OSZTÓFEJ KALKULÁTOR</div>
+                    <strong style="font-size:1.1rem;">⚙️ Teilapparat Pro megnyitása</strong>
                 </div>
-                <span style="font-size:1.4rem; font-weight:900; color:var(--cyan);">→</span>
+                <span style="font-size:1.35rem; font-weight:900; color:var(--cyan);">→</span>
             </a>
-            <h3>🌀 Maró fordulatszám (n) & Előtolás (Vf)</h3>
-            <div class="preset-row">
-                <button class="p-btn" onclick="setMill(63, 5, 160, 0.12)">Planfräse Ø63 (VHM)</button>
-                <button class="p-btn" onclick="setMill(50, 4, 150, 0.10)">Planfräse Ø50 (VHM)</button>
-                <button class="p-btn" onclick="setMill(16, 4, 110, 0.06)">Ujjmaró Ø16 (VHM)</button>
-                <button class="p-btn" onclick="setMill(12, 4, 30, 0.04)">HSS maró Ø12</button>
-            </div>
-            <div class="in-grid">
-                <div><label>Maró átmérő D (mm)</label><input type="number" id="m_dia" value="63" oninput="calcMill()"></div>
-                <div><label>Vágósebesség Vc (m/perc)</label><input type="number" id="m_vc" value="160" oninput="calcMill()"></div>
-                <div><label>Fogak száma z (db)</label><input type="number" id="m_z" value="5" oninput="calcMill()"></div>
-                <div><label>Fogankénti előtolás fz (mm)</label><input type="number" id="m_fz" value="0.12" step="0.01" oninput="calcMill()"></div>
-            </div>
-            <div class="res-card" id="mill_res"></div>
-        </div>
 
-        <!-- 2. ESZTERGÁLÁS PANEL (HOLZMANN ED1500INDIG80_400) -->
+            <div class="sub-tabs">
+                <button class="st-btn active" onclick="setSub('m-sub', 'm_calc', this)">🌀 Fordulat & Előtolás</button>
+                <button class="st-btn" onclick="setSub('m-sub', 'm_spec', this)">🏭 BF600D Adatlap</button>
+                <button class="st-btn" onclick="setSub('m-sub', 'm_tools', this)">🔧 Patron & Kúp</button>
+            </div>
+
+            <div id="m_calc" class="m-sub">
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">Gyorsgombok (BF600D-hez igazítva):</div>
+                <div class="preset-row">
+                    <button class="p-btn" onclick="setMill(80, 6, 150, 0.10)">Planfräse Ø80</button>
+                    <button class="p-btn" onclick="setMill(63, 5, 150, 0.10)">Planfräse Ø63</button>
+                    <button class="p-btn" onclick="setMill(50, 4, 140, 0.08)">Planfräse Ø50</button>
+                    <button class="p-btn" onclick="setMill(16, 4, 90, 0.05)">VHM Ujjmaró Ø16</button>
+                    <button class="p-btn" onclick="setMill(12, 4, 28, 0.04)">HSS Maró Ø12</button>
+                </div>
+                <div class="in-grid">
+                    <div><label>Maró átmérő D (mm)</label><input type="number" id="m_dia" value="63" oninput="calcMill()"></div>
+                    <div><label>Vágósebesség Vc (m/perc)</label><input type="number" id="m_vc" value="150" oninput="calcMill()"></div>
+                    <div><label>Fogak száma z (db)</label><input type="number" id="m_z" value="5" oninput="calcMill()"></div>
+                    <div><label>Fogankénti előtolás fz (mm)</label><input type="number" id="m_fz" value="0.10" step="0.01" oninput="calcMill()"></div>
+                </div>
+                <div class="res-card" id="mill_res"></div>
+            </div>
+
+            <div id="m_spec" class="m-sub" style="display:none;">
+                <h3 style="color:#fff;">HOLZMANN BF600D_400V <span style="color:var(--cyan); font-size:0.85rem;">(3-Achs Digi)</span></h3>
+                <div class="spec-grid">
+                    <div class="spec-item"><span>Főorsókúp</span><b>ISO 40 (SK40)</b></div>
+                    <div class="spec-item"><span>Behúzószár menet</span><b>M16</b></div>
+                    <div class="spec-item"><span>Vertikál fordulat (8)</span><b>115 – 1750 1/perc</b></div>
+                    <div class="spec-item"><span>Horizontál fordulat (9)</span><b>45 – 1330 1/perc</b></div>
+                    <div class="spec-item"><span>Asztal / T-horony</span><b>1200 x 280 mm / 14 mm</b></div>
+                    <div class="spec-item"><span>Úthossz (X / Y / Z)</span><b>600 / 230 / 380 mm</b></div>
+                    <div class="spec-item"><span>X-asztal előtolás (8)</span><b>24 – 720 mm/perc</b></div>
+                    <div class="spec-item"><span>Pinola löket / Fejdöntés</span><b>120 mm / ± 90°</b></div>
+                </div>
+                <div class="wear-box">
+                    <strong>⚠️ Gépkorlátok & Motor:</strong><br>
+                    • <b>Max. síkmaró:</b> Ø 100 mm | <b>Max. ujjmaró:</b> Ø 25 mm<br>
+                    • <b>Vertikál motor:</b> 0,85 / 1,5 kW | <b>Horizontál motor:</b> 2,2 kW | <b>Tömeg:</b> 1.180 kg
+                </div>
+            </div>
+
+            <div id="m_tools" class="m-sub" style="display:none;">
+                <div class="wear-box" style="border-color:var(--cyan); background:rgba(0,240,255,0.06);">
+                    <strong style="color:var(--cyan);">🔧 Tartozékok & Befogók (ISO 40):</strong><br>
+                    • <b>Patronkészlet (8 db):</b> Ø 4, 5, 6, 8, 10, 12, 14, 16 mm<br>
+                    • <b>Redukciók:</b> ISO 40 → MK3, ISO 40 → MK2, ISO 40 → B18 (1–16 mm fúrótokmány)<br>
+                    • <b>Horizontál marótüskék:</b> Ø 22 mm és Ø 27 mm | <b>Satu:</b> 160 mm
+                </div>
+            </div>
+        </div>
+        <!-- 2. ESZTERGÁLÁS (HOLZMANN ED1500INDIG80_400) -->
         <div id="drehen" class="tool-box">
             <div class="sub-tabs">
-                <button class="st-btn active" onclick="setTurnSub('t_param', this)">⚡ Ajánlott beállítás</button>
-                <button class="st-btn" onclick="setTurnSub('t_calc', this)">📐 Fordulat & Kúpszög</button>
-                <button class="st-btn" onclick="setTurnSub('t_spec', this)">🏭 HOLZMANN Adatlap</button>
+                <button class="st-btn active" onclick="setSub('t-sub', 't_param', this)">⚡ Ajánlott beállítás</button>
+                <button class="st-btn" onclick="setSub('t-sub', 't_calc', this)">📐 Fordulat & Kúpszög</button>
+                <button class="st-btn" onclick="setSub('t-sub', 't_spec', this)">🏭 ED1500 Adatlap</button>
             </div>
 
-            <!-- 2A: Anyag & Átmérő szerinti ajánlás -->
             <div id="t_param" class="t-sub">
                 <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">1. Anyagminőség (VHM váltólapkás késhez):</div>
                 <div class="preset-row" id="turnMatBtns">
@@ -117,7 +153,6 @@
                 <div class="param-grid" id="turnParamOut"></div>
             </div>
 
-            <!-- 2B: Szabad kalkulátor -->
             <div id="t_calc" class="t-sub" style="display:none;">
                 <h3>🔄 Egyedi fordulatszám (n)</h3>
                 <div class="in-grid">
@@ -129,14 +164,40 @@
                 <h3>📐 Kúpszög számítás (Kegelwinkel)</h3>
                 <div class="in-grid">
                     <div><label>Nagy átmérő D (mm)</label><input type="number" id="k_D" value="40" oninput="calcCone()"></div>
-        <!-- 3. FÚRÁS PANEL -->
+                    <div><label>Kis átmérő d (mm)</label><input type="number" id="k_d" value="30" oninput="calcCone()"></div>
+                    <div style="grid-column:1/-1;"><label>Kúp hossza L (mm)</label><input type="number" id="k_L" value="50" oninput="calcCone()"></div>
+                </div>
+                <div class="res-card" id="cone_res"></div>
+            </div>
+
+            <div id="t_spec" class="t-sub" style="display:none;">
+                <h3 style="color:#fff;">HOLZMANN ED1500INDIG80_400 <span style="color:var(--cyan); font-size:0.85rem;">(5,5 kW / 400V)</span></h3>
+                <div class="spec-grid">
+                    <div class="spec-item"><span>Főorsó áteresztés</span><b>Ø 80 mm</b></div>
+                    <div class="spec-item"><span>Főorsó kúp / Tokmány</span><b>MK6 / Camlock D8</b></div>
+                    <div class="spec-item"><span>Szegnyereg kúp / Út</span><b>MK4 / 125 mm</b></div>
+                    <div class="spec-item"><span>Csúcstávolság / Magasság</span><b>1500 mm / 230 mm</b></div>
+                    <div class="spec-item"><span>Elforduló Ø (ágy / szán)</span><b>Ø 460 / Ø 260 mm</b></div>
+                    <div class="spec-item"><span>Kivehető híd (ohne Brücke)</span><b>Ø 680 mm-ig</b></div>
+                    <div class="spec-item"><span>Fordulatszám (12 fokozat)</span><b>25 – 2000 1/perc</b></div>
+                    <div class="spec-item"><span>Max. késtartó szár</span><b>40 x 22 mm</b></div>
+                </div>
+                <div class="wear-box">
+                    <strong>⚙️ Előtolások, Menetek & Tartozékok:</strong><br>
+                    • <b>Hosszelőtolás:</b> 0,031 – 1,7 mm/ford (42) | <b>Keresztelőtolás:</b> 0,014 – 0,784 mm/ford (42)<br>
+                    • <b>Menetvágás:</b> Metrikus 0,1 – 14 mm (41) | Collos 2 – 112 TPI (60)<br>
+                    • <b>Tokmányok:</b> 3-pofás Ø250 mm, 4-pofás Ø250 mm, síktárcsa Ø350 mm, álló + futó báb, 3-tengelyes DRO
+                </div>
+            </div>
+        </div>
+        <!-- 3. FÚRÁS & MENET -->
         <div id="bohren" class="tool-box">
             <h3>🔩 Fúró fordulatszám (n)</h3>
             <div class="in-grid">
                 <div><label>Fúró átmérő d (mm)</label><input type="number" id="b_dia" value="10.2" step="0.1" oninput="calcDrill()"></div>
                 <div><label>Vágósebesség Vc (HSS ~25, VHM ~70)</label><input type="number" id="b_vc" value="25" oninput="calcDrill()"></div>
             </div>
-            <div class="res-card" id="drill_res" style="margin-bottom:1.35rem;"></div>
+            <div class="res-card" id="drill_res" style="margin-bottom:1.25rem;"></div>
 
             <h3>📏 Menet & Magfurat táblázatok (Kernloch)</h3>
             <div class="sub-tabs">
@@ -150,11 +211,45 @@
                 <tbody id="threadTable"></tbody>
             </table>
         </div>
-    </main>
 
+        <!-- 4. HEGESZTÉS (REHM Synergic.Arc 311) -->
+        <div id="weld" class="tool-box">
+            <div class="sub-tabs two">
+                <button class="st-btn active" onclick="setSub('w-sub', 'w_calc', this)">⚡ MIG/MAG Beállítások</button>
+                <button class="st-btn" onclick="setSub('w-sub', 'w_spec', this)">🏭 REHM 311 Adatlap</button>
+            </div>
+
+            <div id="w_calc" class="w-sub">
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">1. Alapanyag (Synergic program):</div>
+                <div class="preset-row" id="weldMatBtns">
+                    <button class="p-btn active" onclick="setWeldMat('steel', this)">Acél (SG2 / Fe)</button>
+                    <button class="p-btn" onclick="setWeldMat('va', this)">Saválló (VA / CrNi)</button>
+                    <button class="p-btn" onclick="setWeldMat('alu', this)">Alumínium (AlMg5)</button>
+                </div>
+                <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">2. Lemez- / anyagvastagság (mm):</div>
+                <div class="preset-row" id="weldThickBtns"></div>
+                <div class="param-grid" id="weldParamOut"></div>
+            </div>
+
+            <div id="w_spec" class="w-sub" style="display:none;">
+                <h3 style="color:#fff;">REHM Synergic.Arc 311 <span style="color:var(--cyan); font-size:0.85rem;">(400V / 20–300 A)</span></h3>
+                <div class="spec-grid">
+                    <div class="spec-item"><span>Áramtartomány</span><b>20 – 300 A (fokozatmentes)</b></div>
+                    <div class="spec-item"><span>100% ED (40°C)</span><b>240 A folyamatos</b></div>
+                    <div class="spec-item"><span>Előtolás</span><b>4-görgős digitális</b></div>
+                    <div class="spec-item"><span>Pisztoly</span><b>EVO MB 25 / 4 m (gázhűtés)</b></div>
+                </div>
+                <div class="wear-box">
+                    <strong>🔧 MB 25 Pisztoly kopóalkatrészek:</strong><br>
+                    • <b>Áramátadó:</b> M6 x 28 mm (Ø 0,8 / 1,0 / 1,2 mm)<br>
+                    • <b>Gázterelő:</b> MB 25 kúpos (Ø 15 mm)<br>
+                    • <b>Spirál:</b> Kék (0,8–1,0 acél) / Piros (1,0–1,2 acél) / Teflon (Alu & VA)
+                </div>
+            </div>
+        </div>
+    </main>
     <script>
-        let curThreadTab = 'metrik';
-        let curTurnMat = 'steel', curTurnDia = 50;
+        let curThreadTab = 'metrik', curTurnMat = 'steel', curTurnDia = 50, curWeldMat = 'steel', curWeldIdx = 2;
 
         const TURN_MATS = {
             steel: { vc: 150, feedR: "0.20 – 0.30 mm/U", feedF: "0.08 – 0.12 mm/U", doc: "1.5 – 3.0 mm (nagyolás)" },
@@ -162,130 +257,137 @@
             alu:   { vc: 280, feedR: "0.25 – 0.40 mm/U", feedF: "0.10 – 0.15 mm/U", doc: "2.0 – 4.0 mm (éles lapka)" },
             brass: { vc: 180, feedR: "0.20 – 0.35 mm/U", feedF: "0.08 – 0.12 mm/U", doc: "1.5 – 3.0 mm (szárazon is)" }
         };
-        const TURN_DIAS =;
-        const ED_STEPS =;
+        const TURN_DIAS = new Array(10, 15, 20, 30, 40, 50, 60, 80, 100, 120, 150, 200);
+        const ED_STEPS = new Array(25, 40, 60, 90, 135, 200, 300, 450, 650, 950, 1400, 2000);
+        const BF_STEPS = new Array(115, 175, 260, 390, 580, 860, 1250, 1750);
 
         const THREAD_DATA = {
             metrik: [
-                ["M3", "0.5 mm", "2.5"], ["M4", "0.7 mm", "3.3"], ["M5", "0.8 mm", "4.2"], ["M6", "1.0 mm", "5.0"],
-                ["M8", "1.25 mm", "6.8"], ["M10", "1.5 mm", "8.5"], ["M12", "1.75 mm", "10.2"], ["M14", "2.0 mm", "12.0"],
-                ["M16", "2.0 mm", "14.0"], ["M18", "2.5 mm", "15.5"], ["M20", "2.5 mm", "17.5"], ["M22", "2.5 mm", "19.5"],
-                ["M24", "3.0 mm", "21.0"], ["M27", "3.0 mm", "24.0"], ["M30", "3.5 mm", "26.5"], ["M36", "4.0 mm", "32.0"]
+                {m:"M3", p:"0.5 mm", k:"2.5"}, {m:"M4", p:"0.7 mm", k:"3.3"}, {m:"M5", p:"0.8 mm", k:"4.2"}, {m:"M6", p:"1.0 mm", k:"5.0"},
+                {m:"M8", p:"1.25 mm", k:"6.8"}, {m:"M10", p:"1.5 mm", k:"8.5"}, {m:"M12", p:"1.75 mm", k:"10.2"}, {m:"M14", p:"2.0 mm", k:"12.0"},
+                {m:"M16", p:"2.0 mm", k:"14.0"}, {m:"M18", p:"2.5 mm", k:"15.5"}, {m:"M20", p:"2.5 mm", k:"17.5"}, {m:"M22", p:"2.5 mm", k:"19.5"},
+                {m:"M24", p:"3.0 mm", k:"21.0"}, {m:"M27", p:"3.0 mm", k:"24.0"}, {m:"M30", p:"3.5 mm", k:"26.5"}, {m:"M36", p:"4.0 mm", k:"32.0"}
             ],
             fein: [
-                ["M8 x 1", "1.0 mm", "7.0"], ["M10 x 1", "1.0 mm", "9.0"], ["M10 x 1.25", "1.25 mm", "8.8"],
-                ["M12 x 1.25", "1.25 mm", "10.8"], ["M12 x 1.5", "1.5 mm", "10.5"], ["M14 x 1.5", "1.5 mm", "12.5"],
-                ["M16 x 1.5", "1.5 mm", "14.5"], ["M18 x 1.5", "1.5 mm", "16.5"], ["M20 x 1.5", "1.5 mm", "18.5"],
-                ["M22 x 1.5", "1.5 mm", "20.5"], ["M24 x 1.5", "1.5 mm", "22.5"], ["M24 x 2", "2.0 mm", "22.0"],
-                ["M27 x 2", "2.0 mm", "25.0"], ["M30 x 2", "2.0 mm", "28.0"]
+                {m:"M8 x 1", p:"1.0 mm", k:"7.0"}, {m:"M10 x 1", p:"1.0 mm", k:"9.0"}, {m:"M10 x 1.25", p:"1.25 mm", k:"8.8"},
+                {m:"M12 x 1.25", p:"1.25 mm", k:"10.8"}, {m:"M12 x 1.5", p:"1.5 mm", k:"10.5"}, {m:"M14 x 1.5", p:"1.5 mm", k:"12.5"},
+                {m:"M16 x 1.5", p:"1.5 mm", k:"14.5"}, {m:"M18 x 1.5", p:"1.5 mm", k:"16.5"}, {m:"M20 x 1.5", p:"1.5 mm", k:"18.5"},
+                {m:"M22 x 1.5", p:"1.5 mm", k:"20.5"}, {m:"M24 x 1.5", p:"1.5 mm", k:"22.5"}, {m:"M24 x 2", p:"2.0 mm", k:"22.0"},
+                {m:"M27 x 2", p:"2.0 mm", k:"25.0"}, {m:"M30 x 2", p:"2.0 mm", k:"28.0"}
             ],
             coll: [
-                ["G 1/8\" (BSP)", "28 Gg/1\" (Ø 9.73)", "8.8"], ["G 1/4\" (BSP)", "19 Gg/1\" (Ø 13.16)", "11.8"],
-                ["G 3/8\" (BSP)", "19 Gg/1\" (Ø 16.66)", "15.25"], ["G 1/2\" (BSP)", "14 Gg/1\" (Ø 20.96)", "19.0"],
-                ["G 3/4\" (BSP)", "14 Gg/1\" (Ø 26.44)", "24.5"], ["G 1\" (BSP)", "11 Gg/1\" (Ø 33.25)", "30.75"],
-                ["UNC 1/4\"", "20 TPI", "5.1"], ["UNC 5/16\"", "18 TPI", "6.6"],
-                ["UNC 3/8\"", "16 TPI", "8.0"], ["UNC 1/2\"", "13 TPI", "10.8"],
-                ["UNC 5/8\"", "11 TPI", "13.5"], ["UNC 3/4\"", "10 TPI", "16.5"]
+                {m:"G 1/8\" (BSP)", p:"28 Gg/1\" (Ø 9.73)", k:"8.8"}, {m:"G 1/4\" (BSP)", p:"19 Gg/1\" (Ø 13.16)", k:"11.8"},
+                {m:"G 3/8\" (BSP)", p:"19 Gg/1\" (Ø 16.66)", k:"15.25"}, {m:"G 1/2\" (BSP)", p:"14 Gg/1\" (Ø 20.96)", k:"19.0"},
+                {m:"G 3/4\" (BSP)", p:"14 Gg/1\" (Ø 26.44)", k:"24.5"}, {m:"G 1\" (BSP)", p:"11 Gg/1\" (Ø 33.25)", k:"30.75"},
+                {m:"UNC 1/4\"", p:"20 TPI", k:"5.1"}, {m:"UNC 5/16\"", p:"18 TPI", k:"6.6"},
+                {m:"UNC 3/8\"", p:"16 TPI", k:"8.0"}, {m:"UNC 1/2\"", p:"13 TPI", k:"10.8"},
+                {m:"UNC 5/8\"", p:"11 TPI", k:"13.5"}, {m:"UNC 3/4\"", p:"10 TPI", k:"16.5"}
+            ]
+        };
+
+        const WELD_DB = {
+            steel: [
+                { t: "1.0 mm", amp: "45 – 60 A", volt: "16.0 – 17.0 V", wire: "Ø 0.8 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "10 l/perc" },
+                { t: "1.5 mm", amp: "65 – 85 A", volt: "17.2 – 18.2 V", wire: "Ø 0.8 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "10 – 12 l/perc" },
+                { t: "2.0 mm", amp: "90 – 115 A", volt: "18.5 – 19.5 V", wire: "Ø 0.8 / 1.0 mm", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "12 l/perc" },
+                { t: "3.0 mm", amp: "125 – 150 A", volt: "20.0 – 21.5 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "12 – 14 l/perc" },
+                { t: "4.0 mm", amp: "155 – 185 A", volt: "21.8 – 23.2 V", wire: "Ø 1.0 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "14 l/perc" },
+                { t: "6.0 mm", amp: "215 – 245 A", volt: "25.0 – 26.8 V", wire: "Ø 1.0 / 1.2 mm", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "15 – 16 l/perc" },
+                { t: "8–10 mm", amp: "250 – 290 A", volt: "27.0 – 29.5 V", wire: "Ø 1.2 mm (SG2)", gas: "Corgon 18 (82% Ar / 18% CO₂)", flow: "16 – 18 l/perc" }
+            ],
+            va: [
+                { t: "1.0 mm", amp: "40 – 55 A", volt: "15.5 – 16.5 V", wire: "Ø 0.8 mm (1.4316)", gas: "Argon + 2.5% CO₂ (M12)", flow: "10 – 12 l/perc" },
+                { t: "2.0 mm", amp: "80 – 105 A", volt: "17.5 – 19.0 V", wire: "Ø 0.8 / 1.0 mm", gas: "Argon + 2.5% CO₂ (M12)", flow: "12 – 14 l/perc" },
+                { t: "3.0 mm", amp: "115 – 140 A", volt: "19.5 – 21.0 V", wire: "Ø 1.0 mm (1.4316)", gas: "Argon + 2.5% CO₂ (M12)", flow: "14 l/perc" },
+                { t: "5.0 mm", amp: "175 – 215 A", volt: "22.5 – 24.5 V", wire: "Ø 1.0 / 1.2 mm", gas: "Argon + 2.5% CO₂ (M12)", flow: "16 l/perc" }
+            ],
+            alu: [
+                { t: "2.0 mm", amp: "95 – 115 A", volt: "18.5 – 20.0 V", wire: "Ø 1.0 / 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "14 – 16 l/perc" },
+                { t: "3.0 mm", amp: "130 – 155 A", volt: "20.5 – 22.0 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "16 l/perc" },
+                { t: "5.0 mm", amp: "190 – 230 A", volt: "23.5 – 25.5 V", wire: "Ø 1.2 mm (AlMg5)", gas: "100% Argon (4.6)", flow: "18 l/perc" }
             ]
         };
         function showTool(id, btn) {
             document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tool-box').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(id).classList.add('active');
+            btn.classList.add('active'); document.getElementById(id).classList.add('active');
         }
-
-        function setTurnSub(id, btn) {
+        function setSub(cls, id, btn) {
             btn.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.t-sub').forEach(s => s.style.display = 'none');
-            btn.classList.add('active');
-            document.getElementById(id).style.display = 'block';
+            document.querySelectorAll('.' + cls).forEach(s => s.style.display = 'none');
+            btn.classList.add('active'); document.getElementById(id).style.display = 'block';
         }
-
         function setTurnMat(m, btn) {
             curTurnMat = m;
             document.querySelectorAll('#turnMatBtns .p-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderTurnPresets();
+            btn.classList.add('active'); renderTurnPresets();
         }
-
         function setTurnDia(d) { curTurnDia = d; renderTurnPresets(); }
-
         function renderTurnPresets() {
-            document.getElementById('turnDiaBtns').innerHTML = TURN_DIAS.map(d =>
-                `<button class="p-btn ${d===curTurnDia?'active':''}" onclick="setTurnDia(${d})">Ø ${d} mm</button>`
-            ).join('');
+            document.getElementById('turnDiaBtns').innerHTML = TURN_DIAS.map(d => `<button class="p-btn ${d===curTurnDia?'active':''}" onclick="setTurnDia(${d})">Ø ${d} mm</button>`).join('');
             const m = TURN_MATS[curTurnMat];
             const exactRpm = Math.round((m.vc * 1000) / (Math.PI * curTurnDia));
             const closestStep = ED_STEPS.reduce((prev, curr) => Math.abs(curr - exactRpm) < Math.abs(prev - exactRpm) ? curr : prev);
             document.getElementById('turnParamOut').innerHTML = `
                 <div class="p-box"><span>Számított RPM (Vc=${m.vc})</span><b>${exactRpm} 1/perc</b></div>
-                <div class="p-box" style="border-color:var(--cyan);"><span>HOLZMANN Fokozat</span><b style="color:var(--cyan);">~ ${closestStep} 1/perc</b></div>
-                <div class="p-box"><span>Nagyoló / Simító előtolás</span><b style="color:var(--orange);font-size:0.95rem;">${m.feedR}<br>${m.feedF}</b></div>
-                <div class="p-box"><span>Fogásmélység & Tipp</span><b style="color:#fff;font-size:0.95rem;">${m.doc}</b></div>
-            `;
+                <div class="p-box" style="border-color:var(--cyan);"><span>ED1500 Fokozat</span><b style="color:var(--cyan);">~ ${closestStep} 1/perc</b></div>
+                <div class="p-box"><span>Nagyoló / Simító előtolás</span><b style="color:var(--orange);font-size:0.9rem;">${m.feedR}<br>${m.feedF}</b></div>
+                <div class="p-box"><span>Fogásmélység & Tipp</span><b style="color:#fff;font-size:0.9rem;">${m.doc}</b></div>`;
         }
-
         function setMill(d, z, vc, fz) {
-            document.getElementById('m_dia').value = d;
-            document.getElementById('m_z').value = z;
-            document.getElementById('m_vc').value = vc;
-            document.getElementById('m_fz').value = fz;
-            calcMill();
+            document.getElementById('m_dia').value = d; document.getElementById('m_z').value = z;
+            document.getElementById('m_vc').value = vc; document.getElementById('m_fz').value = fz; calcMill();
         }
-
         function calcMill() {
-            const d = +document.getElementById('m_dia').value || 0;
-            const vc = +document.getElementById('m_vc').value || 0;
-            const z = +document.getElementById('m_z').value || 1;
-            const fz = +document.getElementById('m_fz').value || 0;
+            const d = +document.getElementById('m_dia').value || 0, vc = +document.getElementById('m_vc').value || 0;
+            const z = +document.getElementById('m_z').value || 1, fz = +document.getElementById('m_fz').value || 0;
             const n = d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0;
-            const vf = Math.round(n * z * fz);
-            document.getElementById('mill_res').innerHTML = `Fordulatszám (n): <span>${n}</span> 1/perc<br>Asztal előtolás (Vf): <span>${vf}</span> mm/perc`;
+            const closestBf = BF_STEPS.reduce((prev, curr) => Math.abs(curr - n) < Math.abs(prev - n) ? curr : prev);
+            const vf = Math.round(closestBf * z * fz);
+            document.getElementById('mill_res').innerHTML = `Számított RPM: <span>${n}</span> 1/perc (BF600D fokozat: <span style="color:var(--cyan);">${closestBf} 1/perc</span>)<br>Asztal előtolás (Vf): <span>${vf}</span> mm/perc`;
         }
-
         function calcTurn() {
-            const d = +document.getElementById('d_dia').value || 0;
-            const vc = +document.getElementById('d_vc').value || 0;
-            const n = d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0;
-            document.getElementById('turn_res').innerHTML = `Fordulatszám: <span>${n}</span> 1/perc (RPM)`;
+            const d = +document.getElementById('d_dia').value || 0, vc = +document.getElementById('d_vc').value || 0;
+            document.getElementById('turn_res').innerHTML = `Fordulatszám: <span>${d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0}</span> 1/perc (RPM)`;
         }
-
         function calcCone() {
-            const D = +document.getElementById('k_D').value || 0;
-            const d = +document.getElementById('k_d').value || 0;
-            const L = +document.getElementById('k_L').value || 0;
+            const D = +document.getElementById('k_D').value || 0, d = +document.getElementById('k_d').value || 0, L = +document.getElementById('k_L').value || 0;
             if (L <= 0) return;
-            const deg = Math.atan((D - d) / (2 * L)) * (180 / Math.PI);
-            const g = Math.floor(deg);
-            const m = Math.round((deg - g) * 60);
+            const deg = Math.atan((D - d) / (2 * L)) * (180 / Math.PI), g = Math.floor(deg), m = Math.round((deg - g) * 60);
             document.getElementById('cone_res').innerHTML = `Beállítási félkúpszög (α/2): <span>${deg.toFixed(3)}°</span> (${g}° ${m}')`;
         }
-
         function calcDrill() {
-            const d = +document.getElementById('b_dia').value || 0;
-            const vc = +document.getElementById('b_vc').value || 0;
-            const n = d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0;
-            document.getElementById('drill_res').innerHTML = `Fúró fordulatszám: <span>${n}</span> 1/perc (RPM)`;
+            const d = +document.getElementById('b_dia').value || 0, vc = +document.getElementById('b_vc').value || 0;
+            document.getElementById('drill_res').innerHTML = `Fúró fordulatszám: <span>${d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0}</span> 1/perc (RPM)`;
         }
-
         function setThreadTab(tab, btn) {
-            curThreadTab = tab;
-            btn.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderThreads();
+            curThreadTab = tab; btn.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); renderThreads();
         }
-
         function renderThreads() {
             const q = document.getElementById('tSearch').value.toLowerCase().trim();
-            const list = THREAD_DATA[curThreadTab].filter(t => `${t[0]} ${t[1]} ${t[2]}`.toLowerCase().includes(q));
-            document.getElementById('threadTable').innerHTML = list.map(t =>
-                `<tr><td><strong>${t[0]}</strong></td><td>${t[1]}</td><td><b>Ø ${t[2]} mm</b></td></tr>`
-            ).join('');
+            const list = THREAD_DATA[curThreadTab].filter(t => `${t.m} ${t.p} ${t.k}`.toLowerCase().includes(q));
+            document.getElementById('threadTable').innerHTML = list.map(t => `<tr><td><strong>${t.m}</strong></td><td>${t.p}</td><td><b>Ø ${t.k} mm</b></td></tr>`).join('');
         }
-
-        renderTurnPresets(); calcMill(); calcTurn(); calcCone(); calcDrill(); renderThreads();
+        function setWeldMat(m, btn) {
+            curWeldMat = m; curWeldIdx = 0;
+            document.querySelectorAll('#weldMatBtns .p-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); renderWeld();
+        }
+        function setWeldThick(i) { curWeldIdx = i; renderWeld(); }
+        function renderWeld() {
+            const list = WELD_DB[curWeldMat]; if (curWeldIdx >= list.length) curWeldIdx = 0;
+            document.getElementById('weldThickBtns').innerHTML = list.map((x, i) => `<button class="p-btn ${i===curWeldIdx?'active':''}" onclick="setWeldThick(${i})">${x.t}</button>`).join('');
+            const sel = list[curWeldIdx];
+            document.getElementById('weldParamOut').innerHTML = `
+                <div class="p-box"><span>Áramerősség</span><b>${sel.amp}</b></div>
+                <div class="p-box"><span>Ívfeszültség</span><b>${sel.volt}</b></div>
+                <div class="p-box"><span>Huzal típus</span><b style="color:var(--cyan);font-size:0.95rem;">${sel.wire}</b></div>
+                <div class="p-box"><span>Védőgáz & Mennyiség</span><b style="color:var(--orange);font-size:0.88rem;">${sel.gas}<br>${sel.flow}</b></div>`;
+        }
+        renderTurnPresets(); calcMill(); calcTurn(); calcCone(); calcDrill(); renderThreads(); renderWeld();
     </script>
 </body>
 </html>
+
 
