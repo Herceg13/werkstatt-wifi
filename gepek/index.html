@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgácsolás & Gépek // WERKSTATT OS</title>
+    <style>
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.85); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
+        body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; padding-bottom:3rem; }
+        header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+        .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:8px 14px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); cursor:pointer; }
+        main { max-width:950px; margin:0 auto; padding:1.25rem; }
+
+        .big-menu { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:1.1rem; margin-bottom:1.5rem; }
+        .m-btn { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.4rem; text-align:left; color:#fff; cursor:pointer; transition:0.2s; display:flex; flex-direction:column; justify-content:space-between; text-decoration:none; }
+        .m-btn:hover, .m-btn.active { border-color:var(--cyan); box-shadow:0 0 22px rgba(0,240,255,0.28); transform:translateY(-2px); }
+        .m-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
+        .m-tag { font-size:0.72rem; font-weight:800; padding:4px 9px; border-radius:4px; background:rgba(0,240,255,0.14); border:1px solid var(--cyan); color:var(--cyan); }
+        .m-btn h2 { font-size:1.3rem; margin-bottom:0.4rem; }
+        .m-btn p { font-size:0.88rem; color:var(--muted); line-height:1.4; }
+
+        .tool-box { display:none; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.35rem; }
+        .tool-box.active { display:block; }
+        .tool-box h3 { color:var(--cyan); margin-bottom:1rem; font-size:1.15rem; border-bottom:1px solid rgba(0,240,255,0.2); padding-bottom:0.6rem; }
+        .in-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+        label { display:block; font-size:0.82rem; color:var(--muted); margin-bottom:4px; }
+        input { width:100%; padding:12px; background:#070d14; border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1.15rem; font-weight:700; }
+        .res-card { background:#070d14; border:1px solid var(--green); border-radius:8px; padding:1rem; font-size:1.25rem; font-weight:800; color:#fff; }
+        .res-card span { color:var(--green); font-size:1.5rem; }
+
+        table { width:100%; border-collapse:collapse; margin-top:0.5rem; font-size:0.95rem; }
+        th, td { padding:10px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.08); }
+        th { color:var(--cyan); font-size:0.8rem; text-transform:uppercase; }
+        td b { color:var(--green); font-size:1.05rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← FŐOLDAL</a>
+        <div style="text-align:right;">
+            <div style="font-weight:800; letter-spacing:1px;">FORGÁCSOLÁS <span style="color:var(--cyan);">& GÉPEK</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">Zerspanung // BB Münchinger</div>
+        </div>
+    </header>
+    <main>
+        <div class="big-menu">
+            <a href="../teilapparat/index.html" class="m-btn">
+                <div>
+                    <div class="m-top"><span style="font-size:1.8rem;">⚙️</span><span class="m-tag">TEILAPPARAT PRO →</span></div>
+                    <h2>1. Marás (Fräsen)</h2>
+                    <p>Osztófej kalkulátor megnyitása: Direkt, Indirekt és Ausgleich cserekerék-számítás.</p>
+                </div>
+            </a>
+
+            <div class="m-btn active" onclick="showTool('drehen', this)">
+                <div>
+                    <div class="m-top"><span style="font-size:1.8rem;">🔄</span><span class="m-tag">AKTÍV KALKULÁTOR</span></div>
+                    <h2>2. Esztergálás (Drehen)</h2>
+                    <p>Fordulatszám (n) számítás vágósebességből és kúpszög (α) kalkulátor.</p>
+                </div>
+            </div>
+
+            <div class="m-btn" onclick="showTool('bohren', this)">
+                <div>
+                    <div class="m-top"><span style="font-size:1.8rem;">🔩</span><span class="m-tag">TÁBLÁZAT & RPM</span></div>
+                    <h2>3. Fúrás (Bohren)</h2>
+                    <p>Metrikus magfurat táblázat (M3–M36) és fúró fordulatszám számító.</p>
+                </div>
+            </div>
+        </div>
+        <!-- ESZTERGÁLÁS PANEL -->
+        <div id="drehen" class="tool-box active">
+            <h3>🔄 Esztergálás — Fordulatszám (n) & Kúpszög</h3>
+            <div class="in-grid">
+                <div><label>Átmérő D (mm)</label><input type="number" id="d_dia" value="50" oninput="calcTurn()"></div>
+                <div><label>Vágósebesség Vc (m/perc)</label><input type="number" id="d_vc" value="120" oninput="calcTurn()"></div>
+            </div>
+            <div class="res-card" id="turn_res" style="margin-bottom:1.5rem;"></div>
+
+            <h3>📐 Kúpszög számítás (Kegelwinkel)</h3>
+            <div class="in-grid">
+                <div><label>Nagy átmérő D (mm)</label><input type="number" id="k_D" value="40" oninput="calcCone()"></div>
+                <div><label>Kis átmérő d (mm)</label><input type="number" id="k_d" value="30" oninput="calcCone()"></div>
+                <div style="grid-column:1/-1;"><label>Kúp hossza L (mm)</label><input type="number" id="k_L" value="50" oninput="calcCone()"></div>
+            </div>
+            <div class="res-card" id="cone_res"></div>
+        </div>
+
+        <!-- FÚRÁS PANEL -->
+        <div id="bohren" class="tool-box">
+            <h3>🔩 Fúró fordulatszám (n)</h3>
+            <div class="in-grid">
+                <div><label>Fúró átmérő d (mm)</label><input type="number" id="b_dia" value="10.2" step="0.1" oninput="calcDrill()"></div>
+                <div><label>Vágósebesség Vc (HSS ~25, VHM ~70)</label><input type="number" id="b_vc" value="25" oninput="calcDrill()"></div>
+            </div>
+            <div class="res-card" id="drill_res" style="margin-bottom:1.5rem;"></div>
+
+            <h3>📏 Metrikus menet — Magfurat táblázat (Kernloch)</h3>
+            <table>
+                <thead><tr><th>Menet</th><th>Emelkedés (P)</th><th>Magfurat (mm)</th></tr></thead>
+                <tbody id="threadTable"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const THREADS = [
+            ["M3", "0.5", "2.5"], ["M4", "0.7", "3.3"], ["M5", "0.8", "4.2"], ["M6", "1.0", "5.0"],
+            ["M8", "1.25", "6.8"], ["M10", "1.5", "8.5"], ["M12", "1.75", "10.2"], ["M14", "2.0", "12.0"],
+            ["M16", "2.0", "14.0"], ["M18", "2.5", "15.5"], ["M20", "2.5", "17.5"], ["M22", "2.5", "19.5"],
+            ["M24", "3.0", "21.0"], ["M27", "3.0", "24.0"], ["M30", "3.5", "26.5"], ["M36", "4.0", "32.0"]
+        ];
+
+        function showTool(id, btn) {
+            document.querySelectorAll('.m-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tool-box').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function calcTurn() {
+            const d = +document.getElementById('d_dia').value || 0;
+            const vc = +document.getElementById('d_vc').value || 0;
+            const n = d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0;
+            document.getElementById('turn_res').innerHTML = `Fordulatszám: <span>${n}</span> 1/perc (RPM)`;
+        }
+
+        function calcCone() {
+            const D = +document.getElementById('k_D').value || 0;
+            const d = +document.getElementById('k_d').value || 0;
+            const L = +document.getElementById('k_L').value || 0;
+            if (L <= 0) return;
+            const rad = Math.atan((D - d) / (2 * L));
+            const deg = rad * (180 / Math.PI);
+            const g = Math.floor(deg);
+            const m = Math.round((deg - g) * 60);
+            document.getElementById('cone_res').innerHTML = `Beállítási félkúpszög (α/2): <span>${deg.toFixed(3)}°</span> (${g}° ${m}')`;
+        }
+
+        function calcDrill() {
+            const d = +document.getElementById('b_dia').value || 0;
+            const vc = +document.getElementById('b_vc').value || 0;
+            const n = d > 0 ? Math.round((vc * 1000) / (Math.PI * d)) : 0;
+            document.getElementById('drill_res').innerHTML = `Fúró fordulatszám: <span>${n}</span> 1/perc (RPM)`;
+        }
+
+        document.getElementById('threadTable').innerHTML = THREADS.map(t =>
+            `<tr><td><strong>${t[0]}</strong></td><td>${t[1]} mm</td><td><b>Ø ${t[2]} mm</b></td></tr>`
+        ).join('');
+
+        calcTurn(); calcCone(); calcDrill();
+    </script>
+</body>
+</html>
