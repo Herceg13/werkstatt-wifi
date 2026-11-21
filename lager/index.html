@@ -9,223 +9,235 @@
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:3rem; }
         header { background:var(--panel); border-bottom:1px solid var(--border); padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-        .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:7px 12px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); }
+        .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:8px 13px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); cursor:pointer; font-size:0.88rem; }
         main { max-width:1100px; margin:0 auto; padding:1.1rem; }
-        .scan-bar { display:flex; gap:8px; margin-bottom:0.9rem; }
+        .scan-bar { display:flex; gap:8px; margin-bottom:0.85rem; }
         .scan-btn { flex:1; background:linear-gradient(90deg, rgba(0,240,255,0.22), rgba(0,240,255,0.08)); border:1px solid var(--cyan); color:var(--cyan); padding:13px; border-radius:8px; font-size:0.95rem; font-weight:800; cursor:pointer; }
-        .export-btn { background:rgba(255,42,85,0.15); border:1px solid var(--red); color:#ff6b8b; padding:10px 14px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer; white-space:nowrap; }
-        .export-btn:hover { background:rgba(255,42,85,0.28); color:#fff; }
+        .clear-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.2); color:var(--muted); padding:0 14px; border-radius:8px; font-weight:700; cursor:pointer; }
         #camBox { display:none; position:relative; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000; }
         #vid { width:100%; display:block; }
         .scan-line { position:absolute; top:50%; left:10%; right:10%; height:2px; background:var(--red); box-shadow:0 0 8px var(--red); }
-        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:0.9rem; outline:none; }
-        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.2); }
-        .filter-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:1.15rem; }
-        .f-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:9px 14px; border-radius:6px; font-weight:700; font-size:0.84rem; cursor:pointer; white-space:nowrap; transition:0.2s; }
-        .f-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
-        .f-btn.miss-btn { border-color:rgba(255,42,85,0.45); color:#ff6b8b; }
-        .f-btn.miss-btn.active { background:rgba(255,42,85,0.22); border-color:var(--red); color:#fff; box-shadow:0 0 12px rgba(255,42,85,0.3); }
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:1rem; }
-        .card { background:var(--card); border:1px solid rgba(0,240,255,0.22); border-radius:10px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between; transition:0.2s; }
-        .card.missing { border:1px solid rgba(255,42,85,0.65); background:linear-gradient(180deg, rgba(45,12,22,0.55) 0%, rgba(14,24,38,0.94) 100%); box-shadow:inset 0 0 18px rgba(255,42,85,0.12); }
+        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1.15rem; outline:none; }
+        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.25); }
+        .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+        .cat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; cursor:pointer; transition:0.2s; display:flex; flex-direction:column; justify-content:space-between; }
+        .cat-card:hover { transform:translateY(-2px); border-color:var(--cyan); box-shadow:0 0 20px rgba(0,240,255,0.22); }
+        .cat-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; }
+        .cat-card h3 { font-size:1.15rem; color:#fff; margin-bottom:0.35rem; }
+        .cat-card p { font-size:0.83rem; color:var(--muted); margin-bottom:0.9rem; line-height:1.4; }
+        .cat-stats { display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; border-top:1px solid rgba(255,255,255,0.08); padding-top:0.7rem; }
+        .sub-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; background:rgba(12,22,34,0.9); border:1px solid var(--border); padding:0.75rem 1rem; border-radius:8px; margin-bottom:0.85rem; }
+        .export-btn { background:rgba(255,42,85,0.16); border:1px solid var(--red); color:#ff6b8b; padding:8px 12px; border-radius:6px; font-weight:800; font-size:0.82rem; cursor:pointer; }
+        .export-btn:hover { background:var(--red); color:#fff; }
+        .status-bar { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:1.15rem; }
+        .st-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:11px 8px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer; text-align:center; }
+        .st-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
+        .st-btn.ok.active { background:rgba(0,230,118,0.15); border-color:var(--green); color:var(--green); }
+        .st-btn.miss.active { background:rgba(255,42,85,0.2); border-color:var(--red); color:#fff; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(315px,1fr)); gap:1rem; }
+        .card { background:var(--card); border:1px solid rgba(0,230,118,0.35); border-radius:10px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between; }
+        .card.missing { border:1px solid rgba(255,42,85,0.7); background:linear-gradient(180deg, rgba(45,12,22,0.55) 0%, rgba(14,24,38,0.95) 100%); }
         .card-top { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
         .id-badge { background:var(--cyan); color:#000; font-weight:900; font-size:0.82rem; padding:3px 8px; border-radius:4px; }
-        .miss-badge { background:var(--red); color:#fff; font-weight:900; font-size:0.72rem; padding:3px 8px; border-radius:4px; letter-spacing:0.6px; }
+        .miss-badge { background:var(--red); color:#fff; font-weight:900; font-size:0.72rem; padding:3px 8px; border-radius:4px; }
+        .ok-badge { background:rgba(0,230,118,0.15); border:1px solid var(--green); color:var(--green); font-weight:800; font-size:0.72rem; padding:2px 7px; border-radius:4px; }
         .loc-badge { background:rgba(255,123,0,0.18); border:1px solid var(--orange); color:var(--orange); font-weight:800; font-size:0.78rem; padding:3px 8px; border-radius:4px; }
-        .art-title { font-size:1.02rem; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.35; }
+        .art-title { font-size:1.02rem; font-weight:700; color:#fff; margin-bottom:5px; line-height:1.35; }
         .art-meta { font-size:0.8rem; color:var(--muted); margin-bottom:10px; }
-        .stock-bar { display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; }
-        .stock-val { font-size:1.25rem; font-weight:900; color:var(--green); }
-        .stock-val.zero { color:var(--red); }
-        .qty-btns { display:flex; gap:6px; }
-        .q-btn { width:42px; height:42px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:#fff; font-size:1.3rem; font-weight:800; cursor:pointer; }
-        .q-btn:active { background:var(--cyan); color:#000; }
+        .stock-box { border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; display:flex; flex-direction:column; gap:8px; }
+        .stock-row { display:flex; justify-content:space-between; align-items:center; }
+        .stock-val { font-size:1.2rem; font-weight:900; color:var(--green); }
+        .stock-val.low { color:var(--red); }
+        .min-val { font-size:1rem; font-weight:800; color:var(--orange); }
+        .qty-btns { display:flex; gap:5px; }
+        .q-btn { width:36px; height:34px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:#fff; font-size:1.15rem; font-weight:800; cursor:pointer; }
+        .q-btn.min-b { border-color:rgba(255,123,0,0.45); color:var(--orange); }
     </style>
 </head>
 <body>
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
         <div style="text-align:right;">
-            <div style="font-weight:800; letter-spacing:1px;">ERSATZTEILLAGER <span style="color:var(--cyan);">// SCAN</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">H5ETL Készlet, Szalagok & Hiánylista</div>
+            <div style="font-weight:800; letter-spacing:1px;">ERSATZTEILLAGER <span style="color:var(--cyan);">// PRO</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">H5ETL Készlet, Minimumok & Rendelés</div>
         </div>
     </header>
     <main>
         <div class="scan-bar">
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
-            <button class="export-btn" onclick="copyMissingList()">📋 HIÁNYLISTA MÁSOLÁSA</button>
+            <button class="clear-btn" onclick="resetView()">✖ Törlés</button>
         </div>
         <div id="camBox"><video id="vid" playsinline autoplay muted></video><div class="scan-line"></div></div>
-        <input type="text" id="q" class="search-box" placeholder="🔍 Keresés kód, név, méret vagy polc alapján (pl. A0025, 02-C4, 3800x250, Grease)..." oninput="render()">
-        <div class="filter-row">
-            <button class="f-btn active" id="btnAll" onclick="setF('all', this)">Összes</button>
-            <button class="f-btn miss-btn" id="btnMiss" onclick="setF('missing', this)">⚠️ Hiányzó (0 db)</button>
-            <button class="f-btn" onclick="setF('szalag', this)">Szalagok & Szíjak</button>
-            <button class="f-btn" onclick="setF('buro', this)">Zsírok, Spray & Büro</button>
-            <button class="f-btn" onclick="setF('alkatresz', this)">Alkatrészek & Motorok</button>
-            <button class="f-btn" onclick="setF('stock', this)">✅ Van raktáron (>0)</button>
+        <input type="text" id="q" class="search-box" placeholder="🔍 Villámkereső (kód, név, méret, polc — pl. A0025, 02-C4, 3800x250, Grease)..." oninput="render()">
+        <div id="catMenu" class="cat-grid"></div>
+        <div id="itemSection" style="display:none;">
+            <div class="sub-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="back-btn" onclick="backToCats()">← Kategóriák</button>
+                    <strong id="curCatTitle" style="color:#fff; font-size:1.05rem;">Összes alkatrész</strong>
+                </div>
+                <button class="export-btn" onclick="copyMissingList()">📋 HIÁNYLISTA MÁSOLÁSA</button>
+            </div>
+            <div class="status-bar">
+                <button class="st-btn active" id="stAll" onclick="setStatus('all', this)">Összes (0)</button>
+                <button class="st-btn ok" id="stOk" onclick="setStatus('ok', this)">✅ Elérhető (0)</button>
+                <button class="st-btn miss" id="stMiss" onclick="setStatus('miss', this)">⚠️ Hiány (0)</button>
+            </div>
+            <div class="grid" id="list"></div>
         </div>
-        <div class="grid" id="list"></div>
     </main>
     <script>
         const L1 = [
-            {id:"A0001", name:"Sekunden-Kleber-Aktivator", geb:"150 ml Dose", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0002", name:"D.Silikondichtmasse", geb:"200 ml Kartusche", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0003", name:"Rohr- und Gewindedichtung", geb:"50 g Pumpspender", ist:3, loc:"BÜRO", cat:"buro"},
-            {id:"A0004", name:"Schraubensicherung", geb:"50 g Pumpspender", ist:6, loc:"BÜRO", cat:"buro"},
-            {id:"A0005", name:"Metalin Plus", geb:"400 ml Dose", ist:3, loc:"BÜRO", cat:"buro"},
-            {id:"A0006", name:"Flächendichtung Grün", geb:"50 g Pumpspender", ist:1, loc:"BÜRO", cat:"buro"},
-            {id:"A0007", name:"Grease MP2/3", geb:"400 ml Kartusche", ist:45, loc:"BÜRO", cat:"buro"},
-            {id:"A0008", name:"Fin Grease LS2", geb:"400 ml Kartusche", ist:9, loc:"BÜRO", cat:"buro"},
-            {id:"A0009", name:"Fin Super", geb:"300 ml Dose", ist:27, loc:"BÜRO", cat:"buro"},
-            {id:"A0010", name:"Haftgrund-Rostschutz / Rot.", geb:"400 ml Dose", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0011", name:"Haftgrund-Rostschutz / Grau.", geb:"400 ml Dose", ist:6, loc:"BÜRO", cat:"buro"},
-            {id:"A0012", name:"Rallye-lack / Schwarz-Matt.", geb:"400 ml Dose", ist:16, loc:"BÜRO", cat:"buro"},
-            {id:"A0013", name:"Aerosol Art / Resedagrün Matt.", geb:"400 ml Dose", ist:8, loc:"BÜRO", cat:"buro"},
-            {id:"A0014", name:"Aerosol Art / Blau.", geb:"400 ml Dose", ist:9, loc:"BÜRO", cat:"buro"},
-            {id:"A0015", name:"Aerosol Art / Rot.", geb:"400 ml Dose", ist:16, loc:"BÜRO", cat:"buro"},
-            {id:"A0016", name:"Felgenspray / Silber", geb:"500 ml Dose", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0017", name:"WD-40 Multifunktionsprodukt", geb:"400 ml Dose", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0018", name:"Ketten-Spray", geb:"400 ml Dose", ist:38, loc:"BÜRO", cat:"buro"},
-            {id:"A0019", name:"Scheiben-Reiniger Schaum", geb:"500 ml Dose", ist:15, loc:"BÜRO", cat:"buro"},
-            {id:"A0020", name:"Silikonspray", geb:"300 ml Dose", ist:18, loc:"BÜRO", cat:"buro"},
-            {id:"A0021", name:"Rostlöser mit MOS2", geb:"300 ml Dose", ist:20, loc:"BÜRO", cat:"buro"},
-            {id:"A0022", name:"Lecksuchspray", geb:"400 ml Dose", ist:3, loc:"BÜRO", cat:"buro"},
-            {id:"A0023", name:"Bremsenreiniger", geb:"500 ml Dose", ist:19, loc:"BÜRO", cat:"buro"},
-            {id:"A0024", name:"Mehrzweckfett", geb:"400 g Kartusche", ist:28, loc:"BÜRO", cat:"buro"},
-            {id:"A0025", name:"V1 + V2 Hobel Auslauf 3800x250 Spiralnaht", geb:"Spule", ist:0, loc:"02-C4", cat:"szalag"},
-            {id:"A0026", name:"V1 + V2 Hobel Auslauf 3800x250 Mech. EV", geb:"Spule", ist:0, loc:"02-C4", cat:"szalag"},
-            {id:"A0027", name:"V1 Vor Leim 12900x400 Mech. EV", geb:"Spule", ist:0, loc:"02-C2", cat:"szalag"},
-            {id:"A0028", name:"V1 Presse / Noppenbänder 1 16920x300 Mech. EV", geb:"Spule", ist:0, loc:"02-A0", cat:"szalag"},
-            {id:"A0029", name:"V1 Presse / Noppenbänder 2-5 12740x300 Mech. EV", geb:"Spule", ist:0, loc:"02-B5", cat:"szalag"},
-            {id:"A0030", name:"V2 Öst vor Leim 6000x800 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-C5", cat:"szalag"},
-            {id:"A0031", name:"V2 Kall. Leim 15200x800 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0032", name:"V2 Kall Ablage 1 6930x600 Spiralnaht", geb:"Spule", ist:0, loc:"02-E2", cat:"szalag"},
-            {id:"A0033", name:"V2 Kall Ablage 2 9180x600 Spiralnaht", geb:"Spule", ist:0, loc:"02-E3", cat:"szalag"},
-            {id:"A0034", name:"V2 Kall Presse innen 15350x600 Spiralnaht", geb:"Spule", ist:0, loc:"02-E2", cat:"szalag"},
-            {id:"A0035", name:"V2 Kall Presse Auslauf 4030x800 Spiralnaht", geb:"Spule", ist:0, loc:"02-C5", cat:"szalag"},
-            {id:"A0036", name:"KVZ 1/2 Fräse Tisch 1,2 1140x600 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A1", cat:"szalag"},
-            {id:"A0037", name:"KVZ 1 Tisch 1-6 + KVZ 2 3095x600 Endlos Flexp.", geb:"Spule", ist:0, loc:"02-A2", cat:"szalag"},
-            {id:"A0038", name:"KVZ 1 Tische 7 4090x600 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A3", cat:"szalag"},
-            {id:"A0039", name:"KVZ 1 Übergabe Breit 3095x650 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A5", cat:"szalag"},
-            {id:"A0040", name:"KVZ 1 Quer vor Einf. 2120x600 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A2", cat:"szalag"},
-            {id:"A0041", name:"KVZ 2 Tisch 1-6 2095x600 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A1", cat:"szalag"},
-            {id:"A0042", name:"KVZ 2 Übergabe Breit 2095x650 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-A5", cat:"szalag"},
-            {id:"A0043", name:"V4 Hobel Auslauf 3760x300 Kunsstoff Verbindung", geb:"Spule", ist:0, loc:"02-D4", cat:"szalag"},
-            {id:"A0044", name:"BS Gr. Stapelleisten 15400x240 Mech. EV", geb:"Spule", ist:0, loc:"02-D3", cat:"szalag"},
-            {id:"A0045", name:"Opti. Gr. Nach Hobel (Waco) 6980x300 Mech. EV", geb:"Spule", ist:0, loc:"02-B4", cat:"szalag"},
-            {id:"A0046", name:"Opti. Gr. Servo-Abfallband 10350x250 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-B3", cat:"szalag"},
-            {id:"A0047", name:"Opti. Gr. Sammel Band 8,9,10 10320x1000 Mech. EV", geb:"Spule", ist:0, loc:"12B-01", cat:"szalag"},
-            {id:"A0048", name:"Opti. Gr. Sammel Band 7,11 10320x1500 Mech. EV", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0049", name:"Opti. Gr. Sammel Band 4-6 (schräg) 10230x1000 Mech. EV", geb:"Spule", ist:0, loc:"12B-01", cat:"szalag"},
-            {id:"A0050", name:"Opti. Gr. Sammel Band 1,2,3 10320x2000 Mech. EV", geb:"Spule", ist:0, loc:"12A-03", cat:"szalag"}
+            {id:"A0001", name:"Sekunden-Kleber-Aktivator", geb:"150 ml Dose", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0002", name:"D.Silikondichtmasse", geb:"200 ml Kartusche", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0003", name:"Rohr- und Gewindedichtung", geb:"50 g Pumpspender", ist:3, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0004", name:"Schraubensicherung", geb:"50 g Pumpspender", ist:6, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0005", name:"Metalin Plus", geb:"400 ml Dose", ist:3, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0006", name:"Flächendichtung Grün", geb:"50 g Pumpspender", ist:1, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0007", name:"Grease MP2/3", geb:"400 ml Kartusche", ist:45, min:10, loc:"BÜRO", cat:"buro"},
+            {id:"A0008", name:"Fin Grease LS2", geb:"400 ml Kartusche", ist:9, min:3, loc:"BÜRO", cat:"buro"},
+            {id:"A0009", name:"Fin Super", geb:"300 ml Dose", ist:27, min:5, loc:"BÜRO", cat:"buro"},
+            {id:"A0010", name:"Haftgrund-Rostschutz / Rot.", geb:"400 ml Dose", ist:0, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0011", name:"Haftgrund-Rostschutz / Grau.", geb:"400 ml Dose", ist:6, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0012", name:"Rallye-lack / Schwarz-Matt.", geb:"400 ml Dose", ist:16, min:4, loc:"BÜRO", cat:"buro"},
+            {id:"A0013", name:"Aerosol Art / Resedagrün Matt.", geb:"400 ml Dose", ist:8, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0014", name:"Aerosol Art / Blau.", geb:"400 ml Dose", ist:9, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0015", name:"Aerosol Art / Rot.", geb:"400 ml Dose", ist:16, min:4, loc:"BÜRO", cat:"buro"},
+            {id:"A0016", name:"Felgenspray / Silber", geb:"500 ml Dose", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0017", name:"WD-40 Multifunktionsprodukt", geb:"400 ml Dose", ist:0, min:3, loc:"BÜRO", cat:"buro"},
+            {id:"A0018", name:"Ketten-Spray", geb:"400 ml Dose", ist:38, min:6, loc:"BÜRO", cat:"buro"},
+            {id:"A0019", name:"Scheiben-Reiniger Schaum", geb:"500 ml Dose", ist:15, min:3, loc:"BÜRO", cat:"buro"},
+            {id:"A0020", name:"Silikonspray", geb:"300 ml Dose", ist:18, min:4, loc:"BÜRO", cat:"buro"},
+            {id:"A0021", name:"Rostlöser mit MOS2", geb:"300 ml Dose", ist:20, min:4, loc:"BÜRO", cat:"buro"},
+            {id:"A0022", name:"Lecksuchspray", geb:"400 ml Dose", ist:3, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0023", name:"Bremsenreiniger", geb:"500 ml Dose", ist:19, min:6, loc:"BÜRO", cat:"buro"},
+            {id:"A0024", name:"Mehrzweckfett", geb:"400 g Kartusche", ist:28, min:6, loc:"BÜRO", cat:"buro"},
+            {id:"A0025", name:"V1 + V2 Hobel Auslauf 3800x250 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-C4", cat:"szalag"},
+            {id:"A0026", name:"V1 + V2 Hobel Auslauf 3800x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C4", cat:"szalag"},
+            {id:"A0027", name:"V1 Vor Leim 12900x400 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C2", cat:"szalag"},
+            {id:"A0028", name:"V1 Presse / Noppenbänder 1 16920x300 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-A0", cat:"szalag"},
+            {id:"A0029", name:"V1 Presse / Noppenbänder 2-5 12740x300 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-B5", cat:"szalag"},
+            {id:"A0030", name:"V2 Öst vor Leim 6000x800 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-C5", cat:"szalag"},
+            {id:"A0031", name:"V2 Kall. Leim 15200x800 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
+            {id:"A0032", name:"V2 Kall Ablage 1 6930x600 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-E2", cat:"szalag"},
+            {id:"A0033", name:"V2 Kall Ablage 2 9180x600 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-E3", cat:"szalag"},
+            {id:"A0034", name:"V2 Kall Presse innen 15350x600 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-E2", cat:"szalag"},
+            {id:"A0035", name:"V2 Kall Presse Auslauf 4030x800 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-C5", cat:"szalag"},
+            {id:"A0036", name:"KVZ 1/2 Fräse Tisch 1,2 1140x600 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A1", cat:"szalag"},
+            {id:"A0037", name:"KVZ 1 Tisch 1-6 + KVZ 2 3095x600 Endlos Flexp.", geb:"Spule", ist:0, min:1, loc:"02-A2", cat:"szalag"},
+            {id:"A0038", name:"KVZ 1 Tische 7 4090x600 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A3", cat:"szalag"},
+            {id:"A0039", name:"KVZ 1 Übergabe Breit 3095x650 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A5", cat:"szalag"},
+            {id:"A0040", name:"KVZ 1 Quer vor Einf. 2120x600 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A2", cat:"szalag"},
+            {id:"A0041", name:"KVZ 2 Tisch 1-6 2095x600 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A1", cat:"szalag"},
+            {id:"A0042", name:"KVZ 2 Übergabe Breit 2095x650 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-A5", cat:"szalag"},
+            {id:"A0043", name:"V4 Hobel Auslauf 3760x300 Kunsstoff Verbindung", geb:"Spule", ist:0, min:1, loc:"02-D4", cat:"szalag"},
+            {id:"A0044", name:"BS Gr. Stapelleisten 15400x240 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-D3", cat:"szalag"},
+            {id:"A0045", name:"Opti. Gr. Nach Hobel (Waco) 6980x300 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-B4", cat:"szalag"},
+            {id:"A0046", name:"Opti. Gr. Servo-Abfallband 10350x250 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-B3", cat:"szalag"},
+            {id:"A0047", name:"Opti. Gr. Sammel Band 8,9,10 10320x1000 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-01", cat:"szalag"},
+            {id:"A0048", name:"Opti. Gr. Sammel Band 7,11 10320x1500 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
+            {id:"A0049", name:"Opti. Gr. Sammel Band 4-6 (schräg) 10230x1000 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-01", cat:"szalag"},
+            {id:"A0050", name:"Opti. Gr. Sammel Band 1,2,3 10320x2000 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12A-03", cat:"szalag"}
         ];
         const L2 = [
-            {id:"A0051", name:"KVZ 2 Kistenkipper Oben 9800x2400 Mech. EV", geb:"Spule", ist:0, loc:"12A-02", cat:"szalag"},
-            {id:"A0052", name:"KVZ 1 Kistenkipper Oben 9540x2400 Mech. EV", geb:"Spule", ist:0, loc:"12A-03", cat:"szalag"},
-            {id:"A0053", name:"KVZ 1/2 Kistenkipper Unten 7800x1500 Mech. EV", geb:"Spule", ist:0, loc:"12B-02", cat:"szalag"},
-            {id:"A0054", name:"Opti. Gr. Sortierband 1 57100x250 Mech. EV", geb:"Spule", ist:0, loc:"12B-05", cat:"szalag"},
-            {id:"A0055", name:"Opti. Gr. Sortierband 2 46100x250 Mech. EV", geb:"Spule", ist:0, loc:"12B-04", cat:"szalag"},
-            {id:"A0056", name:"Opti. Gr. Sortierband 3 37000x250 Mech. EV", geb:"Spule", ist:0, loc:"12B-03", cat:"szalag"},
-            {id:"A0057", name:"Opti. Gr. Abfallband / schräg 5220x600 Mech. EV", geb:"Spule", ist:0, loc:"02-C3", cat:"szalag"},
-            {id:"A0058", name:"Opti. Gr. Stapler Automat 9,10 7810x280 Mech. EV", geb:"Spule", ist:0, loc:"02-B1", cat:"szalag"},
-            {id:"A0059", name:"Opti. Gr. Stapler Automat 5-8 6810x280 Mech. EV", geb:"Spule", ist:0, loc:"02-C1", cat:"szalag"},
-            {id:"A0060", name:"Opti. Gr. Stapler Automat 1-4 5300x280 Mech. EV", geb:"Spule", ist:0, loc:"02-B2", cat:"szalag"},
-            {id:"A0061", name:"Opti. Kl. Sortier Auslauf 23450x250 Mech. EV", geb:"Spule", ist:0, loc:"02-C0", cat:"szalag"},
-            {id:"A0062", name:"Opti. Kl. Markierung Tisch 7900x250 Mech. EV", geb:"Spule", ist:0, loc:"02-D3", cat:"szalag"},
-            {id:"A0063", name:"Brikett Presse (Flachriemen) 5350x160 Endlos", geb:"Spule", ist:0, loc:"02-D1", cat:"szalag"},
-            {id:"A0064", name:"Opti. Kl. Vor Säge Einzug 6020x150 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-D2", cat:"szalag"},
-            {id:"A0065", name:"Brikett Waage Tisch 1820x500 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-D3", cat:"szalag"},
-            {id:"A0066", name:"V4 Abfallband / schräg 6600x300 Mech. EV", geb:"Spule", ist:0, loc:"02-D2", cat:"szalag"},
-            {id:"A0067", name:"V4 Abfallband / Säge 13800x300 Mech. EV", geb:"Spule", ist:0, loc:"02-C2", cat:"szalag"},
-            {id:"A0068", name:"V4 Nach Leim 14500x180 Spiralnaht", geb:"Spule", ist:0, loc:"02-D4", cat:"szalag"},
-            {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"}
+            {id:"A0051", name:"KVZ 2 Kistenkipper Oben 9800x2400 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12A-02", cat:"szalag"},
+            {id:"A0052", name:"KVZ 1 Kistenkipper Oben 9540x2400 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12A-03", cat:"szalag"},
+            {id:"A0053", name:"KVZ 1/2 Kistenkipper Unten 7800x1500 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-02", cat:"szalag"},
+            {id:"A0054", name:"Opti. Gr. Sortierband 1 57100x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-05", cat:"szalag"},
+            {id:"A0055", name:"Opti. Gr. Sortierband 2 46100x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-04", cat:"szalag"},
+            {id:"A0056", name:"Opti. Gr. Sortierband 3 37000x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"12B-03", cat:"szalag"},
+            {id:"A0057", name:"Opti. Gr. Abfallband / schräg 5220x600 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C3", cat:"szalag"},
+            {id:"A0058", name:"Opti. Gr. Stapler Automat 9,10 7810x280 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-B1", cat:"szalag"},
+            {id:"A0059", name:"Opti. Gr. Stapler Automat 5-8 6810x280 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C1", cat:"szalag"},
+            {id:"A0060", name:"Opti. Gr. Stapler Automat 1-4 5300x280 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-B2", cat:"szalag"},
+            {id:"A0061", name:"Opti. Kl. Sortier Auslauf 23450x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C0", cat:"szalag"},
+            {id:"A0062", name:"Opti. Kl. Markierung Tisch 7900x250 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-D3", cat:"szalag"},
+            {id:"A0063", name:"Brikett Presse (Flachriemen) 5350x160 Endlos", geb:"Spule", ist:0, min:1, loc:"02-D1", cat:"szalag"},
+            {id:"A0064", name:"Opti. Kl. Vor Säge Einzug 6020x150 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-D2", cat:"szalag"},
+            {id:"A0065", name:"Brikett Waage Tisch 1820x500 Endlos Flexproof", geb:"Spule", ist:0, min:1, loc:"02-D3", cat:"szalag"},
+            {id:"A0066", name:"V4 Abfallband / schräg 6600x300 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-D2", cat:"szalag"},
+            {id:"A0067", name:"V4 Abfallband / Säge 13800x300 Mech. EV", geb:"Spule", ist:0, min:1, loc:"02-C2", cat:"szalag"},
+            {id:"A0068", name:"V4 Nach Leim 14500x180 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"02-D4", cat:"szalag"},
+            {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"}
         ];
         const L3 = [
-            {id:"A0101", name:"OptiCut 450 Alu Leiste 30x10x430 mm", geb:"Natur", ist:0, loc:"03-D4", cat:"alkatresz"},
-            {id:"A0102", name:"Waco Pneumatik Zylinder Ø100 x 50mm", geb:"BOX", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0103", name:"BHKW Oelfilter MANN HU 12003 / W0E793221", geb:"BOX", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0104", name:"KVZ 1 Gr. Auftragsrolle für Leim", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0105", name:"KVZ 2 Gr. Auftragsrolle für Leim", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0106", name:"KVZ 1/2 Kl. Auftragsrolle für Leim", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0107", name:"KVZ 1 Zange Getriebe (GED05-611 f.GST052)", geb:"BOX", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0108", name:"KVZ Förderschnecke für Leim", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0109", name:"KVZ 1 Zange Getriebe LENZE", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0110", name:"KVZ 1 Zange Motor", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0111", name:"Montageschaum B2 P741", geb:"500 ml Dose", ist:2, loc:"BÜRO", cat:"buro"},
-            {id:"A0112", name:"Putzpapier-ROLLE BASIC-LINE Art.Nr. 48523", geb:"Rolle", ist:5, loc:"BÜRO", cat:"buro"},
-            {id:"A0113", name:"Flachriemen 1250 x 50 V1 Hobelkopf", geb:"BOX", ist:0, loc:"01-B3", cat:"szalag"},
-            {id:"A0114", name:"Flachriemen 1610 x 50", geb:"BOX", ist:0, loc:"01-B4", cat:"szalag"},
-            {id:"A0115", name:"Flachriemen 930 x 70", geb:"BOX", ist:0, loc:"01-B5", cat:"szalag"},
-            {id:"A0116", name:"Flachriemen 1540 x 70", geb:"BOX", ist:0, loc:"01-B6", cat:"szalag"},
-            {id:"A0117", name:"Flachriemen 1110 x 70", geb:"BOX", ist:0, loc:"01-B7", cat:"szalag"},
-            {id:"A0118", name:"Flachriemen 900 x 70", geb:"BOX", ist:0, loc:"01-B8", cat:"szalag"},
-            {id:"A0119", name:"Flachriemen 1125 x 50", geb:"BOX", ist:0, loc:"01-B9", cat:"szalag"},
-            {id:"A0120", name:"V2 Presse Feuerwehrschlauch", geb:"Natur", ist:0, loc:"01-A2 bis A4", cat:"alkatresz"},
-            {id:"A0121", name:"Tor Federwelle 40x3 mit Nut", geb:"Natur", ist:0, loc:"16-A5", cat:"alkatresz"},
-            {id:"A0122", name:"Wegeventil 5/2 V740-5/2AR-024DC-07", geb:"BOX", ist:0, loc:"03-C3", cat:"alkatresz"},
-            {id:"A0123", name:"BHKW Taschenfilter", geb:"BOX", ist:0, loc:"15-B0", cat:"alkatresz"},
-            {id:"A0124", name:"Opti Säge Leiste (rechts) 40x10x383mm 741.5405.4", geb:"Natur", ist:0, loc:"03-D2", cat:"alkatresz"},
-            {id:"A0125", name:"Opti Säge Leiste (links) 40x10x383mm 741.5406.4", geb:"Natur", ist:0, loc:"03-D3", cat:"alkatresz"},
-            {id:"A0126", name:"Gasfeder 2367LK 1700N 073/23UF (OPTI HOBEL)", geb:"Natur", ist:0, loc:"03-E3", cat:"alkatresz"},
-            {id:"A0127", name:"Natural Silikon Perfekt", geb:"600 ml Beutel", ist:20, loc:"BÜRO", cat:"buro"},
-            {id:"A0128", name:"Markierfarbe TRAFFIC Weiß", geb:"500 ml Dose", ist:2, loc:"BÜRO", cat:"buro"},
-            {id:"A0129", name:"Fahrradschlauch 26x1,75x2 DV", geb:"BOX", ist:11, loc:"BÜRO", cat:"buro"},
-            {id:"A0130", name:"Fahrradschlauch 28x1,75x2 DV", geb:"BOX", ist:9, loc:"BÜRO", cat:"buro"},
-            {id:"A0131", name:"V2-KL30 Drehstrom Flanschmotor", geb:"Natur", ist:0, loc:"10-B2", cat:"alkatresz"},
-            {id:"A0132", name:"Gates POWERGRIP GT4 3850-14MGT-55", geb:"Natur", ist:0, loc:"19-A1", cat:"szalag"},
-            {id:"A0133", name:"SKF Wälzlagerfett 200-LGHP 2/0.4", geb:"420 ml Kartusche", ist:11, loc:"BÜRO", cat:"buro"},
-            {id:"A0135", name:"Saalbesen Holz 40 cm", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0136", name:"Saalbesen Holz 60 cm", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0137", name:"Saalbesen Holz 80 cm", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0138", name:"Saalbesen Holz 100 cm", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0139", name:"Handbesen", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0140", name:"Heizkörperpinsel, helle Chinaborste", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0141", name:"Leichtmetall Schaufel mit Stiel (Größe 9)", geb:"Boden", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0142", name:"Gerätestiel 1800mm 28-30 mm", geb:"Boden", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0143", name:"(Hand) Metall-Kehrblech mit Holzgriff", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"}
+            {id:"A0101", name:"OptiCut 450 Alu Leiste 30x10x430 mm", geb:"Natur", ist:0, min:1, loc:"03-D4", cat:"alkatresz"},
+            {id:"A0102", name:"Waco Pneumatik Zylinder Ø100 x 50mm", geb:"BOX", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0103", name:"BHKW Oelfilter MANN HU 12003 / W0E793221", geb:"BOX", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0104", name:"KVZ 1 Gr. Auftragsrolle für Leim", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0105", name:"KVZ 2 Gr. Auftragsrolle für Leim", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0106", name:"KVZ 1/2 Kl. Auftragsrolle für Leim", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0107", name:"KVZ 1 Zange Getriebe (GED05-611 f.GST052)", geb:"BOX", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0108", name:"KVZ Förderschnecke für Leim", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0109", name:"KVZ 1 Zange Getriebe LENZE", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0110", name:"KVZ 1 Zange Motor", geb:"Natur", ist:0, min:1, loc:"H5ET-Lager", cat:"alkatresz"},
+            {id:"A0111", name:"Montageschaum B2 P741", geb:"500 ml Dose", ist:2, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0112", name:"Putzpapier-ROLLE BASIC-LINE Art.Nr. 48523", geb:"Rolle", ist:5, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0113", name:"Flachriemen 1250 x 50 V1 Hobelkopf", geb:"BOX", ist:0, min:1, loc:"01-B3", cat:"szalag"},
+            {id:"A0114", name:"Flachriemen 1610 x 50", geb:"BOX", ist:0, min:1, loc:"01-B4", cat:"szalag"},
+            {id:"A0115", name:"Flachriemen 930 x 70", geb:"BOX", ist:0, min:1, loc:"01-B5", cat:"szalag"},
+            {id:"A0116", name:"Flachriemen 1540 x 70", geb:"BOX", ist:0, min:1, loc:"01-B6", cat:"szalag"},
+            {id:"A0117", name:"Flachriemen 1110 x 70", geb:"BOX", ist:0, min:1, loc:"01-B7", cat:"szalag"},
+            {id:"A0118", name:"Flachriemen 900 x 70", geb:"BOX", ist:0, min:1, loc:"01-B8", cat:"szalag"},
+            {id:"A0119", name:"Flachriemen 1125 x 50", geb:"BOX", ist:0, min:1, loc:"01-B9", cat:"szalag"},
+            {id:"A0120", name:"V2 Presse Feuerwehrschlauch", geb:"Natur", ist:0, min:1, loc:"01-A2 bis A4", cat:"alkatresz"},
+            {id:"A0121", name:"Tor Federwelle 40x3 mit Nut", geb:"Natur", ist:0, min:1, loc:"16-A5", cat:"alkatresz"},
+            {id:"A0122", name:"Wegeventil 5/2 V740-5/2AR-024DC-07", geb:"BOX", ist:0, min:1, loc:"03-C3", cat:"alkatresz"},
+            {id:"A0123", name:"BHKW Taschenfilter", geb:"BOX", ist:0, min:1, loc:"15-B0", cat:"alkatresz"},
+            {id:"A0124", name:"Opti Säge Leiste (rechts) 40x10x383mm 741.5405.4", geb:"Natur", ist:0, min:1, loc:"03-D2", cat:"alkatresz"},
+            {id:"A0125", name:"Opti Säge Leiste (links) 40x10x383mm 741.5406.4", geb:"Natur", ist:0, min:1, loc:"03-D3", cat:"alkatresz"},
+            {id:"A0126", name:"Gasfeder 2367LK 1700N 073/23UF (OPTI HOBEL)", geb:"Natur", ist:0, min:1, loc:"03-E3", cat:"alkatresz"},
+            {id:"A0127", name:"Natural Silikon Perfekt", geb:"600 ml Beutel", ist:20, min:5, loc:"BÜRO", cat:"buro"},
+            {id:"A0128", name:"Markierfarbe TRAFFIC Weiß", geb:"500 ml Dose", ist:2, min:2, loc:"BÜRO", cat:"buro"},
+            {id:"A0129", name:"Fahrradschlauch 26x1,75x2 DV", geb:"BOX", ist:11, min:3, loc:"BÜRO", cat:"buro"},
+            {id:"A0130", name:"Fahrradschlauch 28x1,75x2 DV", geb:"BOX", ist:9, min:3, loc:"BÜRO", cat:"buro"},
+            {id:"A0131", name:"V2-KL30 Drehstrom Flanschmotor", geb:"Natur", ist:0, min:1, loc:"10-B2", cat:"alkatresz"},
+            {id:"A0132", name:"Gates POWERGRIP GT4 3850-14MGT-55", geb:"Natur", ist:0, min:1, loc:"19-A1", cat:"szalag"},
+            {id:"A0133", name:"SKF Wälzlagerfett 200-LGHP 2/0.4", geb:"420 ml Kartusche", ist:11, min:4, loc:"BÜRO", cat:"buro"},
+            {id:"A0135", name:"Saalbesen Holz 40 cm", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0136", name:"Saalbesen Holz 60 cm", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0137", name:"Saalbesen Holz 80 cm", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0138", name:"Saalbesen Holz 100 cm", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0139", name:"Handbesen", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0140", name:"Heizkörperpinsel, helle Chinaborste", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0141", name:"Leichtmetall Schaufel mit Stiel (Größe 9)", geb:"Boden", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0142", name:"Gerätestiel 1800mm 28-30 mm", geb:"Boden", ist:0, min:1, loc:"BÜRO", cat:"buro"},
+            {id:"A0143", name:"(Hand) Metall-Kehrblech mit Holzgriff", geb:"BOX", ist:0, min:1, loc:"BÜRO", cat:"buro"}
+        ];
+        const FULL_LAGER = L1.concat(L2, L3);
+        let items = JSON.parse(localStorage.getItem('bb_lager_v7')) || JSON.parse(JSON.stringify(FULL_LAGER));
+        let curCat = null;
+        let curStatus = 'all';
+        let stream = null, scanTimer = null;
+
+        const CATS = [
+            { id: 'all', icon: '📦', title: 'Összes alkatrész', desc: 'Teljes H5ETL raktárkészlet áttekintése egyben.' },
+            { id: 'szalag', icon: '🎞️', title: 'Szalagok & Szíjak', desc: 'Szállítószalagok, lapos- és fogasszíjak adatbázisa.' },
+            { id: 'buro', icon: '🛢️', title: 'Zsírok, Spray & Büro', desc: 'Kenőanyagok, ragasztók, tisztítók és műhelyi fogyóanyagok.' },
+            { id: 'alkatresz', icon: '⚙️', title: 'Alkatrészek & Motorok', desc: 'Hengerek, szelepek, szűrők, hajtóművek és gépelemek.' }
         ];
 
-        const FULL_LAGER = L1.concat(L2, L3);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v5')) || JSON.parse(JSON.stringify(FULL_LAGER));
-        let curF = 'all', stream = null, scanTimer = null;
+        function save() { localStorage.setItem('bb_lager_v7', JSON.stringify(items)); }
+        function openCat(catId) { curCat = catId; curStatus = 'all'; document.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active')); document.getElementById('stAll').classList.add('active'); render(); }
+        function backToCats() { curCat = null; document.getElementById('q').value = ''; render(); }
+        function resetView() { document.getElementById('q').value = ''; curCat = null; render(); }
+        function setStatus(st, btn) { curStatus = st; document.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
+        function chgIst(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
+        function chgMin(id, d) { const it = items.find(x => x.id === id); if(it) { it.min = Math.max(0, (it.min || 0) + d); save(); render(); } }
 
-        function save() { localStorage.setItem('bb_lager_v5', JSON.stringify(items)); }
-        function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
-        function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
-
-                        function copyMissingList() {
+        function copyMissingList() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
-            const catMeta = {
-                all: { title: 'TELJES RAKTÁR', vendor: 'Összes beszállító' },
-                missing: { title: 'TELJES RAKTÁR', vendor: 'Összes beszállító' },
-                szalag: { title: 'SZÁLLÍTÓSZALAGOK & SZÍJAK', vendor: 'Beszállító: HABASIT' },
-                buro: { title: 'KENŐANYAGOK, SPRAY & BÜRO', vendor: 'Beszállító: AVIA / Műhely' },
-                alkatresz: { title: 'ALKATRÉSZEK & MOTOROK', vendor: 'Gépgyártói alkatrészek' },
-                stock: { title: 'TELJES RAKTÁR', vendor: 'Összes beszállító' }
-            };
-
+            const activeCatObj = CATS.find(c => c.id === curCat) || CATS;
             const missing = items.filter(x => {
-                if (x.ist > 0) return false;
-                if (!['all', 'missing', 'stock'].includes(curF) && x.cat !== curF) return false;
+                if (x.ist >= x.min) return false;
+                if (curCat && curCat !== 'all' && x.cat !== curCat) return false;
                 return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
             });
-
-            const meta = catMeta[curF] || { title: 'SZŰRT LISTA', vendor: '' };
-            if (!missing.length) {
-                alert(`✅ Nincs hiányzó tétel ebben a kategóriában (${meta.title})!`);
-                return;
-            }
-
-            const header = `BB MÜNCHINGER // BESTELLUNG – ${meta.title}\n${meta.vendor} | Hiányzó tételek: ${missing.length} db\n----------------------------------------\n`;
-            const body = missing.map(x => `• [${x.id}] ${x.name} (${x.geb}) — Lager: H5ETL/${x.loc}`).join('\n');
-
-            navigator.clipboard.writeText(header + body).then(() => {
-                alert(`📋 ${missing.length} hiányzó tétel kimásolva!\n${meta.vendor}`);
-            });
+            if (!missing.length) { alert(`✅ Nincs minimum alatti hiányzó tétel itt: ${activeCatObj.title}!`); return; }
+            const header = `BB MÜNCHINGER // BESTELLUNG – ${activeCatObj.title.toUpperCase()}\nLieferant: ??? | Rendelendő tételek: ${missing.length} db\n----------------------------------------\n`;
+            const body = missing.map(x => `• [${x.id}] ${x.name} (${x.geb}) | Készlet: ${x.ist}/${x.min} db (Hiány: ${x.min - x.ist} db) — H5ETL/${x.loc}`).join('\n');
+            navigator.clipboard.writeText(header + body).then(() => alert(`📋 ${missing.length} hiányzó tétel vágólapra másolva (${activeCatObj.title})!`));
         }
-
-
 
         function stopCam() {
             if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
@@ -240,19 +252,14 @@
             b.innerText = '⏳ KAMERA NYITÁSA...';
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                vid.srcObject = stream;
-                await vid.play();
-                box.style.display = 'block';
-                b.innerText = '⏹ KAMERA BEZÁRÁSA';
+                vid.srcObject = stream; await vid.play();
+                box.style.display = 'block'; b.innerText = '⏹ KAMERA BEZÁRÁSA';
                 if ('BarcodeDetector' in window) {
                     const detector = new BarcodeDetector();
                     scanTimer = setInterval(async () => {
                         try {
                             const codes = await detector.detect(vid);
-                            if (codes && codes.length > 0) {
-                                document.getElementById('q').value = codes[0].rawValue.trim().replace(/^H5ETL\//i, '');
-                                render(); stopCam();
-                            }
+                            if (codes && codes.length > 0) { document.getElementById('q').value = codes.rawValue.trim().replace(/^H5ETL\//i, ''); render(); stopCam(); }
                         } catch (e) {}
                     }, 350);
                 }
@@ -261,45 +268,45 @@
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
-            const missCount = items.filter(x => x.ist === 0).length;
-            document.getElementById('btnAll').innerText = `Összes (${items.length})`;
-            document.getElementById('btnMiss').innerText = `⚠️ Hiányzó (${missCount})`;
-
-            const list = document.getElementById('list');
-            list.innerHTML = '';
-            items.filter(x => {
-                if(curF === 'missing' && x.ist > 0) return false;
-                if(curF === 'stock' && x.ist <= 0) return false;
-                if(!['all','missing','stock'].includes(curF) && x.cat !== curF) return false;
+            const catMenu = document.getElementById('catMenu');
+            const itemSection = document.getElementById('itemSection');
+            if (!curCat && !q) {
+                catMenu.style.display = 'grid'; itemSection.style.display = 'none';
+                catMenu.innerHTML = CATS.map(c => {
+                    const sub = c.id === 'all' ? items : items.filter(x => x.cat === c.id);
+                    const missCount = sub.filter(x => x.ist < x.min).length;
+                    const okCount = sub.length - missCount;
+                    return `<div class="cat-card" onclick="openCat('${c.id}')"><div><div class="cat-card-top"><span style="font-size:1.6rem;">${c.icon}</span><span style="font-size:0.75rem; font-weight:800; color:var(--cyan);">${sub.length} TÉTEL</span></div><h3>${c.title}</h3><p>${c.desc}</p></div><div class="cat-stats"><span style="color:var(--green);">✅ ${okCount} OK</span><span style="color:var(--red);">⚠️ ${missCount} HIÁNY</span></div></div>`;
+                }).join('');
+                return;
+            }
+            catMenu.style.display = 'none'; itemSection.style.display = 'block';
+            const activeCatObj = CATS.find(c => c.id === curCat) || CATS;
+            document.getElementById('curCatTitle').innerText = q ? `Keresés: "${q}"` : activeCatObj.title;
+            const baseList = items.filter(x => {
+                if (curCat && curCat !== 'all' && x.cat !== curCat) return false;
                 return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
-            }).forEach(x => {
-                const isMiss = x.ist === 0;
-                list.innerHTML += `
-                    <div class="card ${isMiss ? 'missing' : ''}">
-                        <div>
-                            <div class="card-top">
-                                <div style="display:flex;gap:6px;align-items:center;">
-                                    <span class="id-badge">${x.id}</span>
-                                    ${isMiss ? '<span class="miss-badge">HIÁNYZIK</span>' : ''}
-                                </div>
-                                <span class="loc-badge">📍 H5ETL/${x.loc}</span>
-                            </div>
-                            <div class="art-title">${x.name}</div>
-                            <div class="art-meta">Kiszerelés: <b>${x.geb}</b></div>
-                        </div>
-                        <div class="stock-bar">
-                            <div>Készlet: <span class="stock-val ${isMiss?'zero':''}">${x.ist}</span> db</div>
-                            <div class="qty-btns">
-                                <button class="q-btn" onclick="chg('${x.id}', -1)">-</button>
-                                <button class="q-btn" onclick="chg('${x.id}', 1)">+</button>
-                            </div>
-                        </div>
-                    </div>`;
             });
+            const totalC = baseList.length;
+            const missC = baseList.filter(x => x.ist < x.min).length;
+            const okC = totalC - missC;
+            document.getElementById('stAll').innerText = `Összes tétel (${totalC})`;
+            document.getElementById('stOk').innerText = `✅ Elérhető (${okC})`;
+            document.getElementById('stMiss').innerText = `⚠️ Hiány (${missC})`;
+            const filtered = baseList.filter(x => {
+                if (curStatus === 'ok') return x.ist >= x.min;
+                if (curStatus === 'miss') return x.ist < x.min;
+                return true;
+            });
+            document.getElementById('list').innerHTML = filtered.map(x => {
+                const isLow = x.ist < x.min;
+                return `<div class="card ${isLow ? 'missing' : ''}"><div><div class="card-top"><div style="display:flex;gap:6px;align-items:center;"><span class="id-badge">${x.id}</span>${isLow ? '<span class="miss-badge">HIÁNYZIK</span>' : '<span class="ok-badge">RENDBEN</span>'}</div><span class="loc-badge">📍 H5ETL/${x.loc}</span></div><div class="art-title">${x.name}</div><div class="art-meta">Kiszerelés: <b>${x.geb}</b></div></div><div class="stock-box"><div class="stock-row"><div>Készlet: <span class="stock-val ${isLow?'low':''}">${x.ist}</span> db</div><div class="qty-btns"><button class="q-btn" onclick="chgIst('${x.id}', -1)">-</button><button class="q-btn" onclick="chgIst('${x.id}', 1)">+</button></div></div><div class="stock-row"><div>Minimum: <span class="min-val">${x.min}</span> db</div><div class="qty-btns"><button class="q-btn min-b" onclick="chgMin('${x.id}', -1)">-</button><button class="q-btn min-b" onclick="chgMin('${x.id}', 1)">+</button></div></div></div></div>`;
+            }).join('');
         }
         render();
     </script>
 </body>
 </html>
+
 
 
