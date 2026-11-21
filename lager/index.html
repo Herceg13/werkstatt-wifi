@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="de">
-    <script src="https://unpkg.com"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ersatzteillager & Szalagok // WERKSTATT OS</title>
+    <script src="https://jsdelivr.net"></script>
+    <script>
+        if (typeof Html5Qrcode === 'undefined') {
+            document.write('<script src="https://cloudflare.com"><\/script>');
+        }
+    </script>
     <style>
+
         :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.92); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:3rem; }
@@ -284,6 +290,9 @@
                 let html5QrCode = null;
         let isScanning = false;
 
+               let html5QrCode = null;
+        let isScanning = false;
+
         async function stopCam() {
             if (html5QrCode && isScanning) {
                 try {
@@ -305,12 +314,20 @@
                 return;
             }
 
+            btn.innerText = '⏳ KAMERA INDÍTÁSA...';
+
+            let tries = 0;
+            while (typeof Html5Qrcode === 'undefined' && tries < 15) {
+                await new Promise(r => setTimeout(r, 200));
+                tries++;
+            }
+
             if (typeof Html5Qrcode === 'undefined') {
-                alert('A vonalkódolvasó modul még töltődik, próbáld újra 2 másodperc múlva!');
+                btn.innerText = '📷 BARCODE / POLC SZKENNELÉS';
+                alert('Nem sikerült betölteni a szkennert. Ellenőrizd a mobilnetet / Wi-Fi-t!');
                 return;
             }
 
-            btn.innerText = '⏳ KAMERA INDÍTÁSA...';
             box.style.display = 'block';
 
             try {
@@ -318,9 +335,8 @@
                 await html5QrCode.start(
                     { facingMode: "environment" },
                     {
-                        fps: 12,
-                        qrbox: { width: 280, height: 120 },
-                        aspectRatio: 1.5
+                        fps: 15,
+                        qrbox: { width: 280, height: 110 }
                     },
                     (decodedText) => {
                         const clean = decodedText.trim().replace(/^H5ETL\//i, '');
@@ -337,7 +353,6 @@
                 alert("Kamera hiba: " + err);
             }
         }
-
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
@@ -380,4 +395,3 @@
     </script>
 </body>
 </html>
-
