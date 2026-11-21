@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+    <script src="https://unpkg.com"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,7 +68,7 @@
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
             <button class="clear-btn" onclick="resetView()">✖ Törlés</button>
         </div>
-        <div id="camBox"><video id="vid" playsinline autoplay muted></video><div class="scan-line"></div></div>
+        <div id="camBox" style="display:none; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000;"></div>
         <input type="text" id="q" class="search-box" placeholder="🔍 Villámkereső (kód, név, méret, polc — pl. A0081, 02-C4, 3800x250, Grease)..." oninput="render()">
         <div id="catMenu" class="cat-grid"></div>
         <div id="itemSection" style="display:none;">
@@ -280,25 +281,63 @@
             document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
         }
 
-        async function toggleScanner() {
-            const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
-            if (stream) { stopCam(); return; }
-            b.innerText = '⏳ KAMERA NYITÁSA...';
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                vid.srcObject = stream; await vid.play();
-                box.style.display = 'block'; b.innerText = '⏹ KAMERA BEZÁRÁSA';
-                if ('BarcodeDetector' in window) {
-                    const detector = new BarcodeDetector();
-                    scanTimer = setInterval(async () => {
-                        try {
-                            const codes = await detector.detect(vid);
-                            if (codes && codes.length > 0) { document.getElementById('q').value = codes.rawValue.trim().replace(/^H5ETL\//i, ''); render(); stopCam(); }
-                        } catch (e) {}
-                    }, 350);
-                }
-            } catch (err) { stopCam(); alert("Kamera hiba: " + err.message); }
+                let html5QrCode = null;
+        let isScanning = false;
+
+        async function stopCam() {
+            if (html5QrCode && isScanning) {
+                try {
+                    await html5QrCode.stop();
+                    html5QrCode.clear();
+                } catch (e) {}
+            }
+            isScanning = false;
+            document.getElementById('camBox').style.display = 'none';
+            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
         }
+
+        async function toggleScanner() {
+            const box = document.getElementById('camBox');
+            const btn = document.getElementById('scanToggleBtn');
+
+            if (isScanning) {
+                await stopCam();
+                return;
+            }
+
+            if (typeof Html5Qrcode === 'undefined') {
+                alert('A vonalkódolvasó modul még töltődik, próbáld újra 2 másodperc múlva!');
+                return;
+            }
+
+            btn.innerText = '⏳ KAMERA INDÍTÁSA...';
+            box.style.display = 'block';
+
+            try {
+                html5QrCode = new Html5Qrcode("camBox");
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 12,
+                        qrbox: { width: 280, height: 120 },
+                        aspectRatio: 1.5
+                    },
+                    (decodedText) => {
+                        const clean = decodedText.trim().replace(/^H5ETL\//i, '');
+                        document.getElementById('q').value = clean;
+                        render();
+                        stopCam();
+                    },
+                    () => {}
+                );
+                isScanning = true;
+                btn.innerText = '⏹ KAMERA BEZÁRÁSA';
+            } catch (err) {
+                await stopCam();
+                alert("Kamera hiba: " + err);
+            }
+        }
+
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
