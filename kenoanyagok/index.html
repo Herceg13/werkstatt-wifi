@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenőanyagok & Zsírok // WERKSTATT OS</title>
+    <style>
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.85); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --red:#ff2a55; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
+        body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; padding-bottom:3rem; }
+        header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+        .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:8px 14px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); }
+        main { max-width:1050px; margin:0 auto; padding:1.25rem; }
+
+        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1rem; outline:none; }
+        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.22); }
+
+        .tabs { display:flex; gap:8px; margin-bottom:1.25rem; overflow-x:auto; }
+        .tab-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:10px 16px; border-radius:8px; font-weight:800; font-size:0.88rem; cursor:pointer; white-space:nowrap; }
+        .tab-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
+
+        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:1rem; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem; display:flex; flex-direction:column; justify-content:space-between; }
+        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .id-badge { background:var(--cyan); color:#000; font-weight:900; font-size:0.82rem; padding:3px 8px; border-radius:4px; }
+        .loc-badge { background:rgba(255,123,0,0.18); border:1px solid var(--orange); color:var(--orange); font-weight:800; font-size:0.78rem; padding:3px 8px; border-radius:4px; }
+        .card h3 { font-size:1.12rem; color:#fff; margin-bottom:6px; }
+        .use-box { background:rgba(0,240,255,0.06); border-left:3px solid var(--cyan); padding:8px 10px; border-radius:4px; font-size:0.85rem; color:#d0dce8; margin:8px 0 12px; line-height:1.4; }
+        .card-foot { display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; font-size:0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← FŐOLDAL</a>
+        <div style="text-align:right;">
+            <div style="font-weight:800; letter-spacing:1px;">KENŐANYAGOK <span style="color:var(--cyan);">& ZSÍROK</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">Gépkenési útmutató & Raktárhely</div>
+        </div>
+    </header>
+    <main>
+        <input type="text" id="q" class="search-box" placeholder="🔍 Keresés gép, egység vagy kenőanyag szerint (pl. Gegenlager, lánc, SKF, Grease)..." oninput="render()">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="setTab('all', this)">Összes kenőanyag & gép</button>
+            <button class="tab-btn" onclick="setTab('zsir', this)">🛢️ Zsírok (Kartusche)</button>
+            <button class="tab-btn" onclick="setTab('olaj', this)">💧 Olajok & Spray</button>
+        </div>
+        <div class="grid" id="list"></div>
+    </main>
+    <script>
+        let curTab = 'all';
+        const LUBES = [
+            { id: "A0133", type: "zsir", name: "SKF Wälzlagerfett 200-LGHP 2/0.4", geb: "420 ml Kartusche", loc: "BÜRO", machines: "Gegenlager, gyorsfutású villanymotorok, nagy terhelésű gördülőcsapágyak (magas hőmérséklet-tűrés)." },
+            { id: "A0007", type: "zsir", name: "Grease MP2/3", geb: "400 ml Kartusche", loc: "BÜRO", machines: "Általános gépcsapágyak, szállítópályák csapágyházai, normál zsírzógombok." },
+            { id: "A0008", type: "zsir", name: "Fin Grease LS2", geb: "400 ml Kartusche", loc: "BÜRO", machines: "Finommechanikai egységek, csúszófelületek, központi zsírzók és vezetősínek." },
+            { id: "A0024", type: "zsir", name: "Mehrzweckfett", geb: "400 g Kartusche", loc: "BÜRO", machines: "Univerzális műhelyi kenés, csapszegek, görgők és segédberendezések." },
+            { id: "A0018", type: "olaj", name: "Ketten-Spray", geb: "400 ml Dose", loc: "BÜRO", machines: "Hajtásláncok, szállítóláncok, lánckerekek (V1/V2/V4, OptiCut, KVZ láncok)." },
+            { id: "A0084", type: "olaj", name: "Synthese-Aktivöl (1103697)", geb: "300 ml Dose", loc: "BÜRO", machines: "Precíziós láncok, pneumatikus elemek, nagy tapadású szintetikus olajozás." },
+            { id: "A0009", type: "olaj", name: "Fin Super", geb: "300 ml Dose", loc: "BÜRO", machines: "Teflonos (PTFE) finomkenés, szorult csuklók, szennyeződés-taszító kenés." }
+        ];
+
+        function setTab(t, btn) {
+            curTab = t;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+        }
+
+        function render() {
+            const q = document.getElementById('q').value.toLowerCase().trim();
+            const savedLager = JSON.parse(localStorage.getItem('bb_lager_v9')) || [];
+
+            document.getElementById('list').innerHTML = LUBES.filter(x => {
+                if (curTab !== 'all' && x.type !== curTab) return false;
+                return `${x.id} ${x.name} ${x.machines} ${x.loc}`.toLowerCase().includes(q);
+            }).map(x => {
+                const liveItem = savedLager.find(i => i.id === x.id);
+                const stockTxt = liveItem ? `<b style="color:${liveItem.ist > 0 ? 'var(--green)' : 'var(--red)'}">${liveItem.ist} db</b>` : `<span style="color:var(--cyan);">Lagerben elérhető</span>`;
+                return `
+                    <div class="card">
+                        <div>
+                            <div class="card-top">
+                                <span class="id-badge">${x.id}</span>
+                                <span class="loc-badge">📍 H5ETL/${x.loc}</span>
+                            </div>
+                            <h3>${x.name}</h3>
+                            <div style="font-size:0.8rem; color:var(--muted);">Kiszerelés: <b>${x.geb}</b></div>
+                            <div class="use-box"><b>Alkalmazás / Gépek:</b><br>${x.machines}</div>
+                        </div>
+                        <div class="card-foot">
+                            <span>Raktárkészlet: ${stockTxt}</span>
+                            <a href="../lager/index.html" style="color:var(--cyan); text-decoration:none; font-weight:700;">Lager →</a>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        render();
+    </script>
+</body>
+</html>
