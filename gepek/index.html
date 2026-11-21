@@ -209,11 +209,11 @@
             renderThreads();
         }
 
-        function renderThreads() {
+                function renderThreads() {
             const q = document.getElementById('tSearch').value.toLowerCase().trim();
-            const list = THREAD_DATA[curThreadTab].filter(t => `${t} ${t} ${t}`.toLowerCase().includes(q));
+            const list = THREAD_DATA[curThreadTab].filter(t => `${t[0]} ${t[1]} ${t[2]}`.toLowerCase().includes(q));
             document.getElementById('threadTable').innerHTML = list.map(t =>
-                `<tr><td><strong>${t}</strong></td><td>${t}</td><td><b>Ø ${t} mm</b></td></tr>`
+                `<tr><td><strong>${t[0]}</strong></td><td>${t[1]}</td><td><b>Ø ${t[2]} mm</b></td></tr>`
             ).join('');
         }
 
