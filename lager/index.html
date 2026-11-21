@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H5ET Lager & Scanner // WERKSTATT OS</title>
-    <script src="https://unpkg.com" type="text/javascript"></script>
     <style>
         :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.9); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
@@ -14,7 +13,9 @@
         main { max-width:1100px; margin:0 auto; padding:1.25rem; }
         .scan-bar { display:flex; gap:10px; margin-bottom:1rem; }
         .scan-btn { flex:1; background:linear-gradient(90deg, rgba(0,240,255,0.2), rgba(0,240,255,0.08)); border:1px solid var(--cyan); color:var(--cyan); padding:14px; border-radius:8px; font-size:1rem; font-weight:800; cursor:pointer; }
-        #reader { width:100%; max-width:480px; margin:0 auto 1rem; border-radius:10px; overflow:hidden; border:2px solid var(--cyan); display:none; }
+        #camBox { display:none; position:relative; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000; }
+        #vid { width:100%; display:block; }
+        .scan-line { position:absolute; top:50%; left:10%; right:10%; height:2px; background:var(--red); box-shadow:0 0 8px var(--red); }
         .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1rem; outline:none; }
         .filter-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:1.25rem; }
         .f-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:8px 14px; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; white-space:nowrap; }
@@ -46,7 +47,7 @@
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / H5ETL POLC SZKENNELÉS</button>
             <button class="f-btn" onclick="clearSearch()">✖ Törlés</button>
         </div>
-        <div id="reader"></div>
+        <div id="camBox"><video id="vid" playsinline autoplay muted></video><div class="scan-line"></div></div>
         <input type="text" id="q" class="search-box" placeholder="🔍 Szkennelj vagy írj be kódot (pl. A0025, H5ETL/02-C4, 02-C4, Grease)..." oninput="render()">
         <div class="filter-row">
             <button class="f-btn active" onclick="setF('all', this)">Összes (142)</button>
@@ -208,48 +209,48 @@
         ];
 
         const FULL_LAGER = L1.concat(L2, L3);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v2')) || JSON.parse(JSON.stringify(FULL_LAGER));
-        let curF = 'all';
-        let scanner = null;
+        let items = JSON.parse(localStorage.getItem('bb_lager_v3')) || JSON.parse(JSON.stringify(FULL_LAGER));
+        let curF = 'all', stream = null, scanTimer = null;
 
-        function save() { localStorage.setItem('bb_lager_v2', JSON.stringify(items)); }
+        function save() { localStorage.setItem('bb_lager_v3', JSON.stringify(items)); }
         function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
         function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
 
         async function toggleScanner() {
-            const r = document.getElementById('reader'), b = document.getElementById('scanToggleBtn');
-            if (scanner && scanner.isScanning) {
-                await scanner.stop();
-                r.style.display = 'none';
+            const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null; clearInterval(scanTimer);
+                box.style.display = 'none';
                 b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
                 return;
             }
-            r.style.display = 'block';
-            b.innerText = '⏹ KAMERA BEZÁRÁSA';
             try {
-                scanner = new Html5Qrcode("reader");
-                await scanner.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 260, height: 110 } },
-                    (txt) => {
-                        const clean = txt.trim().replace(/^H5ETL\//i, '');
-                        document.getElementById('q').value = clean;
-                        render();
-                        scanner.stop().then(() => {
-                            r.style.display = 'none';
-                            b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                        });
-                    },
-                    () => {}
-                );
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                vid.srcObject = stream;
+                box.style.display = 'block';
+                b.innerText = '⏹ KAMERA BEZÁRÁSA';
+                if ('BarcodeDetector' in window) {
+                    const detector = new BarcodeDetector();
+                    scanTimer = setInterval(async () => {
+                        try {
+                            const codes = await detector.detect(vid);
+                            if (codes.length > 0) {
+                                const clean = codes[0].rawValue.trim().replace(/^H5ETL\//i, '');
+                                document.getElementById('q').value = clean;
+                                render();
+                                toggleScanner();
+                            }
+                        } catch (e) {}
+                    }, 300);
+                } else {
+                    alert("A kamera elindult, de ez a böngésző nem támogatja az élő vonalkód-felismerést.");
+                }
             } catch (err) {
-                r.style.display = 'none';
-                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                alert("Kamera hiba: Nyisd meg az oldalt Chrome vagy Safari böngészőben, és engedélyezd a kamerát! (" + err + ")");
+                alert("Kamera hiba: " + err.name + " - " + err.message);
             }
         }
-
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
@@ -284,3 +285,4 @@
     </script>
 </body>
 </html>
+
