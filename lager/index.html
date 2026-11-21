@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ersatzteillager & Szalagok // WERKSTATT OS</title>
     <style>
-
-
         :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.92); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:3rem; }
@@ -16,9 +14,7 @@
         .scan-bar { display:flex; gap:8px; margin-bottom:0.85rem; }
         .scan-btn { flex:1; background:linear-gradient(90deg, rgba(0,240,255,0.22), rgba(0,240,255,0.08)); border:1px solid var(--cyan); color:var(--cyan); padding:13px; border-radius:8px; font-size:0.95rem; font-weight:800; cursor:pointer; }
         .clear-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.2); color:var(--muted); padding:0 14px; border-radius:8px; font-weight:700; cursor:pointer; }
-        #camBox { display:none; position:relative; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000; }
-        #vid { width:100%; display:block; }
-        .scan-line { position:absolute; top:50%; left:10%; right:10%; height:2px; background:var(--red); box-shadow:0 0 8px var(--red); }
+        #camBox { display:none; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000; }
         .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1.15rem; outline:none; }
         .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.25); }
         .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
@@ -61,7 +57,7 @@
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
         <div style="text-align:right;">
             <div style="font-weight:800; letter-spacing:1px;">ERSATZTEILLAGER <span style="color:var(--cyan);">// PRO</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">Teljes Excel Adatbázis (142 tétel)</div>
+            <div style="font-size:0.75rem; color:var(--muted);">H5ETL Készlet, Minimumok & Szkenner</div>
         </div>
     </header>
     <main>
@@ -69,7 +65,7 @@
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
             <button class="clear-btn" onclick="resetView()">✖ Törlés</button>
         </div>
-        <div id="camBox" style="display:none; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000;"></div>
+        <div id="camBox"></div>
         <input type="text" id="q" class="search-box" placeholder="🔍 Villámkereső (kód, név, méret, polc — pl. A0081, 02-C4, 3800x250, Grease)..." oninput="render()">
         <div id="catMenu" class="cat-grid"></div>
         <div id="itemSection" style="display:none;">
@@ -161,7 +157,7 @@
             {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
             {id:"A0070", name:"V4 Etagen 1,2,3 12365x1100 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"}
         ];
-                const L2 = [
+        const L2 = [
             {id:"A0071", name:"V4 Presse / Kurz 1760x920 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
             {id:"A0072", name:"V4 Presse / Lange 16540x920 Vor Ort", geb:"Spule", ist:0, min:1, loc:"H5ET-Lager", cat:"szalag"},
             {id:"A0073", name:"V4 Presse / Auslauf 13126x900 Spiralnaht", geb:"Spule", ist:0, min:1, loc:"12A-01", cat:"szalag"},
@@ -237,10 +233,11 @@
             {id:"A0144", name:"AVIA PROGREASE-L 2 EP (Hobel Gegenlager & Hobelkopf)", geb:"400 g Kartusche", ist:0, min:2, loc:"BÜRO", cat:"buro"}
         ];
         const FULL_LAGER = L1.concat(L2);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v10')) || JSON.parse(JSON.stringify(FULL_LAGER));
+        let items = JSON.parse(localStorage.getItem('bb_lager_v11')) || JSON.parse(JSON.stringify(FULL_LAGER));
         let curCat = null;
         let curStatus = 'all';
-        let stream = null, scanTimer = null;
+        let html5QrCode = null;
+        let isScanning = false;
 
         const CATS = [
             { id: 'all', icon: '📦', title: 'Összes alkatrész', desc: 'Teljes H5ETL raktárkészlet áttekintése egyben.' },
@@ -250,7 +247,7 @@
         ];
 
         function isMissing(x) { return x.ist === 0 || x.ist < x.min; }
-        function save() { localStorage.setItem('bb_lager_v10', JSON.stringify(items)); }
+        function save() { localStorage.setItem('bb_lager_v11', JSON.stringify(items)); }
         function openCat(catId) { curCat = catId; curStatus = 'all'; document.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active')); document.getElementById('stAll').classList.add('active'); render(); }
         function backToCats() { curCat = null; document.getElementById('q').value = ''; render(); }
         function resetView() { document.getElementById('q').value = ''; curCat = null; render(); }
@@ -275,32 +272,7 @@
             navigator.clipboard.writeText(header + body).then(() => alert(`📋 ${missing.length} hiányzó tétel vágólapra másolva (${activeCatObj.title})!`));
         }
 
-        function stopCam() {
-            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-            if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
-            document.getElementById('camBox').style.display = 'none';
-            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
-        }
-
-                let html5QrCode = null;
-        let isScanning = false;
-
-               let html5QrCode = null;
-        let isScanning = false;
-
-        async function stopCam() {
-            if (html5QrCode && isScanning) {
-                try {
-                    await html5QrCode.stop();
-                    html5QrCode.clear();
-                } catch (e) {}
-            }
-            isScanning = false;
-            document.getElementById('camBox').style.display = 'none';
-            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
-        }
-
-               function loadScanLib() {
+        function loadScanLib() {
             return new Promise((resolve, reject) => {
                 if (window.Html5Qrcode) { resolve(); return; }
                 const s = document.createElement('script');
@@ -311,15 +283,18 @@
             });
         }
 
-        async function toggleScanner() {
-            const box = document.getElementById('camBox');
-            const btn = document.getElementById('scanToggleBtn');
-
-            if (isScanning) {
-                await stopCam();
-                return;
+        async function stopCam() {
+            if (html5QrCode && isScanning) {
+                try { await html5QrCode.stop(); html5QrCode.clear(); } catch (e) {}
             }
+            isScanning = false;
+            document.getElementById('camBox').style.display = 'none';
+            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
+        }
 
+        async function toggleScanner() {
+            const box = document.getElementById('camBox'), btn = document.getElementById('scanToggleBtn');
+            if (isScanning) { await stopCam(); return; }
             btn.innerText = '⏳ SZKENNER BETÖLTÉSE...';
             try {
                 await loadScanLib();
@@ -329,10 +304,8 @@
                     { facingMode: "environment" },
                     { fps: 15, qrbox: { width: 280, height: 110 } },
                     (decodedText) => {
-                        const clean = decodedText.trim().replace(/^H5ETL\//i, '');
-                        document.getElementById('q').value = clean;
-                        render();
-                        stopCam();
+                        document.getElementById('q').value = decodedText.trim().replace(/^H5ETL\//i, '');
+                        render(); stopCam();
                     },
                     () => {}
                 );
@@ -343,7 +316,7 @@
                 alert("Kamera / Hálózat hiba: " + err);
             }
         }
-        
+
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
             const catMenu = document.getElementById('catMenu');
