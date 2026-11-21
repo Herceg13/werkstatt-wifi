@@ -225,20 +225,68 @@
         function chgIst(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
         function chgMin(id, d) { const it = items.find(x => x.id === id); if(it) { it.min = Math.max(0, (it.min || 0) + d); save(); render(); } }
 
+                function isMissing(x) {
+            return x.ist === 0 || x.ist < x.min;
+        }
+
         function copyMissingList() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
             const activeCatObj = CATS.find(c => c.id === curCat) || CATS;
             const missing = items.filter(x => {
-                if (x.ist >= x.min) return false;
+                if (!isMissing(x)) return false;
                 if (curCat && curCat !== 'all' && x.cat !== curCat) return false;
                 return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
             });
-            if (!missing.length) { alert(`✅ Nincs minimum alatti hiányzó tétel itt: ${activeCatObj.title}!`); return; }
+            if (!missing.length) { alert(`✅ Nincs hiányzó tétel itt: ${activeCatObj.title}!`); return; }
             const header = `BB MÜNCHINGER // BESTELLUNG – ${activeCatObj.title.toUpperCase()}\nLieferant: ??? | Rendelendő tételek: ${missing.length} db\n----------------------------------------\n`;
-            const body = missing.map(x => `• [${x.id}] ${x.name} (${x.geb}) | Készlet: ${x.ist}/${x.min} db (Hiány: ${x.min - x.ist} db) — H5ETL/${x.loc}`).join('\n');
+            const body = missing.map(x => {
+                const need = Math.max(1, x.min - x.ist);
+                return `• [${x.id}] ${x.name} (${x.geb}) | Készlet: ${x.ist}/${x.min} db (Rendelendő: min. ${need} db) — H5ETL/${x.loc}`;
+            }).join('\n');
             navigator.clipboard.writeText(header + body).then(() => alert(`📋 ${missing.length} hiányzó tétel vágólapra másolva (${activeCatObj.title})!`));
         }
 
+        function render() {
+            const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
+            const catMenu = document.getElementById('catMenu');
+            const itemSection = document.getElementById('itemSection');
+            if (!curCat && !q) {
+                catMenu.style.display = 'grid'; itemSection.style.display = 'none';
+                catMenu.innerHTML = CATS.map(c => {
+                    const sub = c.id === 'all' ? items : items.filter(x => x.cat === c.id);
+                    const missCount = sub.filter(x => isMissing(x)).length;
+                    const okCount = sub.length - missCount;
+                    return `<div class="cat-card" onclick="openCat('${c.id}')"><div><div class="cat-card-top"><span style="font-size:1.6rem;">${c.icon}</span><span style="font-size:0.75rem; font-weight:800; color:var(--cyan);">${sub.length} TÉTEL</span></div><h3>${c.title}</h3><p>${c.desc}</p></div><div class="cat-stats"><span style="color:var(--green);">✅ ${okCount} OK</span><span style="color:var(--red);">⚠️ ${missCount} HIÁNY</span></div></div>`;
+                }).join('');
+                return;
+            }
+            catMenu.style.display = 'none'; itemSection.style.display = 'block';
+            const activeCatObj = CATS.find(c => c.id === curCat) || CATS;
+            document.getElementById('curCatTitle').innerText = q ? `Keresés: "${q}"` : activeCatObj.title;
+            const baseList = items.filter(x => {
+                if (curCat && curCat !== 'all' && x.cat !== curCat) return false;
+                return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
+            });
+            const totalC = baseList.length;
+            const missC = baseList.filter(x => isMissing(x)).length;
+            const okC = totalC - missC;
+            document.getElementById('stAll').innerText = `Összes tétel (${totalC})`;
+            document.getElementById('stOk').innerText = `✅ Elérhető (${okC})`;
+            document.getElementById('stMiss').innerText = `⚠️ Hiány (${missC})`;
+            const filtered = baseList.filter(x => {
+                if (curStatus === 'ok') return !isMissing(x);
+                if (curStatus === 'miss') return isMissing(x);
+                return true;
+            });
+            document.getElementById('list').innerHTML = filtered.map(x => {
+                const isLow = isMissing(x);
+                return `<div class="card ${isLow ? 'missing' : ''}"><div><div class="card-top"><div style="display:flex;gap:6px;align-items:center;"><span class="id-badge">${x.id}</span>${isLow ? '<span class="miss-badge">HIÁNYZIK</span>' : '<span class="ok-badge">RENDBEN</span>'}</div><span class="loc-badge">📍 H5ETL/${x.loc}</span></div><div class="art-title">${x.name}</div><div class="art-meta">Kiszerelés: <b>${x.geb}</b></div></div><div class="stock-box"><div class="stock-row"><div>Készlet: <span class="stock-val ${isLow?'low':''}">${x.ist}</span> db</div><div class="qty-btns"><button class="q-btn" onclick="chgIst('${x.id}', -1)">-</button><button class="q-btn" onclick="chgIst('${x.id}', 1)">+</button></div></div><div class="stock-row"><div>Minimum: <span class="min-val">${x.min}</span> db</div><div class="qty-btns"><button class="q-btn min-b" onclick="chgMin('${x.id}', -1)">-</button><button class="q-btn min-b" onclick="chgMin('${x.id}', 1)">+</button></div></div></div></div>`;
+            }).join('');
+        }
+        render();
+    </script>
+</body>
+</html>
         function stopCam() {
             if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
             if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
