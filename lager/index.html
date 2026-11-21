@@ -194,13 +194,37 @@
         function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
 
-        function copyMissingList() {
-            const missing = items.filter(x => x.ist === 0);
-            if (!missing.length) { alert('Minden tételből van raktáron!'); return; }
-            const txt = "BB MÜNCHINGER // RENDELÉSI HIÁNYLISTA (" + missing.length + " tétel):\n\n" +
+                function copyMissingList() {
+            const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
+            const catNames = {
+                all: 'TELJES RAKTÁR',
+                missing: 'TELJES RAKTÁR',
+                szalag: 'SZÁLLÍTÓSZALAGOK & SZÍJAK',
+                buro: 'ZSÍROK, SPRAY & BÜRO',
+                alkatresz: 'ALKATRÉSZEK & MOTOROK',
+                stock: 'TELJES RAKTÁR'
+            };
+
+            const missing = items.filter(x => {
+                if (x.ist > 0) return false;
+                if (!['all', 'missing', 'stock'].includes(curF) && x.cat !== curF) return false;
+                return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
+            });
+
+            const scopeTitle = catNames[curF] || 'SZŰRT LISTA';
+            if (!missing.length) {
+                alert(`✅ Nincs hiányzó tétel ebben a kategóriában (${scopeTitle})!`);
+                return;
+            }
+
+            const txt = `BB MÜNCHINGER // HIÁNYLISTA – ${scopeTitle} (${missing.length} tétel):\n\n` +
                 missing.map(x => `${x.id} | ${x.name} (${x.geb}) -> Polc: H5ETL/${x.loc}`).join('\n');
-            navigator.clipboard.writeText(txt).then(() => alert(`✅ ${missing.length} hiányzó tétel vágólapra másolva!`));
+
+            navigator.clipboard.writeText(txt).then(() => {
+                alert(`📋 ${missing.length} hiányzó tétel vágólapra másolva!\nKategória: ${scopeTitle}`);
+            });
         }
+
 
         function stopCam() {
             if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
