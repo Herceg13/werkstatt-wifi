@@ -3,54 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H5ET Lager & Scanner // WERKSTATT OS</title>
+    <title>Ersatzteillager & Szalagok // WERKSTATT OS</title>
     <style>
-        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.9); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(14,24,38,0.92); --cyan:#00f0ff; --orange:#ff7b00; --red:#ff2a55; --green:#00e676; --text:#e6edf3; --muted:#8b949e; --border:rgba(0,240,255,0.3); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
         body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:3rem; }
-        header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+        header { background:var(--panel); border-bottom:1px solid var(--border); padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
         .back-btn { color:var(--cyan); text-decoration:none; font-weight:700; padding:7px 12px; border:1px solid var(--cyan); border-radius:6px; background:rgba(0,240,255,0.08); }
-        main { max-width:1100px; margin:0 auto; padding:1.25rem; }
-        .scan-bar { display:flex; gap:10px; margin-bottom:1rem; }
-        .scan-btn { flex:1; background:linear-gradient(90deg, rgba(0,240,255,0.2), rgba(0,240,255,0.08)); border:1px solid var(--cyan); color:var(--cyan); padding:14px; border-radius:8px; font-size:1rem; font-weight:800; cursor:pointer; }
+        main { max-width:1100px; margin:0 auto; padding:1.1rem; }
+        .scan-bar { display:flex; gap:8px; margin-bottom:0.9rem; }
+        .scan-btn { flex:1; background:linear-gradient(90deg, rgba(0,240,255,0.22), rgba(0,240,255,0.08)); border:1px solid var(--cyan); color:var(--cyan); padding:13px; border-radius:8px; font-size:0.95rem; font-weight:800; cursor:pointer; }
+        .export-btn { background:rgba(255,42,85,0.15); border:1px solid var(--red); color:#ff6b8b; padding:10px 14px; border-radius:8px; font-weight:800; font-size:0.85rem; cursor:pointer; white-space:nowrap; }
+        .export-btn:hover { background:rgba(255,42,85,0.28); color:#fff; }
         #camBox { display:none; position:relative; max-width:480px; margin:0 auto 1rem; border:2px solid var(--cyan); border-radius:10px; overflow:hidden; background:#000; }
         #vid { width:100%; display:block; }
         .scan-line { position:absolute; top:50%; left:10%; right:10%; height:2px; background:var(--red); box-shadow:0 0 8px var(--red); }
-        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1rem; outline:none; }
-        .filter-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:1.25rem; }
-        .f-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:8px 14px; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; white-space:nowrap; }
-        .f-btn.active { background:rgba(0,240,255,0.15); border-color:var(--cyan); color:var(--cyan); }
+        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:0.9rem; outline:none; }
+        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.2); }
+        .filter-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:1.15rem; }
+        .f-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:9px 14px; border-radius:6px; font-weight:700; font-size:0.84rem; cursor:pointer; white-space:nowrap; transition:0.2s; }
+        .f-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
+        .f-btn.miss-btn { border-color:rgba(255,42,85,0.45); color:#ff6b8b; }
+        .f-btn.miss-btn.active { background:rgba(255,42,85,0.22); border-color:var(--red); color:#fff; box-shadow:0 0 12px rgba(255,42,85,0.3); }
         .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:1rem; }
-        .card { background:var(--card); border:1px solid rgba(0,240,255,0.22); border-radius:10px; padding:1.15rem; display:flex; flex-direction:column; justify-content:space-between; }
-        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-        .id-badge { background:var(--cyan); color:#000; font-weight:900; font-size:0.85rem; padding:3px 9px; border-radius:4px; }
-        .loc-badge { background:rgba(255,123,0,0.18); border:1px solid var(--orange); color:var(--orange); font-weight:800; font-size:0.8rem; padding:3px 9px; border-radius:4px; }
-        .art-title { font-size:1.05rem; font-weight:700; color:#fff; margin-bottom:8px; line-height:1.35; }
-        .art-meta { font-size:0.8rem; color:var(--muted); margin-bottom:12px; }
+        .card { background:var(--card); border:1px solid rgba(0,240,255,0.22); border-radius:10px; padding:1.1rem; display:flex; flex-direction:column; justify-content:space-between; transition:0.2s; }
+        .card.missing { border:1px solid rgba(255,42,85,0.65); background:linear-gradient(180deg, rgba(45,12,22,0.55) 0%, rgba(14,24,38,0.94) 100%); box-shadow:inset 0 0 18px rgba(255,42,85,0.12); }
+        .card-top { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+        .id-badge { background:var(--cyan); color:#000; font-weight:900; font-size:0.82rem; padding:3px 8px; border-radius:4px; }
+        .miss-badge { background:var(--red); color:#fff; font-weight:900; font-size:0.72rem; padding:3px 8px; border-radius:4px; letter-spacing:0.6px; }
+        .loc-badge { background:rgba(255,123,0,0.18); border:1px solid var(--orange); color:var(--orange); font-weight:800; font-size:0.78rem; padding:3px 8px; border-radius:4px; }
+        .art-title { font-size:1.02rem; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.35; }
+        .art-meta { font-size:0.8rem; color:var(--muted); margin-bottom:10px; }
         .stock-bar { display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; }
-        .stock-val { font-size:1.2rem; font-weight:800; color:var(--green); }
+        .stock-val { font-size:1.25rem; font-weight:900; color:var(--green); }
         .stock-val.zero { color:var(--red); }
         .qty-btns { display:flex; gap:6px; }
-        .q-btn { width:40px; height:40px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:#fff; font-size:1.25rem; font-weight:800; cursor:pointer; }
+        .q-btn { width:42px; height:42px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:#fff; font-size:1.3rem; font-weight:800; cursor:pointer; }
+        .q-btn:active { background:var(--cyan); color:#000; }
     </style>
 </head>
 <body>
     <header>
         <a href="../index.html" class="back-btn">← FŐOLDAL</a>
         <div style="text-align:right;">
-            <div style="font-weight:800; letter-spacing:1px;">H5ET LAGER <span style="color:var(--cyan);">SCAN</span></div>
-            <div style="font-size:0.75rem; color:var(--muted);">BB Münchinger // H5ETL Barcode</div>
+            <div style="font-weight:800; letter-spacing:1px;">ERSATZTEILLAGER <span style="color:var(--cyan);">// SCAN</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">H5ETL Készlet, Szalagok & Hiánylista</div>
         </div>
     </header>
     <main>
         <div class="scan-bar">
-            <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / H5ETL POLC SZKENNELÉS</button>
-            <button class="f-btn" onclick="clearSearch()">✖ Törlés</button>
+            <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
+            <button class="export-btn" onclick="copyMissingList()">📋 HIÁNYLISTA MÁSOLÁSA</button>
         </div>
         <div id="camBox"><video id="vid" playsinline autoplay muted></video><div class="scan-line"></div></div>
-        <input type="text" id="q" class="search-box" placeholder="🔍 Szkennelj vagy írj be kódot (pl. A0025, H5ETL/02-C4, 02-C4, Grease)..." oninput="render()">
+        <input type="text" id="q" class="search-box" placeholder="🔍 Keresés kód, név, méret vagy polc alapján (pl. A0025, 02-C4, 3800x250, Grease)..." oninput="render()">
         <div class="filter-row">
-            <button class="f-btn active" onclick="setF('all', this)">Összes (142)</button>
+            <button class="f-btn active" id="btnAll" onclick="setF('all', this)">Összes</button>
+            <button class="f-btn miss-btn" id="btnMiss" onclick="setF('missing', this)">⚠️ Hiányzó (0 db)</button>
             <button class="f-btn" onclick="setF('szalag', this)">Szalagok & Szíjak</button>
             <button class="f-btn" onclick="setF('buro', this)">Zsírok, Spray & Büro</button>
             <button class="f-btn" onclick="setF('alkatresz', this)">Alkatrészek & Motorok</button>
@@ -130,38 +139,7 @@
             {id:"A0066", name:"V4 Abfallband / schräg 6600x300 Mech. EV", geb:"Spule", ist:0, loc:"02-D2", cat:"szalag"},
             {id:"A0067", name:"V4 Abfallband / Säge 13800x300 Mech. EV", geb:"Spule", ist:0, loc:"02-C2", cat:"szalag"},
             {id:"A0068", name:"V4 Nach Leim 14500x180 Spiralnaht", geb:"Spule", ist:0, loc:"02-D4", cat:"szalag"},
-            {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0070", name:"V4 Etagen 1,2,3 12365x1100 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0071", name:"V4 Presse / Kurz 1760x920 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0072", name:"V4 Presse / Lange 16540x920 Vor Ort", geb:"Spule", ist:0, loc:"Vor Ort", cat:"szalag"},
-            {id:"A0073", name:"V4 Presse / Auslauf 13126x900 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"},
-            {id:"A0074", name:"BS Gr. Nach Säge 9850x900 Endlos Flexproof", geb:"Spule", ist:0, loc:"12B-02", cat:"szalag"},
-            {id:"A0075", name:"BS Gr. Rückführung 15620x500 Endlos Flexproof", geb:"Spule", ist:0, loc:"12B-01", cat:"szalag"},
-            {id:"A0076", name:"Opti. Gr. Vor + Nach Scanner 3105x150 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-B4", cat:"szalag"},
-            {id:"A0077", name:"Brikett BVM 1420x600 Endlos Flexproof", geb:"Spule", ist:0, loc:"02-D1", cat:"szalag"},
-            {id:"A0078", name:"Opti. Gr. Stapelleisten (Noppenb. schräg) 7200x900 Mech. EV", geb:"Spule", ist:0, loc:"12B-02", cat:"szalag"},
-            {id:"A0079", name:"Opti. Gr. Stapelleisten (Untere) 15125x300 Mech. EV", geb:"Spule", ist:0, loc:"02-B4", cat:"szalag"},
-            {id:"A0080", name:"Kleine BS Unten Säge 11300x270 Mech. EV", geb:"Spule", ist:0, loc:"02-D4", cat:"szalag"},
-            {id:"A0081", name:"Stehlager SY 50 FM SKF AELP 210 D1", geb:"BOX", ist:0, loc:"H1ET-Lager", cat:"alkatresz"},
-            {id:"A0082", name:"Klebebänder ZX BROWN", geb:"Rolle", ist:202, loc:"BÜRO", cat:"buro"},
-            {id:"A0083", name:"Line-Marking Paint Art.Nr: QLL00007", geb:"750 ml Dose", ist:57, loc:"BÜRO", cat:"buro"},
-            {id:"A0084", name:"Synthese-Aktivöl Art.Nr: 1103697", geb:"300 ml Dose", ist:15, loc:"BÜRO", cat:"buro"},
-            {id:"A0085", name:"Scanner impulsgeber Nr. 55040550", geb:"BOX", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0086", name:"Natural Silikon Perfekt MEKO-Frei", geb:"310 ml Kartusche", ist:7, loc:"BÜRO", cat:"buro"},
-            {id:"A0087", name:"Markierfarbe TRAFFIC Gelb", geb:"500 ml Dose", ist:253, loc:"BÜRO", cat:"buro"},
-            {id:"A0088", name:"Ketten-Spray 500ml", geb:"500 ml Dose", ist:0, loc:"BÜRO", cat:"buro"},
-            {id:"A0089", name:"HydraulikSchlauch PKP210NO X 3205 AJ (668Q9M)", geb:"Spule", ist:0, loc:"H1ET-Lager", cat:"alkatresz"},
-            {id:"A0090", name:"KVZ SIKO Säge Motor", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0091", name:"V4 Getriebe für Hobel Vorschub", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0092", name:"Wellendichtring 30x42x7 mm BASL NBR 70", geb:"Tüte", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0093", name:"Kommi Stapler Regalführungsrolle BA60417011", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0094", name:"Kommi Stapler Exzenterbolzen BA60640001", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0095", name:"Scanner Alu Rolle 155 x 50 mm", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0096", name:"Scanner Alu Rolle 156,6 x 50 mm", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0097", name:"Scanner Rolle 200 x 50 mm", geb:"Natur", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0098", name:"Scanner Kunststoffrollen 100 x 35mm", geb:"Box", ist:0, loc:"H5ET-Lager", cat:"alkatresz"},
-            {id:"A0099", name:"OptiCut 450 Alu T-Klock für Säge Leiste", geb:"Natur", ist:0, loc:"03-D2", cat:"alkatresz"},
-            {id:"A0100", name:"OptiCut 450 Alu Leiste 30x10x430 mm schräg", geb:"Natur", ist:0, loc:"03-D3", cat:"alkatresz"}
+            {id:"A0069", name:"V4 Auflage 15975x900 Spiralnaht", geb:"Spule", ist:0, loc:"12A-01", cat:"szalag"}
         ];
         const L3 = [
             {id:"A0101", name:"OptiCut 450 Alu Leiste 30x10x430 mm", geb:"Natur", ist:0, loc:"03-D4", cat:"alkatresz"},
@@ -207,26 +185,33 @@
             {id:"A0142", name:"Gerätestiel 1800mm 28-30 mm", geb:"Boden", ist:0, loc:"BÜRO", cat:"buro"},
             {id:"A0143", name:"(Hand) Metall-Kehrblech mit Holzgriff", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"}
         ];
-                       const FULL_LAGER = L1.concat(L2, L3);
-        let items = JSON.parse(localStorage.getItem('bb_lager_v4')) || JSON.parse(JSON.stringify(FULL_LAGER));
+
+        const FULL_LAGER = L1.concat(L2, L3);
+        let items = JSON.parse(localStorage.getItem('bb_lager_v5')) || JSON.parse(JSON.stringify(FULL_LAGER));
         let curF = 'all', stream = null, scanTimer = null;
 
-        function save() { localStorage.setItem('bb_lager_v4', JSON.stringify(items)); }
+        function save() { localStorage.setItem('bb_lager_v5', JSON.stringify(items)); }
         function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
-        function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
+
+        function copyMissingList() {
+            const missing = items.filter(x => x.ist === 0);
+            if (!missing.length) { alert('Minden tételből van raktáron!'); return; }
+            const txt = "BB MÜNCHINGER // RENDELÉSI HIÁNYLISTA (" + missing.length + " tétel):\n\n" +
+                missing.map(x => `${x.id} | ${x.name} (${x.geb}) -> Polc: H5ETL/${x.loc}`).join('\n');
+            navigator.clipboard.writeText(txt).then(() => alert(`✅ ${missing.length} hiányzó tétel vágólapra másolva!`));
+        }
 
         function stopCam() {
             if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
             if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
             document.getElementById('camBox').style.display = 'none';
-            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
+            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / POLC SZKENNELÉS';
         }
 
         async function toggleScanner() {
             const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
             if (stream) { stopCam(); return; }
-            
             b.innerText = '⏳ KAMERA NYITÁSA...';
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -234,48 +219,51 @@
                 await vid.play();
                 box.style.display = 'block';
                 b.innerText = '⏹ KAMERA BEZÁRÁSA';
-
                 if ('BarcodeDetector' in window) {
                     const detector = new BarcodeDetector();
                     scanTimer = setInterval(async () => {
                         try {
                             const codes = await detector.detect(vid);
                             if (codes && codes.length > 0) {
-                                const clean = codes.rawValue.trim().replace(/^H5ETL\//i, '');
-                                document.getElementById('q').value = clean;
-                                render();
-                                stopCam();
+                                document.getElementById('q').value = codes[0].rawValue.trim().replace(/^H5ETL\//i, '');
+                                render(); stopCam();
                             }
                         } catch (e) {}
                     }, 350);
                 }
-            } catch (err) {
-                stopCam();
-                alert("Kamera hiba: " + err.message);
-            }
+            } catch (err) { stopCam(); alert("Kamera hiba: " + err.message); }
         }
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
+            const missCount = items.filter(x => x.ist === 0).length;
+            document.getElementById('btnAll').innerText = `Összes (${items.length})`;
+            document.getElementById('btnMiss').innerText = `⚠️ Hiányzó (${missCount})`;
+
             const list = document.getElementById('list');
             list.innerHTML = '';
             items.filter(x => {
+                if(curF === 'missing' && x.ist > 0) return false;
                 if(curF === 'stock' && x.ist <= 0) return false;
-                if(curF !== 'all' && curF !== 'stock' && x.cat !== curF) return false;
+                if(!['all','missing','stock'].includes(curF) && x.cat !== curF) return false;
                 return `${x.id} ${x.name} ${x.loc} H5ETL/${x.loc} ${x.geb}`.toLowerCase().includes(q);
             }).forEach(x => {
+                const isMiss = x.ist === 0;
                 list.innerHTML += `
-                    <div class="card">
+                    <div class="card ${isMiss ? 'missing' : ''}">
                         <div>
                             <div class="card-top">
-                                <span class="id-badge">${x.id}</span>
+                                <div style="display:flex;gap:6px;align-items:center;">
+                                    <span class="id-badge">${x.id}</span>
+                                    ${isMiss ? '<span class="miss-badge">HIÁNYZIK</span>' : ''}
+                                </div>
                                 <span class="loc-badge">📍 H5ETL/${x.loc}</span>
                             </div>
                             <div class="art-title">${x.name}</div>
                             <div class="art-meta">Kiszerelés: <b>${x.geb}</b></div>
                         </div>
                         <div class="stock-bar">
-                            <div>Készlet: <span class="stock-val ${x.ist===0?'zero':''}">${x.ist}</span> db</div>
+                            <div>Készlet: <span class="stock-val ${isMiss?'zero':''}">${x.ist}</span> db</div>
                             <div class="qty-btns">
                                 <button class="q-btn" onclick="chg('${x.id}', -1)">-</button>
                                 <button class="q-btn" onclick="chg('${x.id}', 1)">+</button>
@@ -288,4 +276,5 @@
     </script>
 </body>
 </html>
+
 
