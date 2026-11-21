@@ -87,51 +87,56 @@ function handleScannedCode(raw) {
         const b = document.getElementById('modeBanner');
         if (!targetShelf) {
             targetShelf = clean.toUpperCase();
-            b.innerHTML = `<strong>📍 Célpolc rögzítve: H5ETL/${targetShelf}</strong><br>2. lépés: Lőj rá az <b>ALKATRÉSZ</b> kódjára (pl. A0007) vagy válaszd ki a listából! <button onclick="cancelMode()" style="margin-left:8px;padding:2px 8px;border-radius:4px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer;">Kész</button>`;
-            setTimeout(() => toggleScanner(), 400);
+            b.innerHTML = `<strong>📍 Célpolc rögzítve: H5ETL/${targetShelf}</strong><br>2. lépés: Lőj rá az <b>ALKATRÉSZ</b> kódjára (pl. A0007) vagy válaszd ki a listából! <button onclick="cancelMode()" style="margin-left:8px;padding:2px 8px;border-radius:4px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer;">Mégse</button>`;
+            setTimeout(() => toggleScanner(), 350);
             return;
         } else if (isItemCode) {
             const it = items.find(x => x.id.toUpperCase() === clean.toUpperCase());
             if (it) {
                 assignHere(it.id);
-                setTimeout(() => toggleScanner(), 400);
-            } else { alert(`❌ Nem található ilyen cikkszám: ${clean}`); }
+            } else {
+                alert(`❌ Nem található ilyen cikkszám: ${clean}`);
+                cancelMode();
+            }
             return;
         }
     }
     document.getElementById('q').value = clean;
     render();
 }
+
 function assignHere(id) {
     const it = items.find(x => x.id === id);
     if (!it || !targetShelf) return;
 
-    const existingTarget = it.locs.find(l => l.loc.toUpperCase() === targetShelf.toUpperCase());
-    const sourceLoc = it.locs.find(l => l.loc.toUpperCase() !== targetShelf.toUpperCase() && l.qty > 0);
+    const dest = targetShelf;
+    const existingTarget = it.locs.find(l => l.loc.toUpperCase() === dest.toUpperCase());
+    const sourceLoc = it.locs.find(l => l.loc.toUpperCase() !== dest.toUpperCase() && l.qty > 0);
 
     if (sourceLoc) {
-        const ans = prompt(`📦 [${it.id}] ${it.name}\n\nHonnan: H5ETL/${sourceLoc.loc} (${sourceLoc.qty} db)\nHová: H5ETL/${targetShelf}\n\nMennyit teszel át erre a polcra? (0 = csak új készlet hozzáadása)`, "1");
-        if (ans === null) return;
+        const ans = prompt(`📦 [${it.id}] ${it.name}\n\nHonnan: H5ETL/${sourceLoc.loc} (${sourceLoc.qty} db)\nHová: H5ETL/${dest}\n\nMennyit teszel át erre a polcra? (0 = csak új készlet hozzáadása)`, "1");
+        if (ans === null) { cancelMode(); render(); return; }
         const moveQty = Math.max(0, parseInt(ans, 10) || 0);
         if (moveQty > 0) {
             const actualMove = Math.min(moveQty, sourceLoc.qty);
             sourceLoc.qty -= actualMove;
             if (existingTarget) existingTarget.qty += actualMove;
-            else it.locs.push({ loc: targetShelf, qty: actualMove });
+            else it.locs.push({ loc: dest, qty: actualMove });
         } else {
-            const addNew = parseInt(prompt(`Mennyi új darabot teszel be ide: H5ETL/${targetShelf}?`, "1"), 10) || 0;
+            const addNew = parseInt(prompt(`Mennyi új darabot teszel be ide: H5ETL/${dest}?`, "1"), 10) || 0;
             if (existingTarget) existingTarget.qty += addNew;
-            else it.locs.push({ loc: targetShelf, qty: addNew });
+            else it.locs.push({ loc: dest, qty: addNew });
         }
     } else {
-        const addQty = parseInt(prompt(`📥 [${it.id}] ${it.name}\nHely: H5ETL/${targetShelf}\n\nMennyi darabot teszel erre a polcra?`, "1"), 10);
-        if (isNaN(addQty)) return;
+        const addQty = parseInt(prompt(`📥 [${it.id}] ${it.name}\nHely: H5ETL/${dest}\n\nMennyi darabot teszel erre a polcra?`, "1"), 10);
+        if (isNaN(addQty)) { cancelMode(); render(); return; }
         if (existingTarget) existingTarget.qty += Math.max(0, addQty);
-        else it.locs.push({ loc: targetShelf, qty: Math.max(0, addQty) });
+        else it.locs.push({ loc: dest, qty: Math.max(0, addQty) });
     }
 
     save();
-    document.getElementById('q').value = targetShelf;
+    cancelMode();
+    document.getElementById('q').value = dest;
     render();
 }
 
