@@ -207,75 +207,51 @@
             {id:"A0142", name:"Gerätestiel 1800mm 28-30 mm", geb:"Boden", ist:0, loc:"BÜRO", cat:"buro"},
             {id:"A0143", name:"(Hand) Metall-Kehrblech mit Holzgriff", geb:"BOX", ist:0, loc:"BÜRO", cat:"buro"}
         ];
-               const FULL_LAGER = L1.concat(L2, L3);
+                       const FULL_LAGER = L1.concat(L2, L3);
         let items = JSON.parse(localStorage.getItem('bb_lager_v4')) || JSON.parse(JSON.stringify(FULL_LAGER));
-        let curF = 'all', scanning = false;
+        let curF = 'all', stream = null, scanTimer = null;
 
         function save() { localStorage.setItem('bb_lager_v4', JSON.stringify(items)); }
         function setF(f, btn) { curF = f; document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
         function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
 
-        function loadQuagga() {
-            return new Promise((resolve, reject) => {
-                if (window.Quagga) return resolve();
-                const s = document.createElement('script');
-                s.src = 'https://jsdelivr.net';
-                s.onload = resolve;
-                s.onerror = reject;
-                document.body.appendChild(s);
-            });
+        function stopCam() {
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+            if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
+            document.getElementById('camBox').style.display = 'none';
+            document.getElementById('scanToggleBtn').innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
         }
 
         async function toggleScanner() {
-            const box = document.getElementById('camBox'), b = document.getElementById('scanToggleBtn');
-            if (scanning) {
-                if (window.Quagga) Quagga.stop();
-                scanning = false;
-                box.style.display = 'none';
-                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                return;
-            }
-            b.innerText = '⏳ SZKENNER INDÍTÁSA...';
+            const box = document.getElementById('camBox'), vid = document.getElementById('vid'), b = document.getElementById('scanToggleBtn');
+            if (stream) { stopCam(); return; }
+            
+            b.innerText = '⏳ KAMERA NYITÁSA...';
             try {
-                await loadQuagga();
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                vid.srcObject = stream;
+                await vid.play();
                 box.style.display = 'block';
-                box.innerHTML = '<div id="qTarget" style="width:100%;"></div><div class="scan-line"></div>';
-                
-                Quagga.init({
-                    inputStream: {
-                        name: "Live",
-                        type: "LiveStream",
-                        target: document.querySelector('#qTarget'),
-                        constraints: { facingMode: "environment" }
-                    },
-                    decoder: { readers: ["code_128_reader", "code_39_reader", "ean_reader"] }
-                }, function(err) {
-                    if (err) {
-                        alert("Kamera hiba: " + err);
-                        box.style.display = 'none';
-                        b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                        return;
-                    }
-                    Quagga.start();
-                    scanning = true;
-                    b.innerText = '⏹ KAMERA BEZÁRÁSA';
-                });
+                b.innerText = '⏹ KAMERA BEZÁRÁSA';
 
-                Quagga.onDetected(function(data) {
-                    if (data && data.codeResult && data.codeResult.code) {
-                        const clean = data.codeResult.code.trim().replace(/^H5ETL\//i, '');
-                        document.getElementById('q').value = clean;
-                        render();
-                        Quagga.stop();
-                        scanning = false;
-                        box.style.display = 'none';
-                        b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-                    }
-                });
-            } catch (e) {
-                alert("Nem sikerült betölteni a szkennert. Ellenőrizd az internetkapcsolatot!");
-                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
+                if ('BarcodeDetector' in window) {
+                    const detector = new BarcodeDetector();
+                    scanTimer = setInterval(async () => {
+                        try {
+                            const codes = await detector.detect(vid);
+                            if (codes && codes.length > 0) {
+                                const clean = codes.rawValue.trim().replace(/^H5ETL\//i, '');
+                                document.getElementById('q').value = clean;
+                                render();
+                                stopCam();
+                            }
+                        } catch (e) {}
+                    }, 350);
+                }
+            } catch (err) {
+                stopCam();
+                alert("Kamera hiba: " + err.message);
             }
         }
 
@@ -312,3 +288,4 @@
     </script>
 </body>
 </html>
+
