@@ -19,6 +19,7 @@
             <button class="scan-btn" id="scanToggleBtn" onclick="toggleScanner()">📷 BARCODE / POLC SZKENNELÉS</button>
             <button class="act-btn orange admin-only" style="display:none;" onclick="startRelocateMode()">📦 Betárolás / Áthelyezés</button>
             <button class="act-btn green admin-only" style="display:none;" onclick="openNewModal('')">➕ Új anyag felvétele</button>
+            <button class="act-btn admin-only" style="display:none; grid-column:1/-1; border-color:var(--cyan); color:var(--cyan);" onclick="exportBackupJS()">💾 Biztonsági mentés másolása (adatok.js)</button>
         </div>
         <div id="modeBanner" class="mode-banner"></div>
         <div id="camBox"></div>
