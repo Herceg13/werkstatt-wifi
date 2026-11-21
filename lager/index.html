@@ -217,19 +217,39 @@
         function clearSearch() { document.getElementById('q').value = ''; render(); }
         function chg(id, d) { const it = items.find(x => x.id === id); if(it) { it.ist = Math.max(0, it.ist + d); save(); render(); } }
 
-        function toggleScanner() {
+        async function toggleScanner() {
             const r = document.getElementById('reader'), b = document.getElementById('scanToggleBtn');
-            if(r.style.display === 'block') { if(scanner) scanner.clear(); r.style.display = 'none'; b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS'; return; }
-            r.style.display = 'block'; b.innerText = '⏹ KAMERA BEZÁRÁSA';
-            scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 260, height: 120} }, false);
-            scanner.render((txt) => {
-                // Levágja a H5ETL/ előtagot, ha polccímkét olvas be
-                const clean = txt.trim().replace(/^H5ETL\//i, '');
-                document.getElementById('q').value = clean;
-                render();
-                scanner.clear(); r.style.display = 'none'; b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
-            }, () => {});
+            if (scanner && scanner.isScanning) {
+                await scanner.stop();
+                r.style.display = 'none';
+                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
+                return;
+            }
+            r.style.display = 'block';
+            b.innerText = '⏹ KAMERA BEZÁRÁSA';
+            try {
+                scanner = new Html5Qrcode("reader");
+                await scanner.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 260, height: 110 } },
+                    (txt) => {
+                        const clean = txt.trim().replace(/^H5ETL\//i, '');
+                        document.getElementById('q').value = clean;
+                        render();
+                        scanner.stop().then(() => {
+                            r.style.display = 'none';
+                            b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
+                        });
+                    },
+                    () => {}
+                );
+            } catch (err) {
+                r.style.display = 'none';
+                b.innerText = '📷 BARCODE / H5ETL POLC SZKENNELÉS';
+                alert("Kamera hiba: Nyisd meg az oldalt Chrome vagy Safari böngészőben, és engedélyezd a kamerát! (" + err + ")");
+            }
         }
+
 
         function render() {
             const q = document.getElementById('q').value.toLowerCase().trim().replace(/^h5etl\//, '');
