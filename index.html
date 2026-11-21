@@ -3,159 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BB MÜNCHINGER // WERKSTATT OS</title>
+    <title>WERKSTATT OS // BB Münchinger</title>
     <style>
-        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12, 22, 34, 0.82); --cyan:#00f0ff; --orange:#ff7b00; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0, 240, 255, 0.35); }
+        :root { --bg:#060a0f; --panel:#0b111a; --card:rgba(12,22,34,0.88); --cyan:#00f0ff; --orange:#ff7b00; --green:#00e676; --text:#e6edf3; --muted:#7f92a6; --border:rgba(0,240,255,0.35); }
         * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Roboto,sans-serif; }
-        body { background:radial-gradient(circle at 50% 0%, #0f1e2e 0%, var(--bg) 70%); color:var(--text); min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden; }
-        header { background:linear-gradient(180deg, rgba(14,26,40,0.95) 0%, rgba(8,14,22,0.9) 100%); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.85rem; border-bottom:1px solid rgba(0,240,255,0.4); box-shadow:0 4px 25px rgba(0,240,255,0.12); z-index:100; }
-        .brand-wrap { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-        .menu-btn { background:rgba(0,240,255,0.08); border:1px solid var(--border); color:var(--cyan); padding:10px 16px; border-radius:6px; cursor:pointer; font-weight:700; letter-spacing:1px; box-shadow:0 0 10px rgba(0,240,255,0.15); transition:0.2s; }
-        .menu-btn:hover { background:rgba(0,240,255,0.2); box-shadow:0 0 18px rgba(0,240,255,0.4); }
-        nav { background:var(--panel); border-bottom:1px solid var(--border); display:none; flex-direction:column; padding:1rem 1.25rem; gap:8px; z-index:99; }
-        nav.active { display:flex; }
-        nav a { color:var(--text); text-decoration:none; padding:12px 16px; border-radius:6px; background:var(--card); border:1px solid rgba(0,240,255,0.15); font-weight:600; display:flex; justify-content:space-between; align-items:center; }
-        nav a:hover { border-color:var(--cyan); color:var(--cyan); }
-        main { flex:1; max-width:1150px; width:100%; margin:0 auto; padding:1.25rem 1.25rem 2rem; }
-        .controls { display:flex; flex-direction:column; gap:0.85rem; margin-bottom:1.5rem; }
-        .search-box { width:100%; padding:14px 16px; background:rgba(10,18,28,0.9); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; outline:none; box-shadow:inset 0 0 12px rgba(0,240,255,0.08); transition:0.2s; }
-        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 18px rgba(0,240,255,0.25); }
-        .filters { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
-        .filter-btn { background:rgba(12,22,34,0.85); border:1px solid rgba(0,240,255,0.25); color:var(--muted); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:700; white-space:nowrap; transition:0.2s; }
-        .filter-btn.active, .filter-btn:hover { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 12px rgba(0,240,255,0.2); }
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.2rem; width:100%; }
-        .card { background:var(--card); backdrop-filter:blur(6px); border:1px solid var(--border); border-radius:12px; padding:1.35rem; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; box-shadow:inset 0 0 20px rgba(0,240,255,0.06), 0 6px 20px rgba(0,0,0,0.45); transition:0.25s; cursor:pointer; }
-        .card:hover { transform:translateY(-3px); border-color:var(--cyan); box-shadow:inset 0 0 25px rgba(0,240,255,0.15), 0 0 25px rgba(0,240,255,0.28); }
-        .card.soon { border-color:rgba(255,123,0,0.35); box-shadow:inset 0 0 15px rgba(255,123,0,0.04); }
-        .card.soon:hover { border-color:var(--orange); box-shadow:0 0 20px rgba(255,123,0,0.25); }
-        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
-        .card-icon { font-size:1.5rem; }
-        .tag { font-size:0.7rem; text-transform:uppercase; letter-spacing:1.2px; padding:4px 10px; border-radius:4px; background:rgba(0,240,255,0.14); border:1px solid rgba(0,240,255,0.3); color:var(--cyan); font-weight:700; }
-        .card.soon .tag { background:rgba(255,123,0,0.12); border-color:rgba(255,123,0,0.3); color:var(--orange); }
-        .card h2 { font-size:1.25rem; margin-bottom:0.45rem; color:#fff; letter-spacing:0.4px; }
-        .card p { color:var(--muted); font-size:0.88rem; line-height:1.45; margin-bottom:1.1rem; }
-        .card-foot { display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700; color:var(--cyan); border-top:1px solid rgba(0,240,255,0.15); padding-top:0.8rem; }
-        .card.soon .card-foot { color:var(--orange); border-top-color:rgba(255,123,0,0.15); }
-        .empty-state { display:none; text-align:center; padding:2.5rem 1rem; color:var(--muted); border:1px dashed var(--border); border-radius:10px; margin-top:1rem; }
-        footer { text-align:center; padding:1.25rem; color:var(--muted); font-size:0.78rem; border-top:1px solid rgba(0,240,255,0.2); letter-spacing:1px; }
-        @media (max-width: 600px) { .brand-wrap svg { width: 190px; height: 55px; } .grid { grid-template-columns: 1fr; } }
+        body { background:radial-gradient(circle at 50% 0%,#0f1e2e 0%,var(--bg) 70%); color:var(--text); min-height:100vh; padding-bottom:3rem; }
+        header { background:var(--panel); border-bottom:1px solid var(--border); padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; }
+        main { max-width:1100px; margin:0 auto; padding:1.25rem; }
+        .search-box { width:100%; padding:14px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:1rem; margin-bottom:1rem; outline:none; }
+        .search-box:focus { border-color:var(--cyan); box-shadow:0 0 15px rgba(0,240,255,0.22); }
+        .filter-row { display:flex; gap:8px; margin-bottom:1.35rem; flex-wrap:wrap; }
+        .f-btn { background:var(--panel); border:1px solid rgba(255,255,255,0.15); color:var(--muted); padding:9px 15px; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:pointer; }
+        .f-btn.active { background:rgba(0,240,255,0.16); border-color:var(--cyan); color:var(--cyan); }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:1.1rem; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.3rem; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; transition:0.2s; }
+        .card:hover { transform:translateY(-2px); border-color:var(--cyan); box-shadow:0 0 22px rgba(0,240,255,0.24); }
+        .card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem; }
+        .badge-ok { background:rgba(0,230,118,0.15); border:1px solid var(--green); color:var(--green); font-size:0.72rem; font-weight:800; padding:4px 9px; border-radius:4px; }
+        .card h2 { font-size:1.22rem; color:#fff; margin-bottom:0.45rem; }
+        .card p { font-size:0.86rem; color:var(--muted); line-height:1.45; margin-bottom:1.15rem; }
+        .card-foot { display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:0.85rem; color:var(--cyan); font-weight:800; font-size:0.88rem; }
     </style>
 </head>
 <body>
     <header>
-        <div class="brand-wrap">
-            <svg width="230" height="66" viewBox="0 0 380 110" fill="none" xmlns="http://w3.org" style="filter:drop-shadow(0 0 8px rgba(0,240,255,0.3));">
-                <path d="M6 6 H178 L166 18 H18 V92 H178 L166 104 H6 V6 Z" fill="#cfd8e3"/>
-                <path d="M196 6 H374 V104 H196 L208 92 H362 V18 H208 L196 6 Z" fill="#cfd8e3"/>
-                <text x="26" y="75" fill="#e6edf3" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="64" letter-spacing="2">BB</text>
-                <text x="136" y="62" fill="#cfd8e3" font-family="Arial,sans-serif" font-weight="800" font-size="23" letter-spacing="1.2">MÜNCHINGER</text>
-                <line x1="136" y1="73" x2="314" y2="73" stroke="#00f0ff" stroke-width="2.5"/>
-                <circle cx="337" cy="64" r="13" stroke="#cfd8e3" stroke-width="2"/>
-                <path d="M330 71 L337 56 L344 71 M333.5 71 L337 63 L340.5 71" stroke="#00f0ff" stroke-width="2" fill="none"/>
-            </svg>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="font-size:1.55rem; font-weight:800; letter-spacing:1.6px; color:#ffffff;">WERKSTATT<span style="color:#00f0ff; text-shadow:0 0 15px rgba(0,240,255,0.6);">//OS</span></div>
-                <span style="background:rgba(0,240,255,0.15); border:1px solid #00f0ff; color:#00f0ff; font-weight:900; font-style:italic; font-size:0.8rem; padding:3px 8px; border-radius:5px; letter-spacing:1.5px; box-shadow:0 0 12px rgba(0,240,255,0.3);">PRO</span>
-            </div>
+        <div>
+            <div style="font-weight:900; font-size:1.15rem; letter-spacing:1px;">WERKSTATT OS <span style="color:var(--cyan);">// PRO</span></div>
+            <div style="font-size:0.75rem; color:var(--muted);">BB Münchinger — Karbantartás & Gépműhely</div>
         </div>
-        <button class="menu-btn" onclick="toggleMenu()">☰ MENÜ</button>
+        <span style="font-size:0.78rem; color:var(--green); font-weight:800;">● ONLINE</span>
     </header>
-
-    <nav id="navMenu">
-        <a href="index.html"><span>🏠 Főoldal</span><span style="color:var(--cyan);font-size:0.8rem;">AKTÍV</span></a>
-        <a href="lager/index.html"><span>📦 1. Ersatzteillager & Szalagok</span><span style="color:var(--cyan);font-size:0.8rem;">LAGER</span></a>
-        <a href="kenoanyagok/index.html"><span>🛢️ 2. Kenőanyagok</span><span style="color:var(--orange);font-size:0.8rem;">TERVEZETT</span></a>
-        <a href="gepek/index.html"><span>⚙️ 3. Forgácsolás & Gépek</span><span style="color:var(--cyan);font-size:0.8rem;">MARÁS AKTÍV</span></a>
-        <a href="hegesztes/index.html"><span>⚡ 4. Hegesztés & Egyéb</span><span style="color:var(--orange);font-size:0.8rem;">TERVEZETT</span></a>
-        <a href="szerszamok/index.html"><span>🔧 5. Kéziszerszámok</span><span style="color:var(--orange);font-size:0.8rem;">TERVEZETT</span></a>
-    </nav>
-
     <main>
-        <div class="controls">
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Villámkereső (pl. Teilapparat, szalag, polckód, zsír, csavar, hegesztés)..." onkeyup="filterCards()">
-            <div class="filters">
-                <button class="filter-btn active" onclick="setFilter('all', this)">Összes modul (5)</button>
-                <button class="filter-btn" onclick="setFilter('active', this)">Aktív modulok</button>
-                <button class="filter-btn" onclick="setFilter('soon', this)">Fejlesztés alatt</button>
-            </div>
+        <input type="text" id="q" class="search-box" placeholder="🔍 Villámkereső (pl. raktár, zsír, forgácsolás, marás, eszterga, hegesztés, nyomaték)..." oninput="filterCards()">
+        <div class="filter-row">
+            <button class="f-btn active" onclick="setF('all', this)">Összes modul (5)</button>
+            <button class="f-btn" onclick="setF('active', this)">Aktív modulok (5)</button>
         </div>
-        <div class="grid" id="moduleGrid">
-
-            <div class="card" onclick="location.href='lager/index.html'" data-status="active" data-keywords="ersatzteillager raktar keszlet polckod h5etl szallitoszalag szij hianylista rendeles a0001">
+        <div class="grid" id="grid">
+            <a href="lager/index.html" class="card" data-status="active" data-tags="ersatzteillager raktár szalagok szíjak h5etl vonalkód szkenner polc készlet">
                 <div>
-                    <div class="card-top"><span class="card-icon">📦</span><span class="tag">AKTÍV // RAKTÁR</span></div>
+                    <div class="card-top"><span style="font-size:1.6rem;">📦</span><span class="badge-ok">AKTÍV // RAKTÁR</span></div>
                     <h2>1. Ersatzteillager</h2>
-                    <p>Teljes raktárkészlet (A0001–A0143), polckódok (H5ETL), valamint a 66 szállítószalag műszaki adatbázisa és rendelési hiánylistája.</p>
+                    <p>Teljes raktárkészlet (A0001–A0144), többpolcos H5ETL tárhelyek, vonalkód-szkenner és rendelési hiánylista.</p>
                 </div>
                 <div class="card-foot"><span>Raktár & Szalagok megnyitása</span><span>→</span></div>
-            </div>
+            </a>
 
-            <div class="card soon" onclick="location.href='kenoanyagok/index.html'" data-status="soon" data-keywords="kenoanyag zsir olaj grease gegenlager skf lghp fin grease ketten spray karbantartas">
+            <a href="kenoanyagok/index.html" class="card" data-status="active" data-tags="kenőanyagok zsírok olajok gegenlager hobelkopf avia skf">
                 <div>
-                    <div class="card-top"><span class="card-icon">🛢️</span><span class="tag">KÖVETKEZŐ MODUL</span></div>
+                    <div class="card-top"><span style="font-size:1.6rem;">🛢️</span><span class="badge-ok">AKTÍV // KENÉS</span></div>
                     <h2>2. Kenőanyagok</h2>
-                    <p>Gépkenési útmutató: melyik géphez és egységhez (pl. Gegenlager) melyik zsír vagy olaj tartozik, polchely és cikkszám szerint.</p>
+                    <p>Gépkenési útmutató: melyik géphez és egységhez (pl. Gegenlager, Hobelkopf) melyik zsír vagy olaj tartozik.</p>
                 </div>
-                <div class="card-foot"><span>Kenési táblázat előkészítése</span><span>→</span></div>
-            </div>
+                <div class="card-foot"><span>Kenési táblázat megnyitása</span><span>→</span></div>
+            </a>
 
-            <div class="card" onclick="location.href='gepek/index.html'" data-status="active" data-keywords="forgacsolas gepek maras frasen teilapparat pro esztergalas drehen furas bohren magfurat fordulatszam">
+            <a href="gepek/index.html" class="card" data-status="active" data-tags="forgácsolás marás esztergálás fúrás bf600d ed1500 teilapparat osztófej magfurat">
                 <div>
-                    <div class="card-top"><span class="card-icon">⚙️</span><span class="tag">RÉSZBEN AKTÍV</span></div>
-                    <h2>3. Forgácsolás & Gépek</h2>
-                    <p>3 almodul egyben: <strong>Marás</strong> (Teilapparat Pro aktív), <strong>Esztergálás</strong> (fordulatszám, kúp) és <strong>Fúrás</strong> (magfurat táblázat).</p>
+                    <div class="card-top"><span style="font-size:1.6rem;">⚙️</span><span class="badge-ok">AKTÍV // GÉPMŰHELY</span></div>
+                    <h2>3. Forgácsolás</h2>
+                    <p>Marás (BF600D & Teilapparat Pro), Esztergálás (ED1500 fordulatszám, kúp) és Fúrás (M / MF / Collos magfuratok).</p>
                 </div>
-                <div class="card-foot"><span>Gépműhely aloldal megnyitása</span><span>→</span></div>
-            </div>
-
-            <div class="card soon" onclick="location.href='hegesztes/index.html'" data-status="soon" data-keywords="hegesztes mig mag tig awi elektroda huzal vedogaz aramerosseg">
+                <div class="card-foot"><span>Forgácsolás megnyitása</span><span>→</span></div>
+            </a>
+            <a href="hegesztes/index.html" class="card" data-status="active" data-tags="hegesztés rehm synergic 311 beast 200 wig pulse tig mma mig mag">
                 <div>
-                    <div class="card-top"><span class="card-icon">⚡</span><span class="tag">TERVEZETT</span></div>
-                    <h2>4. Hegesztés & Egyéb</h2>
-                    <p>Hegesztőgépek beállítási segédlete, anyagvastagság–áramerősség táblázatok, huzal- és védőgáz ajánlások.</p>
+                    <div class="card-top"><span style="font-size:1.6rem;">⚡</span><span class="badge-ok">AKTÍV // HEGESZTÉS</span></div>
+                    <h2>4. Hegesztés</h2>
+                    <p>REHM Synergic.Arc 311 (MIG/MAG) és BEAST 200 WIG PULSE (HF-WIG / MMA) beállítási segédlet és kopóalkatrészek.</p>
                 </div>
-                <div class="card-foot"><span>Hamarosan elérhető</span><span>→</span></div>
-            </div>
+                <div class="card-foot"><span>Hegesztés megnyitása</span><span>→</span></div>
+            </a>
 
-            <div class="card soon" onclick="location.href='szerszamok/index.html'" data-status="soon" data-keywords="keziszerszamok nyomatek csavar menet 8.8 10.9 12.9 celszerszam leltar">
+            <a href="szerszamok/index.html" class="card" data-status="active" data-tags="kéziszerszámok nyomaték csavar 8.8 10.9 12.9 kulcsnyílás">
                 <div>
-                    <div class="card-top"><span class="card-icon">🔧</span><span class="tag">TERVEZETT</span></div>
+                    <div class="card-top"><span style="font-size:1.6rem;">🔧</span><span class="badge-ok">AKTÍV // MŰHELY</span></div>
                     <h2>5. Kéziszerszámok</h2>
-                    <p>Csavar-meghúzási nyomaték táblázatok (8.8 / 10.9 / 12.9), menetadatok és műhelyi célszerszámok gyorskeresője.</p>
+                    <p>Csavar-meghúzási nyomaték táblázatok (8.8 / 10.9 / 12.9), kulcsnyílások (SW) és műhelyi célszerszámok.</p>
                 </div>
-                <div class="card-foot"><span>Hamarosan elérhető</span><span>→</span></div>
-            </div>
-
+                <div class="card-foot"><span>Nyomatéktáblázat megnyitása</span><span>→</span></div>
+            </a>
         </div>
-
-        <div id="emptyState" class="empty-state">Nincs találat a keresett kifejezésre. Próbálj másik kulcsszót!</div>
     </main>
-
-    <footer>BB MÜNCHINGER // WERKSTATT OS PRO &bull; SYSTEM READY</footer>
-
     <script>
-        let currentStatus = 'all';
-        function toggleMenu() { document.getElementById('navMenu').classList.toggle('active'); }
-        function setFilter(status, btn) {
-            currentStatus = status;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        let curF = 'all';
+        function setF(f, btn) {
+            curF = f;
+            document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             filterCards();
         }
         function filterCards() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('#moduleGrid .card');
-            let visibleCount = 0;
-            cards.forEach(card => {
-                const status = card.getAttribute('data-status');
-                const keywords = card.getAttribute('data-keywords').toLowerCase();
-                const text = card.innerText.toLowerCase();
-                const matchesStatus = (currentStatus === 'all') || (status === currentStatus);
-                const matchesQuery = !query || text.includes(query) || keywords.includes(query);
-                if (matchesStatus && matchesQuery) { card.style.display = 'flex'; visibleCount++; }
-                else { card.style.display = 'none'; }
+            const q = document.getElementById('q').value.toLowerCase().trim();
+            document.querySelectorAll('.card').forEach(c => {
+                const matchF = (curF === 'all') || (c.dataset.status === curF);
+                const matchQ = (c.innerText + ' ' + c.dataset.tags).toLowerCase().includes(q);
+                c.style.display = (matchF && matchQ) ? 'flex' : 'none';
             });
-            document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
         }
     </script>
 </body>
