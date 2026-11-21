@@ -60,7 +60,7 @@
         <div class="big-menu">
             <div class="m-btn active" onclick="showTool('frasen', this)"><span style="font-size:1.4rem;">⚙️</span><h2>1. Marás (BF600D)</h2></div>
             <div class="m-btn" onclick="showTool('drehen', this)"><span style="font-size:1.4rem;">🔄</span><h2>2. Eszterga (ED1500)</h2></div>
-            <div class="m-btn" onclick="showTool('bohren', this)"><span style="font-size:1.4rem;">🔩</span><h2>3. Fúrás & Menet</h2></div>
+            <div class="m-btn" onclick="showTool('bohren', this)"><span style="font-size:1.4rem;">🔩</span><h2>3. Fúrás, Menet & Nm</h2></div>
         </div>
         <div id="frasen" class="tool-box active">
             <a href="../teilapparat/index.html" class="launch-card">
@@ -160,15 +160,16 @@
                 <div><label>Vágósebesség Vc (HSS ~25, VHM ~70)</label><input type="number" id="b_vc" value="25" oninput="calcDrill()"></div>
             </div>
             <div class="res-card" id="drill_res" style="margin-bottom:1.25rem;"></div>
-            <h3>📏 Menet & Magfurat táblázatok</h3>
-            <div class="sub-tabs">
+            <h3>📏 Menet, Magfurat & Nyomaték (Nm)</h3>
+            <div class="sub-tabs" style="grid-template-columns:repeat(2,1fr);">
                 <button class="st-btn active" onclick="setThreadTab('metrik', this)">Metrikus (M)</button>
                 <button class="st-btn" onclick="setThreadTab('fein', this)">Finommenet (MF)</button>
                 <button class="st-btn" onclick="setThreadTab('coll', this)">Collos (G / UNC)</button>
+                <button class="st-btn" onclick="setThreadTab('nm', this)">Meghúzás (Nm)</button>
             </div>
-            <input type="text" id="tSearch" placeholder="🔍 Szűrés (pl. M12, M16x1.5, G 1/2, UNC)..." style="margin-bottom:0.75rem; font-size:0.95rem;" oninput="renderThreads()">
+            <input type="text" id="tSearch" placeholder="🔍 Szűrés (pl. M12, SW 19, G 1/2, UNC)..." style="margin-bottom:0.75rem; font-size:0.95rem;" oninput="renderThreads()">
             <table>
-                <thead><tr><th>Menet</th><th>Emelkedés / TPI</th><th>Magfurat (mm)</th></tr></thead>
+                <thead id="threadHead"><tr><th>Menet</th><th>Emelkedés / TPI</th><th>Magfurat (mm)</th></tr></thead>
                 <tbody id="threadTable"></tbody>
             </table>
         </div>
@@ -263,15 +264,33 @@
             curThreadTab = tab; btn.parentElement.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); renderThreads();
         }
+                const TORQUE_DATA = [
+            {m:"M3", sw:"SW 5.5", n88:"1.3", n109:"1.9", n129:"2.2"}, {m:"M4", sw:"SW 7", n88:"2.9", n109:"4.3", n129:"5.1"},
+            {m:"M5", sw:"SW 8", n88:"5.9", n109:"8.7", n129:"10"}, {m:"M6", sw:"SW 10", n88:"10", n109:"15", n129:"18"},
+            {m:"M8", sw:"SW 13", n88:"25", n109:"36", n129:"43"}, {m:"M10", sw:"SW 17", n88:"49", n109:"72", n129:"84"},
+            {m:"M12", sw:"SW 19", n88:"85", n109:"125", n129:"145"}, {m:"M14", sw:"SW 22", n88:"135", n109:"200", n129:"235"},
+            {m:"M16", sw:"SW 24", n88:"210", n109:"310", n129:"365"}, {m:"M18", sw:"SW 27", n88:"300", n109:"430", n129:"500"},
+            {m:"M20", sw:"SW 30", n88:"425", n109:"610", n129:"710"}, {m:"M22", sw:"SW 32", n88:"580", n109:"830", n129:"970"},
+            {m:"M24", sw:"SW 36", n88:"730", n109:"1050", n129:"1220"}, {m:"M27", sw:"SW 41", n88:"1100", n109:"1550", n129:"1800"},
+            {m:"M30", sw:"SW 46", n88:"1450", n109:"2100", n129:"2450"}, {m:"M36", sw:"SW 55", n88:"2530", n109:"3600", n129:"4200"}
+        ];
+
         function renderThreads() {
             const q = document.getElementById('tSearch').value.toLowerCase().trim();
+            const head = document.getElementById('threadHead');
+            const body = document.getElementById('threadTable');
+            if (curThreadTab === 'nm') {
+                head.innerHTML = '<tr><th>Menet</th><th>SW</th><th>8.8</th><th>10.9</th><th>12.9</th></tr>';
+                body.innerHTML = TORQUE_DATA.filter(t => `${t.m} ${t.sw}`.toLowerCase().includes(q)).map(t =>
+                    `<tr><td><strong>${t.m}</strong></td><td style="color:var(--muted);">${t.sw}</td><td><b>${t.n88}</b></td><td style="color:var(--cyan);font-weight:800;">${t.n109}</td><td style="color:var(--orange);font-weight:800;">${t.n129}</td></tr>`
+                ).join('');
+                return;
+            }
+            head.innerHTML = '<tr><th>Menet</th><th>Emelkedés / TPI</th><th>Magfurat (mm)</th></tr>';
             const list = THREAD_DATA[curThreadTab].filter(t => `${t.m} ${t.p} ${t.k}`.toLowerCase().includes(q));
-            document.getElementById('threadTable').innerHTML = list.map(t => `<tr><td><strong>${t.m}</strong></td><td>${t.p}</td><td><b>Ø ${t.k} mm</b></td></tr>`).join('');
+            body.innerHTML = list.map(t => `<tr><td><strong>${t.m}</strong></td><td>${t.p}</td><td><b>Ø ${t.k} mm</b></td></tr>`).join('');
         }
-        renderTurnPresets(); calcMill(); calcTurn(); calcCone(); calcDrill(); renderThreads();
-    </script>
-</body>
-</html>
+
 
 
 
