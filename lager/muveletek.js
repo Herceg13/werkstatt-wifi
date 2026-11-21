@@ -203,7 +203,14 @@ function copyMissingList() {
     const body = missing.map(x => `• [${x.id}] ${x.name} (${x.geb}) | Össz: ${x.ist}/${x.min} db (Rendelendő: min. ${Math.max(1, x.min - x.ist)} db) — ${x.locs.map(l=>`H5ETL/${l.loc} (${l.qty} db)`).join(', ')}`).join('\n');
     navigator.clipboard.writeText(header + body).then(() => alert(`📋 ${missing.length} hiányzó tétel vágólapra másolva!`));
 }
-
+function exportBackupJS() {
+    if (!isAdmin) return;
+    const cleanData = JSON.stringify(items, null, 2);
+    const fileContent = `const FULL_LAGER = ${cleanData};\n`;
+    navigator.clipboard.writeText(fileContent).then(() => {
+        alert(`💾 TELJES BIZTONSÁGI MENTÉS MÁSOLVA!\n\n(${items.length} tétel — minden készlet, többpolcos hely és új cikk benne van.)\n\nHa véglegesíteni akarod a GitHubon is: nyisd meg a lager/adatok.js fájlt, töröld ki a régit, és illeszd be ezt!`);
+    });
+}
 function render() {
     updateAdminUI();
     const logEl = document.getElementById('logList');
