@@ -91,11 +91,12 @@ function handleScannedCode(raw) {
 function getNextId() {
     let maxNum = 0;
     items.forEach(x => {
-        const m = x.id.match(/^A(\d+)$/i);
-        if (m) maxNum = Math.max(maxNum, parseInt(m, 10));
+        const num = parseInt(String(x.id).replace(/\D/g, ''), 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
     });
     return 'A' + String(maxNum + 1).padStart(4, '0');
 }
+
 
 function openNewModal(prefillLoc) {
     document.getElementById('n_id').value = getNextId();
