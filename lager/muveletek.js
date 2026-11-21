@@ -213,6 +213,8 @@ function exportBackupJS() {
 }
 function render() {
     updateAdminUI();
+    const logSec = document.getElementById('logSection');
+    if (logSec) logSec.style.display = isAdmin ? 'block' : 'none';
     const logEl = document.getElementById('logList');
     if (logEl) logEl.innerHTML = logs.length ? logs.slice(0, 8).map(l => `<div>• ${l}</div>`).join('') : 'Még nincs rögzített mozgás.';
 
